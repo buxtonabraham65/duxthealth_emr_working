@@ -117,7 +117,7 @@ sympy==1.12
 ta==0.11.0
 threadpoolctl==3.6.0
 toolz==1.1.0
-torch==2.2.0
+torch --index-url https://pytorch.org
 tqdm==4.67.3
 types-requests==2.32.4.20250913
 typing-inspection==0.4.2
