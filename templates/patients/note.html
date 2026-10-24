@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+
+{% block title %}Add Clinical Note | DuxtHealth{% endblock %}
+
+{% block content %}
+
+<style>
+  /* =======================
+     ADD NOTE – DUXTHEALTH
+  ======================= */
+
+  .note-card {
+    max-width: 640px;
+    margin: 40px auto;
+    padding: 28px;
+    background: #ffffff;
+    border-radius: 14px;
+    box-shadow: 0 18px 36px rgba(0,0,0,.08);
+  }
+
+  .note-card h2 {
+    text-align: center;
+    margin-bottom: 24px;
+    font-weight: 700;
+    color: var(--duxt-primary);
+  }
+
+  .note-card label {
+    font-weight: 600;
+    color: var(--duxt-dark);
+    margin-bottom: 6px;
+    display: block;
+  }
+
+  .note-card input,
+  .note-card textarea,
+  .note-card select {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid #d1d5db;
+    font-size: 0.95rem;
+  }
+
+  .note-card textarea {
+    resize: vertical;
+    min-height: 100px;
+  }
+
+  .note-card input:focus,
+  .note-card textarea:focus,
+  .note-card select:focus {
+    outline: none;
+    border-color: var(--duxt-primary);
+    box-shadow: 0 0 0 2px rgba(14,111,108,.15);
+  }
+
+  .btn-duxt {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    margin-top: 18px;
+    background: linear-gradient(135deg, var(--duxt-primary), #0b5c59);
+    color: #ffffff;
+    font-weight: 600;
+    border: none;
+    border-radius: 10px;
+    transition: all .25s ease;
+  }
+
+  .btn-duxt:hover {
+    background: linear-gradient(135deg, #0b5c59, var(--duxt-primary));
+    transform: translateY(-1px);
+  }
+
+  .note-actions {
+    text-align: center;
+    margin-top: 26px;
+  }
+
+  .note-actions a {
+    margin: 0 10px;
+    text-decoration: none;
+    font-weight: 500;
+    color: var(--duxt-primary);
+  }
+
+  .note-actions a:hover {
+    text-decoration: underline;
+    color: var(--duxt-secondary);
+  }
+</style>
+
+<div class="note-card">
+  <h2>📝 Add Clinical Note</h2>
+
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+
+    <button type="submit" class="btn-duxt">
+      💾 Save Note
+    </button>
+  </form>
+
+  <div class="note-actions">
+    <a href="{% url 'home' %}">🏠 Home</a>
+    <a href="{% url 'patient_list' %}">👤 Patients</a>
+    <a href="{% url 'vitals_list' %}">🩺 Vitals</a>
+    <a href="{% url 'consultation_list' %}">📋 Consultations</a>
+  </div>
+</div>
+
+{% endblock %}

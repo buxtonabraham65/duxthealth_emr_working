@@ -1,0 +1,27 @@
+{
+    "aspirin": {
+        "interactions": [
+            "warfarin"
+        ],
+        "safe_dosage_mg_per_day": [
+            50,
+            4000
+        ]
+    },
+    "warfarin": {
+        "interactions": [
+            "aspirin"
+        ],
+        "safe_dosage_mg_per_day": [
+            1,
+            10
+        ]
+    },
+    "paracetamol": {
+        "interactions": [],
+        "safe_dosage_mg_per_day": [
+            500,
+            4000
+        ]
+    }
+}

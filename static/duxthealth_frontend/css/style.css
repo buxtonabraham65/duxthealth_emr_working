@@ -1,0 +1,40 @@
+:root {
+    --primary: #0E6F6C;
+    --secondary: #7ED6C2;
+    --gold: #C9A24D;
+    --dark: #1F2937;
+}
+
+body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    color: var(--dark);
+}
+
+.hero-section {
+    padding: 100px 20px;
+}
+
+.service-card img,
+.role-card img {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+}
+
+/* New style for mission hands image */
+section img.img-fluid.rounded.mb-4 {
+    width: 80%;
+    max-width: 600px;
+    height: auto;
+    object-fit: contain;
+    margin: 0 auto 20px auto;
+    display: block;
+    border-radius: 16px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.footer {
+    background: var(--primary);
+    color: white;
+    padding: 20px 0;
+}

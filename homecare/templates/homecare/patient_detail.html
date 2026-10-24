@@ -1,0 +1,303 @@
+{% extends 'bases.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+
+    <!-- ========================= -->
+    <!-- PATIENT PROFILE -->
+    <!-- ========================= -->
+    <div class="card shadow-lg mb-5 border-0 rounded-4">
+        <div class="card-body">
+            <h3 class="fw-bold mb-4 text-teal">Patient Profile</h3>
+
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <p><strong>Full Name:</strong> {{ patient.first_name }} {{ patient.last_name }}</p>
+                    <p><strong>Age:</strong> {{ patient.age|default:"N/A" }}</p>
+                    <p><strong>Gender:</strong> {{ patient.gender|default:"Not specified" }}</p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>Patient ID:</strong> {{ patient.id }}</p>
+                    <p><strong>Blood Group:</strong> {{ patient.blood_group|default:"N/A" }}</p>
+                    <p><strong>Genotype:</strong> {{ patient.genotype|default:"N/A" }}</p>
+                </div>
+            </div>
+
+            <hr class="my-4">
+
+            <p><strong>Medical History:</strong></p>
+            <p class="text-muted">{{ patient.medical_history|default:"No medical history available." }}</p>
+
+            <p><strong>Allergies:</strong></p>
+            <ul>
+                {% for allergy in patient.allergies.all %}
+                    <li>{{ allergy.substance }} ({{ allergy.allergy_type }}) - {{ allergy.severity|default:"N/A" }}</li>
+                {% empty %}
+                    <li>No known allergies</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <!-- ========================= -->
+    <!-- AI CLINICAL COPILOT -->
+    <!-- ========================= -->
+    <div class="card shadow-lg mb-5 border-0 rounded-4">
+        <div class="card-body">
+            <h4 class="fw-bold mb-4 text-teal">
+                🧠 DuxtHealth Clinical AI Copilot
+            </h4>
+
+            <!-- Chat Container -->
+            <div id="chat-box" class="chat-container">
+                {% for chat in conversations %}
+                    <div class="user-msg">
+                        <div class="badge-user">You</div>
+                        <div class="bubble-user">{{ chat.user_message }}</div>
+                    </div>
+                    <div class="ai-msg">
+                        <div class="badge-ai">AI Clinical Copilot</div>
+                        <div class="bubble-ai">{{ chat.ai_response|safe }}</div>
+                    </div>
+                {% empty %}
+                    <p class="text-muted">No clinical AI interactions yet.</p>
+                {% endfor %}
+            </div>
+
+            <div id="ai-loading" class="mt-3 text-teal" style="display:none;">
+                🔍 AI analyzing patient data...
+            </div>
+
+            <!-- AI FORM -->
+            <form id="ai-form" method="POST" enctype="multipart/form-data" class="mt-4">
+                {% csrf_token %}
+
+                <div class="mb-3">
+                    <textarea
+                        id="ai_message"
+                        name="ai_message"
+                        class="form-control form-control-lg"
+                        rows="2"
+                        placeholder="Ask clinical question about this patient..."
+                        required></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-teal btn-lg w-100">Send to Clinical AI</button>
+            </form>
+        </div>
+    </div>
+
+    <a href="{% url 'homecare:patient_list' %}" class="btn btn-secondary mb-5">
+        ← Back to Patient List
+    </a>
+
+</div>
+
+<!-- ========================= -->
+<!-- STYLES -->
+<!-- ========================= -->
+<style>
+.text-teal {
+    color: #0F766E;
+}
+
+.btn-teal {
+    background-color: #0F766E;
+    color: white;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.btn-teal:hover {
+    background-color: #0c5e57;
+    color: white;
+}
+
+.card-body p, .card-body li {
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+.chat-container {
+    height: 480px;
+    overflow-y: auto;
+    padding: 25px;
+    border-radius: 15px;
+    background: #F9FAFB;
+    border: 1px solid #E5E7EB;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.user-msg, .ai-msg {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.bubble-user, .bubble-ai {
+    padding: 12px 18px;
+    border-radius: 20px;
+    max-width: 75%;
+    word-wrap: break-word;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.bubble-user {
+    background: #0F766E;
+    color: white;
+    border-radius: 20px 20px 5px 20px;
+    align-self: flex-end;
+    box-shadow: 0 2px 5px rgba(15, 118, 110, 0.3);
+}
+
+.bubble-ai {
+    background: white;
+    border: 1px solid #E5E7EB;
+    border-radius: 20px 20px 20px 5px;
+    align-self: flex-start;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.badge-user, .badge-ai {
+    font-size: 12px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    display: inline-block;
+    margin-bottom: 6px;
+    font-weight: 500;
+}
+
+.badge-user {
+    background: #0F766E;
+    color: white;
+    align-self: flex-end;
+}
+
+.badge-ai {
+    background: #D1FAE5;
+    color: #0F766E;
+    align-self: flex-start;
+}
+
+.file-preview {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 15px;
+    border-radius: 15px;
+    border: 1px solid #E5E7EB;
+    margin-top: 10px;
+    background-color: #F3F4F6;
+    font-size: 14px;
+    transition: 0.2s;
+}
+
+.file-preview:hover {
+    background-color: #E6F4F1;
+}
+
+.file-preview img {
+    width: 55px;
+    height: 55px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.file-preview a {
+    color: #0F766E;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.file-preview a:hover {
+    text-decoration: underline;
+}
+
+textarea.form-control-lg {
+    border-radius: 12px;
+    resize: none;
+    font-size: 15px;
+    padding: 10px 15px;
+}
+</style>
+
+<!-- ========================= -->
+<!-- JAVASCRIPT -->
+<!-- ========================= -->
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+
+    const form = document.getElementById("ai-form");
+    const chatBox = document.getElementById("chat-box");
+    const loading = document.getElementById("ai-loading");
+
+    chatBox.scrollTop = chatBox.scrollHeight;
+
+    form.addEventListener("submit", function(e) {
+        e.preventDefault();
+
+        const formData = new FormData(form);
+        const message = document.getElementById("ai_message").value;
+
+        if (!message.trim()) return;
+
+        // Add user message immediately
+        const userDiv = document.createElement("div");
+        userDiv.classList.add("user-msg");
+        userDiv.innerHTML = `
+            <div class="badge-user">You</div>
+            <div class="bubble-user">${message}</div>
+        `;
+        chatBox.appendChild(userDiv);
+
+        chatBox.scrollTop = chatBox.scrollHeight;
+        loading.style.display = "block";
+        form.reset();
+
+        fetch("", {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken]").value,
+                "X-Requested-With": "XMLHttpRequest"
+            },
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            loading.style.display = "none";
+
+            const aiDiv = document.createElement("div");
+            aiDiv.classList.add("ai-msg");
+
+            let filesHTML = "";
+            if (data.files) {
+                data.files.forEach(f => {
+                    filesHTML += `<div class="file-preview">
+                        ${f.type === "image" ? `<img src="${f.url}">` : ""}
+                        <a href="${f.url}" target="_blank">${f.name}</a>
+                    </div>`;
+                });
+            }
+
+            aiDiv.innerHTML = `
+                <div class="badge-ai">AI Clinical Copilot</div>
+                <div class="bubble-ai">${data.response}</div>
+                ${filesHTML}
+            `;
+
+            chatBox.appendChild(aiDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        })
+        .catch(error => {
+            loading.style.display = "none";
+            alert("AI Error occurred. Check backend logs.");
+        });
+
+    });
+
+});
+</script>
+
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends "bases.html" %}
+{% block content %}
+  <h1>Doctor Notes</h1>
+  <a href="{% url 'homecare:doctornote_create' %}" class="btn btn-primary mb-3">Add Doctor Note</a>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Patient</th>
+        <th>Created By</th>
+        <th>Created At</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for note in notes %}
+      <tr>
+        <td>{{ note.patient }}</td>
+        <td>{{ note.created_by }}</td>
+        <td>{{ note.created_at|date:"Y-m-d H:i" }}</td>
+        <td>
+          <a href="{% url 'homecare:doctornote_update' note.pk %}" class="btn btn-sm btn-warning">Edit</a>
+          {% if request.user.healthprofessional.role == 'admin' %}
+          <a href="{% url 'homecare:doctornote_delete' note.pk %}" class="btn btn-sm btn-danger">Delete</a>
+          {% endif %}
+        </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="6">No doctor notes found.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}

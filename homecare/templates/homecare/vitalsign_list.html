@@ -1,0 +1,147 @@
+{% extends "bases.html" %}
+{% block content %}
+
+<div class="container mt-5">
+
+  <!-- HEADER -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold">🩺 Vital Sign Records</h2>
+
+    <a href="{% url 'homecare:vitalsign_create' %}" class="btn-duxt">
+      ➕ Add Vital Signs
+    </a>
+  </div>
+
+  <!-- TABLE CARD -->
+  <div class="card shadow-sm border-0">
+    <div class="table-responsive">
+
+      <table class="table table-bordered table-hover align-middle mb-0 small">
+        <thead class="table-light text-center">
+
+          <!-- GROUPED HEADER -->
+          <tr>
+            <th rowspan="2">Patient</th>
+            <th rowspan="2">Recorded By</th>
+            <th rowspan="2">Date</th>
+
+            <th colspan="6">Core Vitals</th>
+            <th colspan="2">Blood Sugar</th>
+            <th rowspan="2">Pain</th>
+
+            <th colspan="3">Fluid Intake (ml)</th>
+            <th colspan="4">Fluid Output (ml)</th>
+
+            <th colspan="2">Body</th>
+            <th colspan="4">Neurology</th>
+
+            <th rowspan="2">Actions</th>
+          </tr>
+
+          <!-- SUB HEADERS -->
+          <tr>
+            <th>Temp</th>
+            <th>Pulse</th>
+            <th>Resp</th>
+            <th>Sys BP</th>
+            <th>Dia BP</th>
+            <th>O₂</th>
+
+            <th>FBS</th>
+            <th>RBS</th>
+
+            <th>Oral</th>
+            <th>IV</th>
+            <th>Tube</th>
+
+            <th>Urine</th>
+            <th>Stool</th>
+            <th>Vomit</th>
+            <th>Drain</th>
+
+            <th>Wt</th>
+            <th>Ht</th>
+
+            <th>E</th>
+            <th>V</th>
+            <th>M</th>
+            <th>AVPU</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {% for vital in vitals %}
+          <tr class="text-center">
+
+            <!-- BASIC INFO -->
+            <td class="fw-semibold">{{ vital.patient }}</td>
+            <td>{{ vital.recorded_by }}</td>
+            <td>{{ vital.recorded_at|date:"Y-m-d H:i" }}</td>
+
+            <!-- CORE VITALS -->
+            <td>{{ vital.temperature|default:"—" }}</td>
+            <td>{{ vital.pulse|default:"—" }}</td>
+            <td>{{ vital.respiratory_rate|default:"—" }}</td>
+            <td>{{ vital.blood_pressure_systolic|default:"—" }}</td>
+            <td>{{ vital.blood_pressure_diastolic|default:"—" }}</td>
+            <td>{{ vital.oxygen_saturation|default:"—" }}%</td>
+
+            <!-- BLOOD SUGAR -->
+            <td>{{ vital.blood_sugar_fbs|default:"—" }}</td>
+            <td>{{ vital.blood_sugar_rbs|default:"—" }}</td>
+
+            <!-- PAIN -->
+            <td>{{ vital.pain_score|default:"—" }}</td>
+
+            <!-- FLUID INTAKE -->
+            <td>{{ vital.fluid_intake_oral|default:"—" }}</td>
+            <td>{{ vital.fluid_intake_iv|default:"—" }}</td>
+            <td>{{ vital.fluid_intake_tube|default:"—" }}</td>
+
+            <!-- FLUID OUTPUT -->
+            <td>{{ vital.fluid_output_urine|default:"—" }}</td>
+            <td>{{ vital.fluid_output_stool|default:"—" }}</td>
+            <td>{{ vital.fluid_output_vomit|default:"—" }}</td>
+            <td>{{ vital.fluid_output_drains|default:"—" }}</td>
+
+            <!-- BODY -->
+            <td>{{ vital.weight|default:"—" }}</td>
+            <td>{{ vital.height|default:"—" }}</td>
+
+            <!-- NEURO -->
+            <td>{{ vital.neuro_gcs_eye|default:"—" }}</td>
+            <td>{{ vital.neuro_gcs_verbal|default:"—" }}</td>
+            <td>{{ vital.neuro_gcs_motor|default:"—" }}</td>
+            <td>{{ vital.neuro_avpu|default:"—" }}</td>
+
+            <!-- ACTIONS -->
+            <td class="text-nowrap">
+              <a href="{% url 'homecare:vitalsign_update' vital.pk %}"
+                 class="btn btn-outline-primary btn-sm">
+                Edit
+              </a>
+              <a href="{% url 'homecare:vitalsign_delete' vital.pk %}"
+                 class="btn btn-outline-danger btn-sm">
+                Delete
+              </a>
+            </td>
+
+          </tr>
+
+          {% empty %}
+          <tr>
+            <td colspan="25" class="text-center text-muted py-4">
+              No vital sign records found.
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+
+      </table>
+
+    </div>
+  </div>
+
+</div>
+
+{% endblock %}

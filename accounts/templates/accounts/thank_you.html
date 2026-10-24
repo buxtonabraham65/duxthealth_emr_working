@@ -1,0 +1,12 @@
+<!-- thank_you.html -->
+{% extends "base.html" %}
+
+{% block content %}
+  <div class="container text-center mt-5">
+    <h2 class="text-success">Request Submitted Successfully!</h2>
+    <p>Thank you for requesting access to DuxtHealth.</p>
+    <p>We’ll review your request and get back to you shortly.</p>
+    <p>Please check your email frequently for approval updates.</p>
+    <a href="{% url 'login' %}" class="btn btn-primary mt-3">Back to Login</a>
+  </div>
+{% endblock %}

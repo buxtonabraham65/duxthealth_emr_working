@@ -1,0 +1,18 @@
+{% extends 'bases.html' %}
+{% block content %}
+<div class="container mt-4">
+    <div class="card shadow-sm p-4">
+        <h2 class="mb-3 text-danger">Confirm Delete Health Professional</h2>
+        <p>
+            Are you sure you want to delete 
+            <strong>{{ professional.user.get_full_name }}</strong>?
+            This action cannot be undone.
+        </p>
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Yes, Delete</button>
+            <a href="{% url 'homecare:professional_list' %}" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

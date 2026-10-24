@@ -1,0 +1,79 @@
+{% extends "bases.html" %}
+{% block content %}
+
+<div class="container py-4">
+
+    <div class="d-flex justify-content-between align-items-start mb-4">
+        <div>
+            <h3 class="fw-bold mb-1">
+                {{ staff.full_name|default:staff }}
+            </h3>
+            <p class="text-muted mb-0">
+                {{ staff.get_role_display }}
+                {% if staff.specialization %}
+                    • {{ staff.specialization }}
+                {% endif %}
+            </p>
+        </div>
+
+        <div>
+            {% if staff.is_active %}
+                <span class="badge bg-success">Active</span>
+            {% else %}
+                <span class="badge bg-danger">Inactive</span>
+            {% endif %}
+        </div>
+    </div>
+
+    {% if staff.is_flagged %}
+        <div class="alert alert-warning">
+            ⚠️ This staff member is flagged for administrative review.
+        </div>
+    {% endif %}
+
+    <!-- STAFF INFO -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <p class="mb-1"><strong>Phone:</strong> {{ staff.phone|default:"—" }}</p>
+            <p class="mb-1"><strong>Location:</strong> {{ staff.location|default:"—" }}</p>
+            <p class="mb-1"><strong>Address:</strong> {{ staff.address|default:"—" }}</p>
+            <p class="mb-1"><strong>Email:</strong> {{ staff.email|default:"—" }}</p>
+            <p class="mb-0"><strong>Joined:</strong> {{ staff.created_at|date:"M d, Y" }}</p>
+        </div>
+    </div>
+
+    <!-- ACTION BUTTONS -->
+    <div class="mb-4 d-flex gap-2">
+
+        <a href="{% url 'homecare:admin_toggle_staff_status' staff.id %}"
+           class="btn btn-outline-danger">
+            {% if staff.is_active %}Deactivate{% else %}Reactivate{% endif %}
+        </a>
+
+        {% if not staff.is_flagged %}
+            <a href="{% url 'homecare:admin_flag_staff' staff.id %}"
+               class="btn btn-outline-warning">
+                Flag Staff
+            </a>
+        {% else %}
+            <a href="{% url 'homecare:admin_unflag_staff' staff.id %}"
+               class="btn btn-outline-success">
+                Remove Flag
+            </a>
+        {% endif %}
+
+    </div>
+
+    <!-- FUTURE SECTIONS (PLACEHOLDERS) -->
+    <div class="alert alert-info mb-0">
+        📌 Upcoming features:
+        <ul class="mb-0">
+            <li>Assigned patients</li>
+            <li>Visit & task tracking</li>
+            <li>Performance analytics</li>
+        </ul>
+    </div>
+
+</div>
+
+{% endblock %}

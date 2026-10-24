@@ -1,0 +1,85 @@
+{% extends "bases.html" %}
+{% block content %}
+
+<div class="container py-4">
+
+    <h3 class="fw-bold">
+        🧾 {{ patient }}
+    </h3>
+
+    <p class="text-muted">
+        Phone: {{ patient.contact_phone }} <br>
+        Gender: {{ patient.get_gender_display }} <br>
+        Status:
+        {% if patient.is_active %}
+            <span class="badge bg-success">Active</span>
+        {% else %}
+            <span class="badge bg-danger">Inactive</span>
+        {% endif %}
+    </p>
+    <div class="card shadow-sm mb-4">
+    <div class="card-header fw-semibold">
+        🩺 Current Diagnosis
+    </div>
+    <div class="card-body">
+        {% if patient.diagnosis %}
+            <strong>{{ patient.diagnosis }}</strong>
+            <p class="text-muted mt-2">
+                {{ patient.diagnosis_summary }}
+            </p>
+        {% else %}
+            <p class="text-muted">No diagnosis recorded yet.</p>
+        {% endif %}
+    </div>
+</div>
+
+
+    {% if patient.is_flagged %}
+        <div class="alert alert-warning">
+            ⚠️ This patient is flagged for review.
+        </div>
+    {% endif %}
+
+    <!-- ACTION BUTTONS -->
+    <div class="mb-4">
+        <a href="{% url 'homecare:admin_toggle_patient_status' patient.id %}"
+           class="btn btn-outline-danger me-2">
+            {% if patient.is_active %}Deactivate{% else %}Reactivate{% endif %}
+        </a>
+
+        {% if not patient.is_flagged %}
+            <a href="{% url 'homecare:admin_flag_patient' patient.id %}"
+               class="btn btn-outline-warning">
+                Flag Patient
+            </a>
+        {% else %}
+            <a href="{% url 'homecare:admin_unflag_patient' patient.id %}"
+               class="btn btn-outline-success">
+                Remove Flag
+            </a>
+        {% endif %}
+    </div>
+
+    <!-- FEEDBACK HISTORY -->
+    <div class="card shadow-sm">
+        <div class="card-header fw-semibold">
+            🗣 Patient Feedback
+        </div>
+        <div class="card-body">
+            {% for fb in feedbacks %}
+                <div class="border-bottom pb-2 mb-2">
+                    ⭐ {{ fb.overall_rating }} / 5 <br>
+                    <small class="text-muted">
+                        {{ fb.comments }}
+                    </small>
+                </div>
+            {% empty %}
+                <p class="text-muted">No feedback submitted.</p>
+            {% endfor %}
+        </div>
+    </div>
+
+
+</div>
+
+{% endblock %}

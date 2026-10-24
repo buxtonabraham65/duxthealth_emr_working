@@ -1,0 +1,7 @@
+{
+  "greeting": ["hello", "hi", "good morning", "good afternoon"],
+  "appointment": ["book appointment", "schedule visit", "see doctor"],
+  "medication": ["can i take", "drug interaction", "is it safe"],
+  "symptom": ["i have", "i feel", "fever", "headache", "pain"],
+  "goodbye": ["bye", "goodbye"]
+}

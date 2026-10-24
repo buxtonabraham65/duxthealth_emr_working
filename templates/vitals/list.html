@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block title %}Vital Signs Records{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+
+  <!-- Page Header -->
+  <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+    <h2 class="fw-semibold mb-2">
+      🩺 Vital Signs Records
+    </h2>
+
+    <!-- Action Buttons -->
+    <div class="d-flex flex-wrap gap-2">
+      <a href="{% url 'home' %}" class="btn btn-outline-secondary btn-sm">
+        🏠 Home
+      </a>
+      <a href="{% url 'add_vitals' %}" class="btn btn-success btn-sm">
+        ➕ Record Vitals
+      </a>
+      <a href="{% url 'consultation_list' %}" class="btn btn-outline-info btn-sm">
+        📋 Consultations
+      </a>
+      <a href="{% url 'patient_list' %}" class="btn btn-outline-primary btn-sm">
+        👤 Patients
+      </a>
+    </div>
+  </div>
+
+  <!-- Vitals Table Card -->
+  <div class="card shadow-sm border-0">
+
+    <div class="card-body p-0">
+
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+
+          <!-- Table Head -->
+          <thead style="background-color: #f1f5f9;">
+            <tr class="text-muted small text-uppercase">
+              <th class="ps-4">Patient</th>
+              <th>Date</th>
+              <th>BP</th>
+              <th>Temp (°C)</th>
+              <th>HR</th>
+              <th>SpO₂</th>
+              <th>Glucose</th>
+              <th>Weight</th>
+              <th>Height</th>
+              <th>BMI</th>
+              <th class="pe-4">Recorded By</th>
+            </tr>
+          </thead>
+
+          <!-- Table Body -->
+          <tbody>
+            {% for vital in vitals %}
+              <tr>
+                <td class="ps-4 fw-medium">
+                  {{ vital.patient.full_name }}
+                </td>
+
+                <td class="text-muted small">
+                  {{ vital.date_recorded|date:"M d, Y · H:i" }}
+                </td>
+
+                <td>
+                  {{ vital.bp_systolic }}/{{ vital.bp_diastolic }}
+                </td>
+
+                <td>{{ vital.temp_c }}</td>
+                <td>{{ vital.heart_rate }}</td>
+                <td>{{ vital.spo2 }}%</td>
+                <td>{{ vital.glucose }}</td>
+                <td>{{ vital.weight }}</td>
+                <td>{{ vital.height }}</td>
+                <td>{{ vital.bmi }}</td>
+
+                <td class="pe-4 text-muted small">
+                  {{ vital.recorded_by }}
+                </td>
+              </tr>
+            {% empty %}
+              <tr>
+                <td colspan="11" class="text-center py-5 text-muted">
+                  No vital signs have been recorded yet.
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+
+        </table>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+{% endblock %}

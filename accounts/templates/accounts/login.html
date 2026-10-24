@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="container mt-5 login-container">
+    <h3 class="text-primary mb-4 text-center">Sign In to DuxtHealth</h3>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-success w-100">Login</button>
+    </form>
+
+    <p class="mt-4 text-center request-access-text">
+        Don’t have access?
+        <a href="{% url 'signup' %}" class="request-link">Request access here</a>.
+    </p>
+</div>
+{% endblock %}

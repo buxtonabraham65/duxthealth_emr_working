@@ -1,0 +1,5 @@
+# Placeholder for ai_modules/chatbot/requirements.txt
+fastapi
+uvicorn
+pydantic
+python-dotenv

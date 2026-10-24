@@ -1,0 +1,279 @@
+{% extends "bases.html" %}
+{% block content %}
+
+<div class="container mt-4 mb-5">
+
+  <h2 class="fw-bold mb-4 text-primary">
+    {% if form.instance.pk %}✏️ Edit{% else %}➕ Add{% endif %} Vital Sign Record
+  </h2>
+
+  <!-- ================= FORM ERRORS ================= -->
+  {% if form.errors %}
+  <div class="alert alert-danger shadow-sm">
+    <ul class="mb-0">
+      {% for field in form %}
+        {% for error in field.errors %}
+          <li><strong>{{ field.label }}:</strong> {{ error }}</li>
+        {% endfor %}
+      {% endfor %}
+      {% for error in form.non_field_errors %}
+        <li>{{ error }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+
+  <form method="post" novalidate>
+    {% csrf_token %}
+
+    <!-- ================= PATIENT ================= -->
+    <div class="card mb-4 shadow-sm border-0">
+      <div class="card-header bg-light fw-semibold">📋 Patient Information</div>
+      <div class="card-body row g-3">
+        <div class="col-md-6">
+          {{ form.patient.label_tag }}
+          {{ form.patient }}
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= CORE VITALS ================= -->
+    <div class="card mb-4 shadow-sm border-0">
+      <div class="card-header bg-light fw-semibold">🩺 Core Vital Signs</div>
+      <div class="card-body row g-3">
+
+        <div class="col-md-4">
+          {{ form.temperature.label_tag }}
+          {{ form.temperature }}
+        </div>
+
+        <div class="col-md-4">
+          {{ form.pulse.label_tag }}
+          {{ form.pulse }}
+        </div>
+
+        <div class="col-md-4">
+          {{ form.respiratory_rate.label_tag }}
+          {{ form.respiratory_rate }}
+        </div>
+
+        <div class="col-md-3">
+          {{ form.blood_pressure_systolic.label_tag }}
+          {{ form.blood_pressure_systolic }}
+        </div>
+
+        <div class="col-md-3">
+          {{ form.blood_pressure_diastolic.label_tag }}
+          {{ form.blood_pressure_diastolic }}
+        </div>
+
+        <div class="col-md-3">
+          {{ form.oxygen_saturation.label_tag }}
+          {{ form.oxygen_saturation }}
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ================= BLOOD SUGAR ================= -->
+    <div class="card mb-4 shadow-sm border-0">
+      <div class="card-header bg-light fw-semibold">🩸 Blood Sugar</div>
+      <div class="card-body row g-3">
+
+        <div class="col-md-6">
+          {{ form.blood_sugar_fbs.label_tag }}
+          {{ form.blood_sugar_fbs }}
+        </div>
+
+        <div class="col-md-6">
+          {{ form.blood_sugar_rbs.label_tag }}
+          {{ form.blood_sugar_rbs }}
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ================= PAIN ================= -->
+    <div class="card mb-4 shadow-sm border-0">
+      <div class="card-header bg-light fw-semibold">😖 Pain Assessment</div>
+      <div class="card-body">
+        {{ form.pain_score.label_tag }}
+        {{ form.pain_score }}
+      </div>
+    </div>
+
+    <!-- ================= FLUID INTAKE ================= -->
+    <div class="card mb-4 shadow-sm border-0">
+      <div class="card-header bg-light fw-semibold">💧 Fluid Intake (ml)</div>
+      <div class="card-body row g-3">
+
+        <div class="col-md-3">
+          {{ form.fluid_intake_oral.label_tag }}
+          {{ form.fluid_intake_oral }}
+        </div>
+
+        <div class="col-md-3">
+          {{ form.fluid_intake_iv.label_tag }}
+          {{ form.fluid_intake_iv }}
+        </div>
+
+        <div class="col-md-3">
+          {{ form.fluid_intake_tube.label_tag }}
+          {{ form.fluid_intake_tube }}
+        </div>
+
+        <div class="col-md-3">
+          <label class="form-label fw-bold text-success">Total Intake (Auto)</label>
+          <input type="text" id="total_intake" class="form-control bg-light" readonly>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ================= FLUID OUTPUT ================= -->
+    <div class="card mb-4 shadow-sm border-0">
+      <div class="card-header bg-light fw-semibold">🚽 Fluid Output (ml)</div>
+      <div class="card-body row g-3">
+
+        <div class="col-md-3">
+          {{ form.fluid_output_urine.label_tag }}
+          {{ form.fluid_output_urine }}
+        </div>
+
+        <div class="col-md-3">
+          {{ form.fluid_output_stool.label_tag }}
+          {{ form.fluid_output_stool }}
+        </div>
+
+        <div class="col-md-3">
+          {{ form.fluid_output_vomit.label_tag }}
+          {{ form.fluid_output_vomit }}
+        </div>
+
+        <div class="col-md-3">
+          {{ form.fluid_output_drains.label_tag }}
+          {{ form.fluid_output_drains }}
+        </div>
+
+        <div class="col-md-3">
+          <label class="form-label fw-bold text-danger">Total Output (Auto)</label>
+          <input type="text" id="total_output" class="form-control bg-light" readonly>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ================= BODY MEASUREMENTS ================= -->
+    <div class="card mb-4 shadow-sm border-0">
+      <div class="card-header bg-light fw-semibold">⚖️ Body Measurements</div>
+      <div class="card-body row g-3">
+
+        <div class="col-md-4">
+          {{ form.weight.label_tag }}
+          {{ form.weight }}
+        </div>
+
+        <div class="col-md-4">
+          {{ form.height.label_tag }}
+          {{ form.height }}
+        </div>
+
+        <div class="col-md-4">
+          <label class="form-label fw-bold text-primary">BMI (Auto)</label>
+          <input type="text" id="bmi" class="form-control bg-light" readonly>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ================= NEURO ================= -->
+    <div class="card mb-4 shadow-sm border-0">
+      <div class="card-header bg-light fw-semibold">🧠 Neurological Assessment</div>
+      <div class="card-body row g-3">
+
+        <div class="col-md-3">
+          {{ form.neuro_gcs_eye.label_tag }}
+          {{ form.neuro_gcs_eye }}
+        </div>
+
+        <div class="col-md-3">
+          {{ form.neuro_gcs_verbal.label_tag }}
+          {{ form.neuro_gcs_verbal }}
+        </div>
+
+        <div class="col-md-3">
+          {{ form.neuro_gcs_motor.label_tag }}
+          {{ form.neuro_gcs_motor }}
+        </div>
+
+        <div class="col-md-3">
+          <label class="form-label fw-bold text-info">Total GCS (Auto)</label>
+          <input type="text" id="gcs_total" class="form-control bg-light" readonly>
+        </div>
+
+        <div class="col-md-3">
+          {{ form.neuro_avpu.label_tag }}
+          {{ form.neuro_avpu }}
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ================= ACTIONS ================= -->
+    <div class="d-flex gap-2">
+      <button type="submit" class="btn btn-success px-4">💾 Save</button>
+      <a href="{% url 'homecare:vitalsign_list' %}" class="btn btn-secondary px-4">Cancel</a>
+    </div>
+
+  </form>
+
+</div>
+
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+document.addEventListener("input", function() {
+
+  function getValue(id) {
+    const el = document.getElementById(id);
+    return el ? parseFloat(el.value) || 0 : 0;
+  }
+
+  // TOTAL INTAKE
+  const intake = getValue("id_fluid_intake_oral") +
+                 getValue("id_fluid_intake_iv") +
+                 getValue("id_fluid_intake_tube");
+
+  const totalIntakeField = document.getElementById("total_intake");
+  if (totalIntakeField) totalIntakeField.value = intake;
+
+  // TOTAL OUTPUT
+  const output = getValue("id_fluid_output_urine") +
+                 getValue("id_fluid_output_stool") +
+                 getValue("id_fluid_output_vomit") +
+                 getValue("id_fluid_output_drains");
+
+  const totalOutputField = document.getElementById("total_output");
+  if (totalOutputField) totalOutputField.value = output;
+
+  // BMI
+  const weight = getValue("id_weight");
+  const height = getValue("id_height") / 100;
+  const bmiField = document.getElementById("bmi");
+
+  if (weight && height) {
+    const bmi = (weight / (height * height)).toFixed(2);
+    if (bmiField) bmiField.value = bmi;
+  }
+
+  // GCS
+  const gcs = getValue("id_neuro_gcs_eye") +
+              getValue("id_neuro_gcs_verbal") +
+              getValue("id_neuro_gcs_motor");
+
+  const gcsField = document.getElementById("gcs_total");
+  if (gcsField) gcsField.value = gcs;
+});
+</script>
+{% endblock %}

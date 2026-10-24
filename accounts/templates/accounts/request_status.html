@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-5">
+    <h2>Access Request Status</h2>
+    <p><strong>Name:</strong> {{ request_obj.full_name }}</p>
+    <p><strong>Email:</strong> {{ request_obj.email }}</p>
+    <p><strong>Profession:</strong> {{ request_obj.profession }}</p>
+    <p><strong>Message:</strong> {{ request_obj.message }}</p>
+    <p><strong>Status:</strong> 
+        {% if request_obj.is_approved %}
+            ✅ Approved
+        {% else %}
+            ⏳ Pending Review
+        {% endif %}
+    </p>
+</div>
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends "bases.html" %}
+{% block content %}
+<div class="container py-4">
+    <h1>Record Medication Outcome</h1>
+    <p>{{ medication.medication_name }} — {{ medication.patient }}</p>
+
+    <div class="alert alert-warning">
+        Record the actual outcome. Do not mark a dose as administered
+        unless it was given. For a withheld, refused, missed or otherwise
+        omitted dose, document the reason.
+    </div>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        {% for field in form %}
+            <div class="mb-3">
+                {{ field.label_tag }}
+                {{ field }}
+                {{ field.errors }}
+            </div>
+        {% endfor %}
+        <button class="btn btn-success" type="submit">Save Outcome</button>
+        <a class="btn btn-outline-secondary"
+           href="{% url 'homecare:patient_medications' medication.patient_id %}">
+            Cancel
+        </a>
+    </form>
+</div>
+{% endblock %}

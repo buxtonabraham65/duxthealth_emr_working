@@ -1,0 +1,10 @@
+{% extends "bases.html" %}
+{% block content %}
+  <h1>Confirm Delete Treatment Sheet</h1>
+  <p>Are you sure you want to delete this treatment sheet for <strong>{{ treatmentsheet.patient }}</strong> created at {{ treatmentsheet.created_at|date:"Y-m-d H:i" }}?</p>
+  <form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Yes, Delete</button>
+    <a href="{% url 'homecare:treatmentsheet_list' %}" class="btn btn-secondary">Cancel</a>
+  </form>
+{% endblock %}

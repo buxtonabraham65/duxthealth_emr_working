@@ -1,0 +1,24 @@
+{% extends "bases.html" %}
+{% block content %}
+
+<h2>{{ patient.first_name }} {{ patient.last_name }} – Diagnosis Records</h2>
+
+<a href="{% url 'homecare:add_diagnosis' patient.id %}" class="btn btn-success mb-3">➕ Add Diagnosis</a>
+
+{% if diagnoses %}
+  <div class="list-group">
+    {% for diag in diagnoses %}
+      <div class="list-group-item mb-2">
+        <strong>{{ diag.created_at|date:"M d, Y H:i" }}</strong> 
+        by {{ diag.created_by.get_full_name if diag.created_by else "Unknown" }}<br>
+        <p><strong>Diagnosis:</strong> {{ diag.diagnosis }}</p>
+        <p><strong>Summary:</strong> {{ diag.summary }}</p>
+        <a href="{% url 'homecare:edit_diagnosis' diag.id %}" class="btn btn-sm btn-outline-primary">✏️ Edit</a>
+      </div>
+    {% endfor %}
+  </div>
+{% else %}
+  <p>No diagnosis records yet.</p>
+{% endif %}
+
+{% endblock %}

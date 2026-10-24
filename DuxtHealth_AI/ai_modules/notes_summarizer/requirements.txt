@@ -1,0 +1,4 @@
+# Placeholder for ai_modules/notes_summarizer/requirements.txt
+transformers
+torch
+openai

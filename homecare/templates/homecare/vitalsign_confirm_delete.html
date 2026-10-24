@@ -1,0 +1,10 @@
+{% extends "bases.html" %}
+{% block content %}
+  <h1>Confirm Delete Vital Sign Record</h1>
+  <p>Are you sure you want to delete this vital sign record for <strong>{{ vitalsign.patient }}</strong> recorded at {{ vitalsign.recorded_at|date:"Y-m-d H:i" }}?</p>
+  <form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Yes, Delete</button>
+    <a href="{% url 'homecare:vitalsign_list' %}" class="btn btn-secondary">Cancel</a>
+  </form>
+{% endblock %}

@@ -1,0 +1,9 @@
+{% extends 'bases.html' %}
+{% block content %}
+<h2>Confirm Delete Visit Schedule</h2>
+<p>Are you sure you want to delete the visit scheduled on {{ visit.scheduled_date|date:"Y-m-d H:i" }} for {{ visit.care_plan.patient.first_name }} {{ visit.care_plan.patient.last_name }}?</p>
+<form method="post">{% csrf_token %}
+  <button type="submit">Yes, Delete</button>
+  <a href="{% url 'homecare:visitschedule_list' %}">Cancel</a>
+</form>
+{% endblock %}

@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+
+{% block title %}Consultation Records | DuxtHealth{% endblock %}
+
+{% block content %}
+
+<style>
+  /* =======================
+     CONSULTATION RECORDS – DUXTHEALTH
+  ======================= */
+
+  .records-card {
+    background: #ffffff;
+    border-radius: 14px;
+    padding: 24px;
+    box-shadow: 0 14px 32px rgba(0,0,0,.08);
+  }
+
+  .records-card h2 {
+    font-weight: 700;
+    color: var(--duxt-primary);
+    margin-bottom: 24px;
+  }
+
+  /* Table */
+  .records-table {
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .records-table thead {
+    background: linear-gradient(135deg, var(--duxt-primary), #0b5c59);
+    color: #ffffff;
+  }
+
+  .records-table th {
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    border: none;
+  }
+
+  .records-table td {
+    vertical-align: middle;
+    font-size: 0.95rem;
+    border-color: #e5e7eb;
+  }
+
+  .records-table tbody tr:hover {
+    background-color: rgba(14,111,108,.06);
+  }
+
+  /* Empty state */
+  .empty-state {
+    padding: 40px 0;
+    font-style: italic;
+    color: #6b7280;
+  }
+</style>
+
+<div class="container my-5">
+  <div class="records-card">
+
+    <h2 class="text-center">📋 Consultation Records</h2>
+
+    <div class="table-responsive records-table">
+      <table class="table table-hover mb-0">
+        <thead>
+          <tr>
+            <th>Patient</th>
+            <th>Diagnosis</th>
+            <th>Prescription</th>
+            <th>Created</th>
+            <th>Consultant</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {% for consultation in consultations %}
+            <tr>
+              <td>{{ consultation.patient }}</td>
+              <td>{{ consultation.diagnosis }}</td>
+              <td>{{ consultation.prescription }}</td>
+              <td>{{ consultation.created_at|date:"Y-m-d H:i" }}</td>
+              <td>{{ consultation.created_by }}</td>
+            </tr>
+          {% empty %}
+            <tr>
+              <td colspan="5" class="text-center empty-state">
+                No consultation records available.
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
+
+{% endblock %}

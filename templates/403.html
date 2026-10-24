@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-7 text-center">
+
+            <div class="mb-4">
+                <span style="font-size: 4rem;">🔒</span>
+            </div>
+
+            <h2 class="fw-bold mb-3">Access Restricted</h2>
+
+            <p class="text-muted fs-5">
+                This area is restricted for safety and privacy reasons.
+            </p>
+
+            <p class="text-muted">
+                Just like in a hospital where certain rooms are reserved
+                for doctors, nurses and admin only, this page is not accessible
+                to everyone.
+            </p>
+
+            <p class="text-muted">
+                If you believe this is a mistake, please contact
+                <strong>DuxtHealth support</strong> or return to your dashboard.
+            </p>
+
+            <div class="mt-4">
+                <a href="/" class="btn btn-primary px-4">
+                    Go to Home
+                </a>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

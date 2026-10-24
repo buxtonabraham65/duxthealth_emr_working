@@ -1,0 +1,122 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<section class="hero-section text-center"
+    style="background:
+    linear-gradient(rgba(0,0,0,.45),rgba(0,0,0,.45)),
+    url('{% static 'duxthealth_frontend/images/hero-homecare.jpeg' %}')
+    center/cover no-repeat;">
+    <div class="container text-white">
+        <h1 class="fw-bold">Healthcare, Anywhere. Anytime.</h1>
+        <p class="lead mt-3">Making healthcare accessible to everyone, everywhere.</p>
+        <p class="lead mt-3">Health to the future.</p>
+        <div class="mt-4">
+           
+        </div>
+    </div>
+</section>
+    
+    <hr class="my-4">
+
+    <div class="container mt-5">
+        <div class="row">
+
+            <!-- Link to HomeCare app -->
+            
+
+            <!-- Register Patient -->
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Register a Patient</h5>
+                        <p class="card-text">Add new patients and begin their healthcare journey.</p>
+                        <a href="{% url 'register_patient' %}" class="btn btn-primary">Register</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- View Patients -->
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Patient List</h5>
+                        <p class="card-text">View and manage all registered patients.</p>
+                        <a href="{% url 'patient_list' %}" class="btn btn-success">View List</a>
+                    </div>
+                </div>
+            </div>
+
+            {% if request.user.is_staff %}
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-sm h-100 border-info">
+                    <div class="card-body">
+                        <h5 class="card-title">Outreach Reports</h5>
+                        <p class="card-text">View outreach data for admin and research purposes.</p>
+                        <a href="{% url 'outreach_detailed_report' %}" class="btn btn-info btn-sm mb-2 w-100">Detailed Report</a>
+                        <a href="{% url 'outreach_anonymous_report' %}" class="btn btn-outline-info btn-sm w-100">Anonymous Report</a>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Record Vitals -->
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Record Vitals</h5>
+                        <p class="card-text">Enter new vital signs for a patient.</p>
+                        <a href="{% url 'add_vitals' %}" class="btn btn-warning">Add Vitals</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Vitals History -->
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Vitals History</h5>
+                        <p class="card-text">Browse previously recorded vitals.</p>
+                        <a href="{% url 'vitals_list' %}" class="btn btn-outline-warning">View Vitals</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Nurses/Doctors Note -->
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Nurses/Doctors Note</h5>
+                        <p class="card-text">Record detailed patient treatment notes.</p>
+                        <a href="{% url 'note' %}" class="btn btn-success">Add Note</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Add Consultation -->
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Add Consultation</h5>
+                        <p class="card-text">Document a new consultation for a patient.</p>
+                        <a href="{% url 'add_consultation' %}" class="btn btn-danger">New Consultation</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Consultation History -->
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Consultation History</h5>
+                        <p class="card-text">Review consultation records for patients.</p>
+                        <a href="{% url 'consultation_list' %}" class="btn btn-outline-danger">View Consultations</a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,373 @@
+{% extends "bases.html" %}
+
+{% block content %}
+<div class="container py-4">
+
+    <!-- Navigation -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+        <a href="{% url 'homecare:medicationsheet_list' %}"
+           class="btn btn-outline-secondary">
+            &larr; Back to Patients
+        </a>
+
+        <a href="{% url 'homecare:patient_completed_medications' patient.id %}"
+           class="btn btn-outline-dark">
+            View Completed Medication History
+        </a>
+    </div>
+
+    <!-- Patient information -->
+    <div class="mb-4">
+        <h1 class="h3 mb-1">
+            {{ patient.first_name }} {{ patient.last_name }}
+        </h1>
+        <p class="text-muted mb-0">
+            Patient code: {{ patient.patient_code|default:"—" }}
+        </p>
+    </div>
+
+    {% for medication in medications %}
+    <section class="card mb-4 shadow-sm">
+
+        <!-- Medication heading -->
+        <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <div>
+                <h2 class="h5 mb-1">{{ medication.medication_name }}</h2>
+
+                {% if medication.status == "active" %}
+                    <span class="badge bg-success">Active</span>
+                {% elif medication.status == "completed" %}
+                    <span class="badge bg-secondary">Completed</span>
+                {% elif medication.status == "discontinued" %}
+                    <span class="badge bg-danger">Discontinued</span>
+                {% elif medication.status == "on_hold" %}
+                    <span class="badge bg-warning text-dark">On Hold</span>
+                {% else %}
+                    <span class="badge bg-secondary">
+                        {{ medication.get_status_display }}
+                    </span>
+                {% endif %}
+            </div>
+
+            <div class="d-flex flex-wrap gap-2">
+                <a href="{% url 'homecare:medicationsheet_update' medication.pk %}"
+                   class="btn btn-sm btn-outline-primary">
+                    Edit Prescription
+                </a>
+            </div>
+        </div>
+
+        <div class="card-body">
+
+            <!-- Prescription details -->
+            <h3 class="h6 mb-3">Prescription Details</h3>
+
+            <div class="row g-3 mb-3">
+                <div class="col-md-3">
+                    <strong>Prescribed dose</strong>
+                    <div>{{ medication.dosage }}</div>
+                </div>
+
+                <div class="col-md-3">
+                    <strong>Frequency</strong>
+                    <div>{{ medication.frequency }}</div>
+                </div>
+
+                <div class="col-md-3">
+                    <strong>Route</strong>
+                    <div>{{ medication.route }}</div>
+                </div>
+
+                <div class="col-md-3">
+                    <strong>Prescription dates</strong>
+                    <div>
+                        {{ medication.start_date|date:"d M Y" }}
+                        &ndash;
+                        {% if medication.end_date %}
+                            {{ medication.end_date|date:"d M Y" }}
+                        {% else %}
+                            Ongoing
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            {% if medication.notes %}
+                <div class="alert alert-light border">
+                    <strong>Prescription notes:</strong>
+                    <p class="mb-0">{{ medication.notes }}</p>
+                </div>
+            {% endif %}
+
+            {% if medication.status == "completed" %}
+                <div class="alert alert-secondary">
+                    <strong>Medication completed</strong>
+
+                    {% if medication.completed_at %}
+                        <div>
+                            Completion date:
+                            {{ medication.completed_at|date:"d M Y, H:i" }}
+                        </div>
+                    {% endif %}
+
+                    {% if medication.completion_notes %}
+                        <div class="mt-2">
+                            <strong>Completion notes:</strong>
+                            {{ medication.completion_notes }}
+                        </div>
+                    {% endif %}
+                </div>
+            {% endif %}
+
+            <!-- Active medication schedules -->
+            <hr>
+
+            <h3 class="h6">Scheduled Administration Times</h3>
+
+            {% for schedule in medication.schedules.all %}
+                {% if schedule.is_active %}
+                    <div class="border rounded p-2 mb-2">
+                        <strong>
+                            {{ schedule.scheduled_time|time:"H:i" }}
+                        </strong>
+
+                        {% if schedule.instructions %}
+                            <span class="text-muted">
+                                &mdash; {{ schedule.instructions }}
+                            </span>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            {% empty %}
+                <p class="text-muted">
+                    No administration times configured.
+                </p>
+            {% endfor %}
+
+            {% if medication.status == "active" %}
+                <a href="{% url 'homecare:medication_schedule_create' medication.pk %}"
+                   class="btn btn-sm btn-outline-secondary mt-2">
+                    Add Scheduled Time
+                </a>
+            {% endif %}
+
+            <!-- Record medication administration or reactions -->
+            <hr>
+
+            <h3 class="h6">Medication Administration</h3>
+
+            {% if medication.status == "active" %}
+                <div class="d-flex flex-wrap gap-2 mb-3">
+                    <a href="{% url 'homecare:medication_administration_create' medication.pk %}"
+                       class="btn btn-success">
+                        Record Dose Outcome
+                    </a>
+
+                    <a href="{% url 'homecare:medication_reaction_create' medication.pk %}"
+                       class="btn btn-outline-danger">
+                        Report Reaction
+                    </a>
+                </div>
+            {% else %}
+                <p class="text-muted">
+                    This medication is not active. Existing administration
+                    and reaction records are retained for clinical history.
+                </p>
+            {% endif %}
+
+            <!-- Administration history -->
+            <h3 class="h6 mt-3">Administration History</h3>
+
+            <div class="table-responsive">
+                <table class="table table-sm table-bordered table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Outcome</th>
+                            <th>Scheduled For</th>
+                            <th>Actual Time Given</th>
+                            <th>Dose Given</th>
+                            <th>Route Used</th>
+                            <th>Recorded By</th>
+                            <th>Reason / Notes</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for record in medication.administration_records.all %}
+                            <tr>
+                                <td>{{ record.get_status_display }}</td>
+
+                                <td>
+                                    {{ record.scheduled_for|default:"—" }}
+                                </td>
+
+                                <td>
+                                    {{ record.administered_at|default:"—" }}
+                                </td>
+
+                                <td>{{ record.dose_given|default:"—" }}</td>
+
+                                <td>{{ record.route_used|default:"—" }}</td>
+
+                                <td>
+                                    {{ record.administered_by|default:"—" }}
+                                </td>
+
+                                <td>
+                                    {% if record.reason_not_given %}
+                                        {{ record.reason_not_given }}
+                                    {% endif %}
+
+                                    {% if record.notes %}
+                                        {% if record.reason_not_given %}
+                                            <br>
+                                        {% endif %}
+                                        {{ record.notes }}
+                                    {% endif %}
+
+                                    {% if not record.reason_not_given and not record.notes %}
+                                        &mdash;
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="7" class="text-center text-muted py-3">
+                                    No administration records yet.
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Reported reactions -->
+            <hr>
+
+            <h3 class="h6">Reported Reactions and Follow-up</h3>
+
+            {% for reaction in medication.reaction_records.all %}
+                <div class="border rounded p-3 mb-3">
+                    <p>
+                        <strong>Observed:</strong>
+                        {{ reaction.observed_at|default:"—" }}
+                    </p>
+
+                    <p>
+                        <strong>Reaction:</strong>
+                        {{ reaction.description }}
+                    </p>
+
+                    <p>
+                        <strong>Severity:</strong>
+                        {{ reaction.get_severity_display }}
+                    </p>
+
+                    <p>
+                        <strong>Action taken:</strong>
+                        {{ reaction.action_taken|default:"—" }}
+                    </p>
+
+                    <p>
+                        <strong>Clinician notified:</strong>
+                        {% if reaction.clinician_notified %}
+                            Yes
+                        {% else %}
+                            No
+                        {% endif %}
+                    </p>
+
+                    <p>
+                        <strong>Follow-up:</strong>
+                        {{ reaction.follow_up_notes|default:"—" }}
+                    </p>
+
+                    <p class="text-muted mb-0">
+                        Recorded by {{ reaction.recorded_by|default:"—" }}
+                        at {{ reaction.recorded_at|date:"d M Y, H:i" }}
+                    </p>
+                </div>
+            {% empty %}
+                <p class="text-muted">No reactions recorded.</p>
+            {% endfor %}
+
+            <!-- Complete medication -->
+            {% if medication.status == "active" %}
+                <hr>
+
+                <div class="border rounded p-3 bg-light">
+                    <h3 class="h6">Complete This Medication</h3>
+
+                    <p class="text-muted small">
+                        Use this when the medication course has genuinely
+                        finished and completion has been confirmed. This
+                        moves it out of the active list without deleting its
+                        prescription, administration records or reaction history.
+                    </p>
+
+                    <form method="post"
+                          action="{% url 'homecare:medication_mark_completed' medication.pk %}"
+                          onsubmit="return confirm('Are you sure you want to mark this medication as completed? Please confirm that the medication course has finished.');">
+
+                        {% csrf_token %}
+
+                        <div class="mb-3">
+                            <label for="completion_notes_{{ medication.pk }}"
+                                   class="form-label">
+                                Completion notes <span class="text-danger">*</span>
+                            </label>
+
+                            <textarea
+                                id="completion_notes_{{ medication.pk }}"
+                                name="completion_notes"
+                                class="form-control"
+                                rows="3"
+                                maxlength="2000"
+                                placeholder="Record the reason for completion and any relevant clinical notes."
+                                required></textarea>
+
+                            <div class="form-text">
+                                Please do not mark a medication completed
+                                simply because a dose was administered.
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-dark">
+                            Mark Medication as Completed
+                        </button>
+                    </form>
+                </div>
+            {% endif %}
+
+        </div>
+    </section>
+
+    {% empty %}
+        <div class="alert alert-info">
+            <h2 class="h5">No Active Medications</h2>
+            <p class="mb-2">
+                There are no medications to display in this list for this patient.
+            </p>
+
+            <p class="mb-0">
+                Completed medications should remain available through the
+                medication history page.
+            </p>
+        </div>
+    {% endfor %}
+
+    <!-- Bottom navigation -->
+    <div class="d-flex flex-wrap gap-2 mt-3">
+        <a href="{% url 'homecare:medicationsheet_list' %}"
+           class="btn btn-outline-secondary">
+            Back to Patients
+        </a>
+
+        <a href="{% url 'homecare:patient_completed_medications' patient.id %}"
+           class="btn btn-outline-dark">
+            View Completed Medication History
+        </a>
+    </div>
+
+</div>
+{% endblock %}

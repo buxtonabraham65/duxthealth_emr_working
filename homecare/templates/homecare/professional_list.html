@@ -1,0 +1,60 @@
+{% extends 'bases.html' %}
+
+{% block content %}
+
+<div class="patient-card">
+
+  <!-- HEADER -->
+  <div class="patient-card-header">
+    👩‍⚕️ Health <span>Professionals</span>
+  </div>
+
+  <!-- BODY -->
+  <div class="patient-card-body">
+
+    <!-- Actions -->
+    <div class="d-flex justify-content-end mb-4">
+      <a href="{% url 'homecare:professional_create' %}" class="btn-duxt">
+        ➕ Add New Professional
+      </a>
+    </div>
+
+    {% if professionals %}
+      <div class="list-group list-group-flush">
+
+        {% for prof in professionals %}
+          <div class="list-group-item d-flex justify-content-between align-items-center py-3">
+            <div>
+              <h6 class="mb-1 fw-semibold">
+                {{ prof.user.get_full_name }}
+              </h6>
+              <small class="text-muted">
+                {{ prof.get_role_display }}
+              </small>
+            </div>
+
+            <div class="d-flex gap-2">
+              <a href="{% url 'homecare:professional_update' prof.pk %}"
+                 class="btn-outline-duxt btn-sm">
+                ✏️ Edit
+              </a>
+
+              <a href="{% url 'homecare:professional_delete' prof.pk %}"
+                 class="btn btn-sm btn-outline-danger rounded-3">
+                🗑 Delete
+              </a>
+            </div>
+          </div>
+        {% endfor %}
+
+      </div>
+    {% else %}
+      <div class="alert alert-info text-center mt-4">
+        No health professionals found.
+      </div>
+    {% endif %}
+
+  </div>
+</div>
+
+{% endblock %}

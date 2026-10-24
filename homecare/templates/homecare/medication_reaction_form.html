@@ -1,0 +1,30 @@
+{% extends "bases.html" %}
+{% block content %}
+<div class="container py-4">
+    <h1>Record Medication Reaction</h1>
+    <p>{{ medication.medication_name }} — {{ medication.patient }}</p>
+
+    <div class="alert alert-warning">
+        If a patient has a severe or rapidly worsening reaction,
+        seek urgent clinical assessment immediately; do not rely on
+        this form as an alert or emergency-response system.
+    </div>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        {% for field in form %}
+            <div class="mb-3">
+                {{ field.label_tag }}
+                {{ field }}
+                {{ field.errors }}
+            </div>
+        {% endfor %}
+        <button class="btn btn-danger" type="submit">Save Reaction</button>
+        <a class="btn btn-outline-secondary"
+           href="{% url 'homecare:patient_medications' medication.patient_id %}">
+            Cancel
+        </a>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends "bases.html" %}
+{% block content %}
+  <h1>Treatment Sheets</h1>
+  <a href="{% url 'homecare:treatmentsheet_create' %}" class="btn btn-primary mb-3">Add Treatment Sheet</a>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Patient</th>
+        <th>Created By</th>
+        <th>Created At</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for sheet in sheets %}
+      <tr>
+        <td>{{ sheet.patient }}</td>
+        <td>{{ sheet.created_by }}</td>
+        <td>{{ sheet.created_at|date:"Y-m-d H:i" }}</td>
+        <td>
+          <a href="{% url 'homecare:treatmentsheet_update' sheet.pk %}" class="btn btn-sm btn-warning">Edit</a>
+          <a href="{% url 'homecare:treatmentsheet_delete' sheet.pk %}" class="btn btn-sm btn-danger">Delete</a>
+        </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="6">No treatment sheets found.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}

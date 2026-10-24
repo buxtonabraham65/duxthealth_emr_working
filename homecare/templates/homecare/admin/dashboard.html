@@ -1,0 +1,164 @@
+{% extends "bases.html" %}
+{% block content %}
+
+<div class="container py-4">
+
+    <!-- ========================= -->
+    <!-- PAGE HEADER -->
+    <!-- ========================= -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold mb-0">🏥 DuxtHealth Admin Dashboard</h2>
+
+        <div class="d-flex gap-2">
+            <a href="{% url 'homecare:admin_patients' %}"
+               class="btn btn-outline-primary btn-sm">
+                👥 Patients
+            </a>
+
+            <a href="{% url 'homecare:admin_staff_list' %}"
+               class="btn btn-outline-success btn-sm">
+                🧑‍⚕️ Staff
+            </a>
+
+            <a href="{% url 'homecare:admin_feedbacks' %}"
+               class="btn btn-outline-danger btn-sm">
+                💬 Feedback
+            </a>
+        </div>
+    </div>
+
+    <!-- ========================= -->
+    <!-- OVERVIEW METRICS -->
+    <!-- ========================= -->
+    <div class="row g-4 mb-4">
+
+        <div class="col-md-3">
+            <div class="card shadow-sm p-3 h-100">
+                <h6 class="text-muted">Total Patients</h6>
+                <h3 class="fw-bold">{{ total_patients }}</h3>
+                <small class="text-muted">Registered patients</small>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm p-3 h-100">
+                <h6 class="text-muted">Healthcare Staff</h6>
+                <h3 class="fw-bold">{{ total_staff }}</h3>
+                <small class="text-muted">Doctors, nurses & caregivers</small>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm p-3 h-100">
+                <h6 class="text-muted">Total Feedback</h6>
+                <h3 class="fw-bold">{{ total_feedback }}</h3>
+                <small class="text-muted">Patient responses</small>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm p-3 border-warning h-100">
+                <h6 class="text-muted">Average Rating</h6>
+                <h3 class="fw-bold text-warning">
+                    ⭐ {{ avg_rating|default:"N/A" }}/5
+                </h3>
+                <small class="text-muted">Service quality</small>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ========================= -->
+    <!-- STAFF QUICK OVERVIEW -->
+    <!-- ========================= -->
+    <div class="card shadow-sm mb-4">
+
+        <div class="card-header fw-semibold d-flex justify-content-between align-items-center">
+            <span>🧑‍⚕️ Recent Healthcare Staff</span>
+            <a href="{% url 'homecare:admin_staff_list' %}"
+               class="btn btn-sm btn-success">
+                View All Staff
+            </a>
+        </div>
+
+        <div class="card-body p-0">
+            {% if recent_staff %}
+                <ul class="list-group list-group-flush">
+                    {% for staff in recent_staff %}
+                        <li class="list-group-item">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong>{{ staff.full_name|default:staff }}</strong><br>
+                                    <small class="text-muted">
+                                        {{ staff.get_role_display }} • {{ staff.specialization|default:"General" }}
+                                    </small>
+                                </div>
+
+                                <div>
+                                    <a href="{% url 'homecare:admin_staff_detail' staff.id %}"
+                                       class="btn btn-sm btn-outline-success">
+                                        View Profile
+                                    </a>
+                                </div>
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <div class="p-4 text-muted text-center">
+                    No staff records available.
+                </div>
+            {% endif %}
+        </div>
+
+    </div>
+
+    <!-- ========================= -->
+    <!-- CRITICAL FEEDBACK ALERTS -->
+    <!-- ========================= -->
+    <div class="card shadow-sm">
+
+        <div class="card-header fw-semibold text-danger d-flex justify-content-between align-items-center">
+            <span>🚨 Recent Critical Feedback</span>
+            <a href="{% url 'homecare:admin_feedbacks' %}"
+               class="btn btn-sm btn-danger">
+                View All
+            </a>
+        </div>
+
+        <div class="card-body p-0">
+            {% if low_feedbacks %}
+                <ul class="list-group list-group-flush">
+                    {% for fb in low_feedbacks %}
+                        <li class="list-group-item">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <strong>{{ fb.patient }}</strong><br>
+                                    ⭐ Rating: {{ fb.overall_rating }}<br>
+                                    <small class="text-muted">
+                                        {{ fb.comments|truncatechars:120 }}
+                                    </small>
+                                </div>
+
+                                <div class="text-end">
+                                    <a href="{% url 'homecare:admin_patient_detail' fb.patient.id %}"
+                                       class="btn btn-sm btn-outline-primary">
+                                        View Patient
+                                    </a>
+                                </div>
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <div class="p-4 text-muted text-center">
+                    ✅ No critical feedback at the moment.
+                </div>
+            {% endif %}
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

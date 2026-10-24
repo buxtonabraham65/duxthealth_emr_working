@@ -1,0 +1,98 @@
+{% extends "bases.html" %}
+{% block content %}
+
+<div class="container py-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3 class="fw-bold mb-0">👩‍⚕️ Healthcare Professionals</h3>
+        <span class="text-muted">
+            Total: {{ staff|length }}
+        </span>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body p-0">
+
+            <table class="table table-hover mb-0 align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Name</th>
+                        <th>Role</th>
+                        <th>Location</th>
+                        <th>Address</th>
+                        <th>Specialization</th>
+                        <th>Status</th>
+                        <th>Flag</th>
+                        <th></th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for s in staff %}
+                    <tr>
+                        <td>
+                            <strong>
+                                {{ s.user.get_full_name|default:s }}
+                            </strong><br>
+
+                            <small class="text-muted">
+                                {{ s.user.email|default:"—" }}
+                            </small>
+                        </td>
+
+                        <td>{{ s.get_role_display }}</td>
+
+                        <!-- ✅ FIXED -->
+                        <td>
+                            {{ s.location|default:"—" }}
+                        </td>
+
+                        <!-- ✅ FIXED -->
+                        <td>
+                            {{ s.address|default:"—" }}
+                        </td>
+
+                        <td>
+                            {{ s.specialization|default:"General" }}
+                        </td>
+
+                        <td>
+                            {% if s.is_active %}
+                                <span class="badge bg-success">Active</span>
+                            {% else %}
+                                <span class="badge bg-danger">Inactive</span>
+                            {% endif %}
+                        </td>
+
+                        <td class="text-center">
+                            {% if s.is_flagged %}
+                                ⚠️
+                            {% else %}
+                                —
+                            {% endif %}
+                        </td>
+
+                        <td class="text-end">
+                            <a href="{% url 'homecare:admin_staff_detail' s.id %}"
+                               class="btn btn-sm btn-outline-primary">
+                                View
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="8" class="text-center text-muted py-4">
+                            No healthcare professionals found.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+
+            </table>
+
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

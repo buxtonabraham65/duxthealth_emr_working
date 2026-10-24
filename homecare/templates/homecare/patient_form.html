@@ -1,0 +1,212 @@
+{% extends 'bases.html' %}
+
+{% block content %}
+
+<style>
+  /* =======================
+     PATIENT FORM – DUXTHEALTH
+  ======================= */
+
+  .form-card {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 28px;
+    background: #ffffff;
+    border-radius: 14px;
+    box-shadow: 0 12px 30px rgba(0,0,0,.08);
+  }
+
+  .form-card h2 {
+    text-align: center;
+    margin-bottom: 24px;
+    font-weight: 700;
+    color: var(--duxt-primary);
+  }
+
+  .form-card label {
+    font-weight: 600;
+    margin-bottom: 6px;
+    display: block;
+    color: var(--duxt-dark);
+    font-size: 0.95rem;
+  }
+
+  .form-card input,
+  .form-card textarea,
+  .form-card select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    transition: border-color .2s ease, box-shadow .2s ease;
+  }
+
+  .form-card textarea {
+    resize: vertical;
+  }
+
+  .form-card input:focus,
+  .form-card textarea:focus,
+  .form-card select:focus {
+    outline: none;
+    border-color: var(--duxt-primary);
+    box-shadow: 0 0 0 3px rgba(14,111,108,.15);
+  }
+
+  /* Buttons */
+  .btn-duxt {
+    display: inline-block;
+    padding: 12px 20px;
+    background: linear-gradient(135deg, var(--duxt-primary), #0b5c59);
+    color: #ffffff;
+    font-weight: 600;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: transform .15s ease, box-shadow .15s ease;
+    text-decoration: none;
+  }
+
+  .btn-duxt:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 20px rgba(0,0,0,.12);
+  }
+
+  .btn-outline-duxt {
+    display: inline-block;
+    padding: 12px 20px;
+    border: 2px solid var(--duxt-primary);
+    color: var(--duxt-primary);
+    background: transparent;
+    border-radius: 10px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all .2s ease;
+  }
+
+  .btn-outline-duxt:hover {
+    background: var(--duxt-primary);
+    color: #ffffff;
+  }
+
+  .patient-card-header {
+    text-align: center;
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-bottom: 24px;
+    color: var(--duxt-primary);
+  }
+
+  .patient-card-body {
+    padding: 10px 0;
+  }
+
+  .patient-actions {
+    margin-top: 25px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+</style>
+
+<div class="form-card">
+
+  <!-- HEADER -->
+  <div class="patient-card-header">
+    {% if form.instance.pk %}
+      ✏️ Edit <span>Patient</span>
+    {% else %}
+      ➕ Add <span>Patient</span>
+    {% endif %}
+  </div>
+
+  <!-- BODY -->
+  <div class="patient-card-body">
+    <form method="post" novalidate>
+      {% csrf_token %}
+
+      <div class="row">
+
+        <!-- First Name -->
+        <div class="col-md-6 mb-3">
+          <label for="{{ form.first_name.id_for_label }}">
+            {{ form.first_name.label }}
+          </label>
+          {{ form.first_name }}
+        </div>
+
+        <!-- Last Name -->
+        <div class="col-md-6 mb-3">
+          <label for="{{ form.last_name.id_for_label }}">
+            {{ form.last_name.label }}
+          </label>
+          {{ form.last_name }}
+        </div>
+
+        <!-- Date of Birth -->
+        <div class="col-md-6 mb-3">
+          <label for="{{ form.date_of_birth.id_for_label }}">
+            {{ form.date_of_birth.label }}
+          </label>
+          {{ form.date_of_birth }}
+        </div>
+
+        <!-- Gender -->
+        <div class="col-md-6 mb-3">
+          <label for="{{ form.gender.id_for_label }}">
+            {{ form.gender.label }}
+          </label>
+          {{ form.gender }}
+        </div>
+
+        <!-- Address -->
+        <div class="col-md-12 mb-3">
+          <label for="{{ form.address.id_for_label }}">
+            {{ form.address.label }}
+          </label>
+          {{ form.address }}
+        </div>
+
+        <!-- Phone -->
+        <div class="col-md-6 mb-3">
+          <label for="{{ form.phone.id_for_label }}">
+            {{ form.phone.label }}
+          </label>
+          {{ form.phone }}
+        </div>
+
+        <!-- Email -->
+        <div class="col-md-6 mb-3">
+          <label for="{{ form.email.id_for_label }}">
+            {{ form.email.label }}
+          </label>
+          {{ form.email }}
+        </div>
+
+        <!-- Outreach -->
+        <div class="col-md-12 mb-3">
+          <label for="{{ form.outreach.id_for_label }}">
+            {{ form.outreach.label }}
+          </label>
+          {{ form.outreach }}
+        </div>
+
+      </div>
+
+      <!-- ACTIONS -->
+      <div class="patient-actions">
+        <button type="submit" class="btn-duxt">
+          💾 Save Patient
+        </button>
+
+        <a href="{% url 'homecare:patient_list' %}" class="btn-outline-duxt">
+          ← Back to Patient List
+        </a>
+      </div>
+
+    </form>
+  </div>
+</div>
+
+{% endblock %}

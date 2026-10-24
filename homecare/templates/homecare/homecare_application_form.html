@@ -1,0 +1,68 @@
+{% extends "frontend_base.html" %}
+{% block content %}
+
+<div class="container mt-5" style="max-width:720px;">
+  <div class="card shadow-lg border-0 p-4">
+
+    <h3 class="fw-bold mb-2">🩺 Apply for Homecare Services</h3>
+    <p class="text-muted">
+      Fill this form and our care team will contact you shortly.
+    </p>
+
+    {% if success %}
+      <div class="alert alert-success">
+        ✅ Your request has been received. Our team will contact you shortly.
+      </div>
+
+      <a href="{{ whatsapp_url }}" target="_blank" class="btn btn-success">
+        💬 Chat with us on WhatsApp
+      </a>
+    {% else %}
+      <form method="post">
+        {% csrf_token %}
+
+        <div class="mb-3">
+          {{ form.full_name.label_tag }}
+          {{ form.full_name }}
+        </div>
+
+        <div class="mb-3">
+          {{ form.phone_number.label_tag }}
+          {{ form.phone_number }}
+        </div>
+
+        <div class="mb-3">
+          {{ form.whatsapp_number.label_tag }}
+          {{ form.whatsapp_number }}
+        </div>
+
+        <div class="mb-3">
+          {{ form.email.label_tag }}
+          {{ form.email }}
+        </div>
+
+        <div class="mb-3">
+          {{ form.location.label_tag }}
+          {{ form.location }}
+        </div>
+
+        <div class="mb-3">
+          {{ form.service_needed.label_tag }}
+          {{ form.service_needed }}
+        </div>
+
+        <div class="mb-3">
+          {{ form.message.label_tag }}
+          {{ form.message }}
+        </div>
+
+        <button class="btn btn-primary w-100">
+          📩 Submit Application
+        </button>
+      </form>
+    {% endif %}
+
+  </div>
+</div>
+
+{% endblock %}

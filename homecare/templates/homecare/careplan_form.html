@@ -1,0 +1,227 @@
+{% extends 'bases.html' %}
+{% block content %}
+
+<style>
+  /* =======================
+     CARE PLAN FORM – DUXTHEALTH
+  ======================= */
+
+  .form-card {
+    max-width: 1000px;
+    margin: 40px auto;
+    padding: 32px;
+    background: #ffffff;
+    border-radius: 14px;
+    box-shadow: 0 12px 30px rgba(0,0,0,.08);
+  }
+
+  .form-card h3 {
+    font-weight: 700;
+    margin-bottom: 28px;
+    color: var(--duxt-primary);
+    text-align: center;
+  }
+
+  .section-title {
+    font-weight: 700;
+    font-size: 0.95rem;
+    margin-bottom: 18px;
+    color: var(--duxt-primary);
+  }
+
+  .form-card label {
+    font-weight: 600;
+    margin-bottom: 6px;
+    display: block;
+    color: var(--duxt-dark);
+    font-size: 0.95rem;
+  }
+
+  .form-card input,
+  .form-card textarea,
+  .form-card select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    transition: border-color .2s ease, box-shadow .2s ease;
+  }
+
+  .form-card textarea {
+    resize: vertical;
+  }
+
+  .form-card input:focus,
+  .form-card textarea:focus,
+  .form-card select:focus {
+    outline: none;
+    border-color: var(--duxt-primary);
+    box-shadow: 0 0 0 3px rgba(14,111,108,.15);
+  }
+
+  hr {
+    margin: 30px 0;
+    border: none;
+    height: 1px;
+    background: #e5e7eb;
+  }
+
+  .btn-duxt {
+    display: inline-block;
+    padding: 12px 20px;
+    background: linear-gradient(135deg, var(--duxt-primary), #0b5c59);
+    color: #ffffff;
+    font-weight: 600;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: transform .15s ease, box-shadow .15s ease;
+    text-decoration: none;
+  }
+
+  .btn-duxt:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 20px rgba(0,0,0,.12);
+  }
+
+  .btn-outline-duxt {
+    display: inline-block;
+    padding: 12px 20px;
+    border: 2px solid var(--duxt-primary);
+    color: var(--duxt-primary);
+    background: transparent;
+    border-radius: 10px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all .2s ease;
+  }
+
+  .btn-outline-duxt:hover {
+    background: var(--duxt-primary);
+    color: #ffffff;
+  }
+
+  .form-actions {
+    margin-top: 30px;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+</style>
+
+<div class="form-card">
+
+  <h3>
+    {% if form.instance.pk %}
+      📝 Care Plan Details
+    {% else %}
+      ➕ Create New Care Plan
+    {% endif %}
+  </h3>
+
+  <form method="post" novalidate>
+    {% csrf_token %}
+
+    <!-- ================= PATIENT INFO ================= -->
+    <div class="section-title">🧍 Patient Information</div>
+
+    <div class="row mb-4">
+      <div class="col-md-6">
+        {{ form.patient.label_tag }}
+        {{ form.patient }}
+      </div>
+
+      <div class="col-md-6">
+
+        <div class="mb-3">
+          <label>Diagnosis</label>
+          <textarea name="diagnosis" rows="2" placeholder="Enter the patient's diagnosis">{{ patient.diagnosis }}</textarea>
+        </div>
+
+        <div class="mb-3">
+          <label>Diagnosis Summary</label>
+          <textarea name="diagnosis_summary" rows="4" placeholder="Provide a simple, clear explanation of the patient's condition, important notes, treatment progress if necessary, and reassurance for the patient.">{{ patient.diagnosis_summary }}</textarea>
+        </div>
+
+      </div>
+    </div>
+
+    <hr>
+
+    <!-- ================= CARE PLAN CORE ================= -->
+    <div class="section-title">📋 Clinical Care Plan</div>
+
+    <div class="mb-3">
+      {{ form.problem.label_tag }}
+      {{ form.problem }}
+    </div>
+
+    <div class="mb-3">
+      {{ form.objective.label_tag }}
+      {{ form.objective }}
+    </div>
+
+    <div class="mb-3">
+      {{ form.intervention.label_tag }}
+      {{ form.intervention }}
+    </div>
+
+    <div class="mb-3">
+      {{ form.rational.label_tag }}
+      {{ form.rational }}
+    </div>
+
+    <!-- ================= EVALUATION ================= -->
+    <div class="mb-4">
+      <label>🩺 Evaluation / Progress Update</label>
+      {{ form.evaluation }}
+    </div>
+
+    <hr>
+
+    <!-- ================= OTHER DETAILS ================= -->
+    <div class="section-title">🗂 Plan Details</div>
+
+    <div class="mb-3">
+      {{ form.title.label_tag }}
+      {{ form.title }}
+    </div>
+
+    <div class="mb-3">
+      {{ form.description.label_tag }}
+      {{ form.description }}
+    </div>
+
+    <div class="row">
+      <div class="col-md-4 mb-3">
+        {{ form.start_date.label_tag }}
+        {{ form.start_date }}
+      </div>
+      <div class="col-md-4 mb-3">
+        {{ form.end_date.label_tag }}
+        {{ form.end_date }}
+      </div>
+      <div class="col-md-4 mb-3">
+        <label>Active</label><br>
+        {{ form.is_active }}
+      </div>
+    </div>
+
+    <!-- ================= ACTIONS ================= -->
+    <div class="form-actions">
+      <button type="submit" class="btn-duxt">
+        💾 Save Care Plan
+      </button>
+
+      <a href="{% url 'homecare:careplan_list' %}" class="btn-outline-duxt">
+        ← Back
+      </a>
+    </div>
+
+  </form>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block content %}
+<h3>Pending Access Requests</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Profession</th>
+            <th>Message</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for req in requests %}
+        <tr>
+            <td>{{ req.full_name }}</td>
+            <td>{{ req.email }}</td>
+            <td>{{ req.profession }}</td>
+            <td>{{ req.message }}</td>
+            <td>
+                <a href="{% url 'approve_request' req.id %}" class="btn btn-success btn-sm">Approve</a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="5">No pending requests.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

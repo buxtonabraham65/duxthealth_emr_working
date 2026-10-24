@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+
+{% block title %}Patient Records | DuxtHealth{% endblock %}
+
+{% block content %}
+
+<style>
+  /* =======================
+     PATIENT LIST – DUXTHEALTH
+  ======================= */
+
+  .patients-card {
+    background: #ffffff;
+    border-radius: 14px;
+    padding: 24px;
+    box-shadow: 0 14px 32px rgba(0,0,0,.08);
+  }
+
+  .patients-card h1 {
+    font-weight: 700;
+    color: var(--duxt-primary);
+    margin-bottom: 20px;
+  }
+
+  .action-bar {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+  }
+
+  .patients-table {
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .patients-table thead {
+    background: linear-gradient(135deg, var(--duxt-primary), #0b5c59);
+    color: #ffffff;
+  }
+
+  .patients-table th {
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border: none;
+  }
+
+  .patients-table td {
+    vertical-align: middle;
+    font-size: 0.95rem;
+    border-color: #e5e7eb;
+  }
+
+  .patients-table tbody tr:hover {
+    background-color: rgba(14,111,108,.06);
+  }
+
+  .empty-state {
+    padding: 40px 0;
+    color: #6b7280;
+    font-style: italic;
+  }
+</style>
+
+<div class="container my-5">
+  <div class="patients-card">
+
+    <h1 class="text-center">🧑‍⚕️ Patient Records</h1>
+
+    <!-- Action buttons -->
+    <div class="action-bar justify-content-center">
+      <a href="{% url 'register_patient' %}" class="btn btn-outline-primary btn-sm">
+        👤 Add New Patient
+      </a>
+
+      <a href="{% url 'add_consultation' %}" class="btn btn-outline-success btn-sm">
+        📋 Consult Patient
+      </a>
+
+      <a href="{% url 'add_vitals' %}" class="btn btn-outline-info btn-sm">
+        ➕ Record Vitals
+      </a>
+    </div>
+
+    <!-- Patients table -->
+    <div class="table-responsive patients-table">
+      <table class="table table-hover mb-0">
+        <thead>
+          <tr>
+            <th>Full Name</th>
+            <th>Gender</th>
+            <th>Community</th>
+            <th>Phone</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {% for patient in patients %}
+            <tr>
+              <td>{{ patient.full_name }}</td>
+              <td>{{ patient.gender }}</td>
+              <td>{{ patient.community }}</td>
+              <td>{{ patient.phone }}</td>
+            </tr>
+          {% empty %}
+            <tr>
+              <td colspan="4" class="text-center empty-state">
+                No patients registered yet.
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
+
+{% endblock %}

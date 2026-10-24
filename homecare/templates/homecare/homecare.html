@@ -1,0 +1,156 @@
+{% extends "bases.html" %}
+{% load static %}
+
+{% block content %}
+
+<!-- HERO SECTION -->
+<section class="hero-section text-center"
+    style="background:
+    linear-gradient(rgba(0,0,0,.45),rgba(0,0,0,.45)),
+    url('{% static 'duxthealth_frontend/images/hero-homecare.jpeg' %}')
+    center/cover no-repeat;">
+    <div class="container text-white py-5">
+        <h1 class="fw-bold">Healthcare, Anywhere. Anytime.</h1>
+        <p class="lead mt-3">Making healthcare accessible to everyone, everywhere.</p>
+        <p class="lead">Health to the future.</p>
+    </div>
+</section>
+
+<!-- DASHBOARD -->
+<div class="container mt-5">
+    <h1 class="mb-4 text-center">HomeCare Management System Dashboard</h1>
+
+    <!-- ROW 1 -->
+    <div class="row g-4">
+
+        <!-- Patients -->
+        <div class="col-md-4">
+            <div class="card border-primary h-100 shadow-sm">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">My Patients & Clinical AI Assistance</h5>
+                    <p class="card-text flex-grow-1">View patients assigned to you,and use DuxtHealth patient based AI support for clinical decisions.</p>
+                    <a href="{% url 'homecare:patient_list' %}" class="btn btn-primary w-100 mt-auto">
+                        View Patients
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Health Professionals -->
+        <div class="col-md-4">
+            <div class="card border-success h-100 shadow-sm">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">Health Professionals</h5>
+                    <p class="card-text flex-grow-1">Manage doctors, nurses, caregivers, and admins.</p>
+                    <a href="{% url 'homecare:professional_list' %}" class="btn btn-success w-100 mt-auto">
+                        View Professionals
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Care Plans -->
+        <div class="col-md-4">
+            <div class="card border-info h-100 shadow-sm">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">Care Plans</h5>
+                    <p class="card-text flex-grow-1">Create and manage personalized care plans.</p>
+                    <a href="{% url 'homecare:careplan_list' %}" class="btn btn-info w-100 mt-auto">
+                        View Care Plans
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ROW 2 -->
+    <div class="row g-4 mt-0">
+
+        <!-- Visit Schedules -->
+        <div class="col-md-4">
+            <div class="card border-warning h-100 shadow-sm">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">Visit Schedules</h5>
+                    <p class="card-text flex-grow-1">Manage scheduled homecare visits.</p>
+                    <a href="{% url 'homecare:visitschedule_list' %}" class="btn btn-warning text-white w-100 mt-auto">
+                        View Visit Schedules
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Nurses Notes -->
+        <div class="col-md-4">
+            <div class="card border-secondary h-100 shadow-sm">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">Nurses Notes</h5>
+                    <p class="card-text flex-grow-1">Record and manage nurses’ observations.</p>
+                    <a href="{% url 'homecare:nursesnote_list' %}" class="btn btn-secondary w-100 mt-auto">
+                        View Nurses Notes
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Doctor Notes -->
+        <div class="col-md-4">
+            <div class="card border-dark h-100 shadow-sm">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">Doctor Notes</h5>
+                    <p class="card-text flex-grow-1">Clinical notes and medical assessments.</p>
+                    <a href="{% url 'homecare:doctornote_list' %}" class="btn btn-dark w-100 mt-auto">
+                        View Doctor Notes
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ROW 3 -->
+    <div class="row g-4 mt-0">
+
+        <!-- Treatment Sheets -->
+        <div class="col-md-4">
+            <div class="card border-primary h-100 shadow-sm">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">Treatment Sheets</h5>
+                    <p class="card-text flex-grow-1">Track ongoing patient treatments.</p>
+                    <a href="{% url 'homecare:treatmentsheet_list' %}" class="btn btn-primary w-100 mt-auto">
+                        View Treatment Sheets
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Medication Sheets -->
+        <div class="col-md-4">
+            <div class="card border-success h-100 shadow-sm">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">Medication Sheets</h5>
+                    <p class="card-text flex-grow-1">Prescriptions and medication tracking.</p>
+                    <a href="{% url 'homecare:medicationsheet_list' %}" class="btn btn-success w-100 mt-auto">
+                        View Medication Sheets
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Vital Sign Records -->
+        <div class="col-md-4">
+            <div class="card border-info h-100 shadow-sm">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">Vital Sign Records</h5>
+                    <p class="card-text flex-grow-1">Monitor patient vital signs over time.</p>
+                    <a href="{% url 'homecare:vitalsign_list' %}" class="btn btn-info w-100 mt-auto">
+                        View Vital Signs
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,147 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<style>
+  /* =======================
+     CONSULTATION FORM – DUXTHEALTH
+  ======================= */
+
+  .form-card {
+    max-width: 640px;
+    margin: 40px auto;
+    padding: 28px;
+    background: #ffffff;
+    border-radius: 14px;
+    box-shadow: 0 12px 30px rgba(0,0,0,.08);
+  }
+
+  .form-card h2 {
+    text-align: center;
+    margin-bottom: 24px;
+    font-weight: 700;
+    color: var(--duxt-primary);
+  }
+
+  .form-card form > div {
+    margin-bottom: 18px;
+  }
+
+  .form-card label {
+    font-weight: 600;
+    margin-bottom: 6px;
+    display: block;
+    color: var(--duxt-dark);
+    font-size: 0.95rem;
+  }
+
+  .form-card input,
+  .form-card textarea,
+  .form-card select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    transition: border-color .2s ease, box-shadow .2s ease;
+  }
+
+  .form-card textarea {
+    resize: vertical;
+  }
+
+  .form-card input:focus,
+  .form-card textarea:focus,
+  .form-card select:focus {
+    outline: none;
+    border-color: var(--duxt-primary);
+    box-shadow: 0 0 0 3px rgba(14,111,108,.15);
+  }
+
+  /* Submit button */
+  .btn-duxt {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    background: linear-gradient(135deg, var(--duxt-primary), #0b5c59);
+    color: #ffffff;
+    font-weight: 600;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: transform .15s ease, box-shadow .15s ease;
+  }
+
+  .btn-duxt:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 20px rgba(0,0,0,.12);
+  }
+
+  /* Navigation links */
+  .form-nav {
+    text-align: center;
+    margin-top: 26px;
+  }
+
+  .form-nav a {
+    margin: 0 10px;
+    text-decoration: none;
+    font-weight: 500;
+    color: var(--duxt-primary);
+  }
+
+  .form-nav a:hover {
+    text-decoration: underline;
+  }
+</style>
+
+<div class="form-card">
+  <h2>Add New Consultation</h2>
+
+  <form method="post">
+    {% csrf_token %}
+
+    <div>
+      <label for="id_patient">Patient</label>
+      {{ form.patient }}
+    </div>
+
+    <div>
+      <label for="id_doctor">Doctor</label>
+      {{ form.doctor }}
+    </div>
+
+    <div>
+      <label for="id_notes">Notes</label>
+      {{ form.notes }}
+    </div>
+
+    <div>
+      <label for="id_diagnosis">Diagnosis</label>
+      {{ form.diagnosis }}
+    </div>
+
+    <div>
+      <label for="id_treatment">Treatment</label>
+      {{ form.treatment }}
+    </div>
+
+    <div>
+      <label for="id_follow_up_date">Follow-up Date</label>
+      {{ form.follow_up_date }}
+    </div>
+
+    <button type="submit" class="btn-duxt">
+      Save Consultation
+    </button>
+  </form>
+
+  <div class="form-nav">
+    <a href="{% url 'home' %}">🏠 Home</a>
+    <a href="{% url 'patient_list' %}">👤 Patients</a>
+    <a href="{% url 'vitals_list' %}">🩺 Vitals</a>
+    <a href="{% url 'consultation_list' %}">📋 Consultations</a>
+  </div>
+</div>
+
+{% endblock %}

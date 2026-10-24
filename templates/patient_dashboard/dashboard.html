@@ -1,0 +1,370 @@
+{% extends "frontend_base.html" %}
+{% load static %}
+
+{% block content %}
+
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show mt-3"
+             role="alert"
+             style="border-radius:12px;">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    {% endfor %}
+{% endif %}
+
+
+<section class="hero-section text-center"
+    style="background:
+    linear-gradient(rgba(0,0,0,.45),rgba(0,0,0,.45)),
+    url('{% static 'duxthealth_frontend/images/hero-homecare.jpeg' %}')
+    center/cover no-repeat;">
+    <div class="container text-white">
+        <h1 class="fw-bold">Healthcare, Anywhere. Anytime.</h1>
+        <p class="lead mt-3">Making healthcare accessible to everyone, everywhere.</p>
+        
+    </div>
+</section>
+
+<!-- =========================
+WELCOME / HEADER
+========================= -->
+<div class="card p-4 mb-4 shadow-sm" style="background-color:#f8f9fa; border-radius:12px;">
+    <div class="d-flex justify-content-between align-items-center flex-wrap">
+        <div>
+            <h2 class="text-primary mb-1">Welcome, {{ patient.first_name }}</h2>
+            <p class="text-muted mb-0">Here’s a calm overview of your health today.</p>
+        </div>
+        <div class="mt-3 mt-md-0 d-flex flex-wrap gap-2">
+
+    <!-- Emergency -->
+    <a href="tel:{{ emergency_number }}" class="btn btn-danger fw-bold">
+        🚨 Emergency
+    </a>
+
+    <!-- Print -->
+    <button onclick="window.print()" class="btn btn-outline-secondary">
+        🖨 Print
+    </button>
+
+    <!-- WhatsApp Complaint -->
+    <a href="https://wa.me/{{ +233209840865 }}?text=Hello,%20I%20want%20to%20lodge%20a%20complaint%20about%20a%20staff%20member." 
+       target="_blank" 
+       class="btn btn-warning fw-bold">
+        📝 Lodge Complaint
+    </a>
+
+</div>
+
+    </div>
+</div>
+
+
+<!-- =========================
+DIAGNOSIS SUMMARY
+========================= -->
+<div class="card p-4 mb-4 shadow-sm" style="border-radius:12px; background-color:#e9f7f6;">
+    <h4 class="text-success mb-3">Your Current Health Update</h4>
+
+    {% if diagnosis_record %}
+        <p class="fw-semibold mb-2">
+            <strong>Diagnosis:</strong> {{ diagnosis_record.diagnosis }}
+        </p>
+
+        <p class="mb-2">
+            {{ diagnosis_record.summary }}
+        </p>
+
+        <small class="text-muted">
+            Last updated {{ diagnosis_record.created_at|timesince }} ago
+        </small>
+    {% else %}
+        <p class="text-muted mb-0">
+            No active diagnosis update at the moment.
+            Your care team will update this when necessary.
+        </p>
+    {% endif %}
+</div>
+
+<!-- =========================
+LATEST VITALS (ALERT AWARE)
+========================= -->
+{% if latest_vitals %}
+<h4 class="mb-3">Latest Vital Signs</h4>
+<div class="row mb-4">
+
+    <!-- BP -->
+    <div class="col-md-3 col-lg-2 mb-3">
+        <div class="card p-3 shadow-sm border-start border-4 border-{{ alerts.bp_sys.1 }}" style="border-radius:12px;">
+            <strong>Blood Pressure</strong>
+            <p class="mb-0" data-bs-toggle="tooltip" title="{{ alerts.bp_sys.2 }}">
+                {{ latest_vitals.blood_pressure_systolic }}/{{ latest_vitals.blood_pressure_diastolic }} mmHg
+            </p>
+        </div>
+    </div>
+
+    <!-- Pulse -->
+    <div class="col-md-3 col-lg-2 mb-3">
+        <div class="card p-3 shadow-sm border-start border-4 border-{{ alerts.pulse.1 }}" style="border-radius:12px;">
+            <strong>Pulse</strong>
+            <p class="mb-0" title="{{ alerts.pulse.2 }}">{{ latest_vitals.pulse }} bpm</p>
+        </div>
+    </div>
+
+    <!-- Temperature -->
+    <div class="col-md-3 col-lg-2 mb-3">
+        <div class="card p-3 shadow-sm border-start border-4 border-{{ alerts.temp.1 }}" style="border-radius:12px;">
+            <strong>Temperature</strong>
+            <p class="mb-0" title="{{ alerts.temp.2 }}">{{ latest_vitals.temperature }} °C</p>
+        </div>
+    </div>
+
+    <!-- Respiration -->
+    <div class="col-md-3 col-lg-2 mb-3">
+        <div class="card p-3 shadow-sm border-start border-4 border-{{ alerts.resp.1 }}" style="border-radius:12px;">
+            <strong>Respiration</strong>
+            <p class="mb-0" title="{{ alerts.resp.2 }}">{{ latest_vitals.respiratory_rate }} cpm</p>
+        </div>
+    </div>
+
+    <!-- Oxygen -->
+    <div class="col-md-3 col-lg-2 mb-3">
+        <div class="card p-3 shadow-sm border-start border-4 border-{{ alerts.oxygen.1 }}" style="border-radius:12px;">
+            <strong>Oxygen</strong>
+            <p class="mb-0" title="{{ alerts.oxygen.2 }}">{{ latest_vitals.oxygen_saturation }} %</p>
+        </div>
+    </div>
+
+    <!-- BMI -->
+    <div class="col-md-3 col-lg-2 mb-3">
+        <div class="card p-3 shadow-sm" style="border-radius:12px;">
+            <strong>BMI</strong>
+            <p class="mb-0">{{ latest_vitals.bmi|default:"N/A" }}</p>
+        </div>
+    </div>
+
+    <!-- FBS -->
+    <div class="col-md-3 col-lg-2 mb-3">
+        <div class="card p-3 shadow-sm border-start border-4 border-{{ alerts.fbs.1 }}" style="border-radius:12px;">
+            <strong>FBS</strong>
+            <p class="mb-0" title="{{ alerts.fbs.2 }}">{{ latest_vitals.blood_sugar_fbs|default:"N/A" }}</p>
+        </div>
+    </div>
+
+    <!-- RBS -->
+    <div class="col-md-3 col-lg-2 mb-3">
+        <div class="card p-3 shadow-sm border-start border-4 border-{{ alerts.rbs.1 }}" style="border-radius:12px;">
+            <strong>RBS</strong>
+            <p class="mb-0" title="{{ alerts.rbs.2 }}">{{ latest_vitals.blood_sugar_rbs|default:"N/A" }}</p>
+        </div>
+    </div>
+
+</div>
+{% endif %}
+
+<!-- =========================
+ACTIVE MEDICATIONS
+========================= -->
+<div class="card p-4 mb-4 shadow-sm" style="border-radius:12px; background-color:#fdfdfd;">
+    <h4 class="text-primary mb-3">Current Medications</h4>
+
+    {% if medications %}
+        <ul class="list-group list-group-flush">
+            {% for med in medications %}
+            <li class="list-group-item">
+                <strong>{{ med.medication_name }}</strong><br>
+                {{ med.dosage }} · {{ med.frequency }}<br>
+                <small class="text-muted">Started {{ med.start_date|date:"M d, Y" }}</small>
+            </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p class="text-muted mb-0">No active medications at the moment.</p>
+    {% endif %}
+</div>
+
+<!-- =========================
+7-DAY VITAL TRENDS
+========================= -->
+<h4 class="mb-2">7-Day Vital Trends</h4>
+<div style="overflow-x:auto; white-space:nowrap; padding-bottom:15px;">
+
+    {% for vital in vitals_7_days %}
+    <div class="card d-inline-block p-3 m-2 shadow-sm"
+         style="width:230px; border-radius:12px; background-color:#ffffff;">
+        <strong class="text-primary">{{ vital.recorded_at|date:"M d" }}</strong>
+        <hr class="my-2">
+        <p>Temp: {{ vital.temperature }} °C</p>
+        <p>Pulse: {{ vital.pulse }} bpm</p>
+        <p>BP: {{ vital.blood_pressure_systolic }}/{{ vital.blood_pressure_diastolic }}</p>
+        <p>O₂: {{ vital.oxygen_saturation }} %</p>
+        <p>FBS: {{ vital.blood_sugar_fbs }}</p>
+        <p>RBS: {{ vital.blood_sugar_rbs }}</p>
+        <p>Pain: {{ vital.pain_score }}</p>
+        <p>Intake: {{ vital.total_intake }} ml</p>
+        <p>Output: {{ vital.total_output }} ml</p>
+        <p>BMI: {{ vital.bmi|default:"N/A" }}</p>
+        <p class="mb-0">
+            Neuro: {{ vital.neuro_gcs_eye }}/{{ vital.neuro_gcs_verbal }}/{{ vital.neuro_gcs_motor }},
+            AVPU: {{ vital.neuro_avpu }}
+        </p>
+    </div>
+    {% empty %}
+        <p class="text-muted">No vitals recorded yet.</p>
+    {% endfor %}
+
+</div>
+
+<!-- =========================
+CARE TEAM
+========================= -->
+<div class="card p-4 my-4 shadow-sm" style="border-radius:12px; background-color:#f1f8f7;">
+    <h4 class="text-primary mb-3">Your Care Team</h4>
+
+    <strong>Doctors</strong>
+    <ul>
+        {% for d in care_team.doctors %}
+            <li>{{ d.professional.user.get_full_name }}</li>
+        {% empty %}
+            <li>Not assigned</li>
+        {% endfor %}
+    </ul>
+
+    <strong>Nurses</strong>
+    <ul>
+        {% for n in care_team.nurses %}
+            <li>{{ n.professional.user.get_full_name }}</li>
+        {% empty %}
+            <li>Not assigned</li>
+        {% endfor %}
+    </ul>
+
+    <strong>Next Visit</strong>
+    <p class="mb-0">
+        {% if care_team.next_visit %}
+            {{ care_team.next_visit.scheduled_date|date:"M d, Y · H:i" }}
+        {% else %}
+            Not scheduled
+        {% endif %}
+    </p>
+</div>
+
+<!-- =========================
+PATIENT FEEDBACK
+========================= -->
+<div class="card p-4 shadow-sm" style="border-radius:12px; background-color:#fff3e6;">
+    <h4 class="text-warning mb-2">Your Feedback</h4>
+    <p class="text-muted">
+        Your feedback helps us improve our care, our professionals, and your experience.
+    </p>
+
+    <form method="post" action="{% url 'homecare:submit_feedback' %}">
+        {% csrf_token %}
+
+        <!-- Patient Comments -->
+        <div class="mb-3">
+            <label class="form-label fw-semibold">
+                Describe your experience or concerns
+            </label>
+            <textarea
+                name="comments"
+                class="form-control"
+                rows="4"
+                required
+                placeholder="Describe symptoms, discomfort, staff behavior, delays, or anything important..."
+            ></textarea>
+        </div>
+
+        <!-- Overall Care Rating -->
+        <div class="mb-3">
+            <label class="form-label fw-semibold">Overall Care</label>
+            <select name="overall_rating" class="form-control" required>
+                <option value="">Select rating</option>
+                <option value="5">⭐⭐⭐⭐⭐ Excellent</option>
+                <option value="4">⭐⭐⭐⭐ Good</option>
+                <option value="3">⭐⭐⭐ Average</option>
+                <option value="2">⭐⭐ Poor</option>
+                <option value="1">⭐ Very Poor</option>
+            </select>
+        </div>
+
+        <!-- Communication Rating -->
+        <div class="mb-3">
+            <label class="form-label fw-semibold">
+                Communication (Doctor / Nurse explanation & listening)
+            </label>
+            <select name="communication_rating" class="form-control" required>
+                <option value="">Select rating</option>
+                <option value="5">⭐⭐⭐⭐⭐ Excellent</option>
+                <option value="4">⭐⭐⭐⭐ Good</option>
+                <option value="3">⭐⭐⭐ Average</option>
+                <option value="2">⭐⭐ Poor</option>
+                <option value="1">⭐ Very Poor</option>
+            </select>
+        </div>
+
+        <!-- Professionalism Rating -->
+        <div class="mb-3">
+            <label class="form-label fw-semibold">
+                Professionalism & Care Attitude
+            </label>
+            <select name="professionalism_rating" class="form-control" required>
+                <option value="">Select rating</option>
+                <option value="5">⭐⭐⭐⭐⭐ Excellent</option>
+                <option value="4">⭐⭐⭐⭐ Good</option>
+                <option value="3">⭐⭐⭐ Average</option>
+                <option value="2">⭐⭐ Poor</option>
+                <option value="1">⭐ Very Poor</option>
+            </select>
+        </div>
+
+        <!-- Timeliness Rating -->
+        <div class="mb-4">
+            <label class="form-label fw-semibold">
+                Timeliness (Arrival time & responsiveness)
+            </label>
+            <select name="timeliness_rating" class="form-control" required>
+                <option value="">Select rating</option>
+                <option value="5">⭐⭐⭐⭐⭐ Excellent</option>
+                <option value="4">⭐⭐⭐⭐ Good</option>
+                <option value="3">⭐⭐⭐ Average</option>
+                <option value="2">⭐⭐ Poor</option>
+                <option value="1">⭐ Very Poor</option>
+            </select>
+        </div>
+
+        <!-- Submit -->
+        <small class="text-muted">
+            Your feedback helps us care for you better. We truly appreciate it.
+        </small>
+
+        <div class="d-flex justify-content-between align-items-center">
+            <small class="text-muted">
+                🚨 Low ratings are reviewed immediately by our quality team.
+            </small>
+
+            <button type="submit" class="btn btn-primary px-4">
+                Submit Feedback
+            </button>
+        </div>
+
+    </form>
+
+</div>
+
+
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    var tooltipTriggerList = [].slice.call(
+        document.querySelectorAll('[data-bs-toggle="tooltip"]')
+    );
+    tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+});
+</script>
+{% endblock %}

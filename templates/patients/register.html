@@ -1,0 +1,173 @@
+{% extends 'base.html' %}
+
+{% block title %}Register New Patient | DuxtHealth{% endblock %}
+
+{% block content %}
+
+<style>
+  /* ==========================
+     DUXTHEALTH – PATIENT FORM
+  ========================== */
+
+  .patient-card {
+    max-width: 780px;
+    margin: 40px auto;
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 22px 44px rgba(0,0,0,.08);
+    overflow: hidden;
+  }
+
+  .patient-card-header {
+    background: linear-gradient(135deg, var(--duxt-primary), #0b5c59);
+    color: #ffffff;
+    padding: 18px 24px;
+    font-size: 1.25rem;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+  }
+
+  .patient-card-header span {
+    color: var(--duxt-gold);
+  }
+
+  .patient-card-body {
+    padding: 28px;
+  }
+
+  .patient-card label {
+    font-weight: 600;
+    color: var(--duxt-dark);
+    margin-bottom: 6px;
+    display: block;
+  }
+
+  .patient-card input,
+  .patient-card select,
+  .patient-card textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid #d1d5db;
+    font-size: 0.95rem;
+  }
+
+  .patient-card input:focus,
+  .patient-card select:focus,
+  .patient-card textarea:focus {
+    outline: none;
+    border-color: var(--duxt-primary);
+    box-shadow: 0 0 0 2px rgba(14,111,108,.15);
+  }
+
+  .form-text {
+    font-size: 0.8rem;
+    color: #6b7280;
+  }
+
+  .form-error {
+    font-size: 0.8rem;
+    color: #dc2626;
+    margin-top: 4px;
+  }
+
+  /* Action buttons */
+  .patient-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 26px;
+  }
+
+  .btn-duxt {
+    background: linear-gradient(135deg, var(--duxt-primary), #0b5c59);
+    color: #ffffff;
+    font-weight: 600;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 18px;
+    transition: all .25s ease;
+  }
+
+  .btn-duxt:hover {
+    background: linear-gradient(135deg, #0b5c59, var(--duxt-primary));
+    transform: translateY(-1px);
+  }
+
+  .btn-outline-duxt {
+    border: 1px solid var(--duxt-primary);
+    color: var(--duxt-primary);
+    border-radius: 10px;
+    padding: 9px 16px;
+    font-weight: 500;
+  }
+
+  .btn-outline-duxt:hover {
+    background: var(--duxt-primary);
+    color: #ffffff;
+  }
+</style>
+
+<div class="patient-card">
+
+  <!-- HEADER -->
+  <div class="patient-card-header">
+    🧾 Register New <span>Patient</span>
+  </div>
+
+  <!-- BODY -->
+  <div class="patient-card-body">
+    <form method="post" novalidate>
+      {% csrf_token %}
+
+      {% for field in form %}
+        <div class="mb-3">
+          <label for="{{ field.id_for_label }}">
+            {{ field.label }}
+          </label>
+
+          {{ field }}
+
+          {% if field.help_text %}
+            <div class="form-text">{{ field.help_text }}</div>
+          {% endif %}
+
+          {% if field.errors %}
+            <div class="form-error">
+              {{ field.errors|striptags }}
+            </div>
+          {% endif %}
+        </div>
+      {% endfor %}
+
+      <!-- ACTIONS -->
+      <div class="patient-actions">
+        <button type="submit" class="btn-duxt">
+          ✅ Save Patient
+        </button>
+
+        <a href="{% url 'patient_list' %}" class="btn-outline-duxt">
+          👥 Patient List
+        </a>
+
+        <a href="{% url 'add_vitals' %}" class="btn-outline-duxt">
+          ➕ Add Vitals
+        </a>
+
+        <a href="{% url 'vitals_list' %}" class="btn-outline-duxt">
+          📋 View Vitals
+        </a>
+
+        <a href="{% url 'add_consultation' %}" class="btn-outline-duxt">
+          ➕ Consultation
+        </a>
+
+        <a href="{% url 'consultation_list' %}" class="btn-outline-duxt">
+          📄 Consultations
+        </a>
+      </div>
+    </form>
+  </div>
+</div>
+
+{% endblock %}

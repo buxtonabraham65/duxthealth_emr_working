@@ -1,0 +1,83 @@
+{% extends 'bases.html' %}
+
+{% block content %}
+<div class="container mt-5">
+
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold">My Assigned Patients</h2>
+        <a href="{% url 'homecare:patient_create' %}" class="btn btn-primary">
+            + Add New Patient
+        </a>
+    </div>
+
+    <!-- Patients List -->
+    <div class="row">
+        {% for patient in patients %}
+        <div class="col-md-4 mb-4">
+
+            <!-- Clickable Card -->
+            <div class="card shadow-sm h-100 patient-card"
+                 onclick="window.location.href='{% url 'homecare:patient_detail' patient.id %}'"
+                 style="cursor:pointer; transition:0.3s;">
+
+                <div class="card-body">
+
+                    <h5 class="card-title fw-bold">
+                        {{ patient.first_name }} {{ patient.last_name }}
+                    </h5>
+
+                    {% if patient.outreach %}
+                        <p class="card-text text-muted mb-2">
+                            Outreach: <strong>{{ patient.outreach.name }}</strong>
+                        </p>
+                    {% endif %}
+
+                    <p class="text-muted mb-1">
+                        <strong>Age:</strong> {{ patient.age }}
+                    </p>
+
+                    <p class="text-muted mb-1">
+                        <strong>Gender:</strong> {{ patient.gender }}
+                    </p>
+
+                    <hr>
+
+                    <!-- Action Buttons -->
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'homecare:patient_update' patient.pk %}"
+                           class="btn btn-outline-primary btn-sm"
+                           onclick="event.stopPropagation();">
+                            Edit
+                        </a>
+
+                        <a href="{% url 'homecare:patient_delete' patient.pk %}"
+                           class="btn btn-outline-danger btn-sm"
+                           onclick="event.stopPropagation();">
+                            Delete
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info text-center">
+                No patients assigned yet.
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
+
+<style>
+.patient-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+}
+</style>
+
+{% endblock %}

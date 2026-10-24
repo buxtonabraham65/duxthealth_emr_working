@@ -1,0 +1,145 @@
+{% extends 'base.html' %}
+
+{% block title %}Detailed Outreach Report{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+
+    <h2 class="text-center mb-3">📊 Detailed Outreach Report</h2>
+    <hr>
+
+    <!-- Filter -->
+    <form method="get" class="mb-4 d-flex flex-wrap gap-2 align-items-end">
+        <div>
+            <label for="outreach" class="form-label fw-bold">Filter by Outreach Event</label>
+            <select name="outreach" id="outreach" class="form-select" style="min-width: 300px;">
+                <option value="">-- All Outreaches --</option>
+                {% for o in outreaches %}
+                    <option value="{{ o.id }}" {% if selected_outreach and o.id == selected_outreach.id %}selected{% endif %}>
+                        {{ o.location }} - {{ o.date }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Apply</button>
+    </form>
+
+    {% if selected_outreach %}
+    <!-- Outreach Summary -->
+    <div class="card shadow mb-4">
+        <div class="card-header bg-primary text-white">
+            📍 {{ selected_outreach.location }} |
+            📅 {{ selected_outreach.date }} |
+            👥 {{ selected_outreach.team }}
+        </div>
+
+        <div class="card-body">
+            <h5 class="mb-3">👥 Clients Seen</h5>
+
+            {% if patients %}
+                {% for patient in patients %}
+                <!-- Patient Card -->
+                <div class="card mb-4 border">
+                    <div class="card-header bg-light">
+                        <strong>{{ patient.full_name }}</strong>
+                        <span class="badge bg-secondary ms-2">{{ patient.gender }}</span>
+                        <span class="badge bg-info ms-1">DOB: {{ patient.dob }}</span>
+                    </div>
+
+                    <div class="card-body">
+                        <p class="mb-1">
+                            📞 {{ patient.phone }} |
+                            🏘 {{ patient.community }}
+                        </p>
+
+                        <p class="mb-2">
+                            <strong>Allergies:</strong> {{ patient.allergies|default:"None" }} |
+                            <strong>Medical History:</strong> {{ patient.medical_history|default:"None" }}
+                        </p>
+
+                        <!-- Vitals -->
+                        <div class="mb-3">
+                            <h6 class="fw-bold">🩺 Vitals</h6>
+                            <div class="table-responsive">
+                                <table class="table table-sm table-bordered">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>BP</th>
+                                            <th>Temp (°C)</th>
+                                            <th>HR</th>
+                                            <th>SpO₂</th>
+                                            <th>Glucose</th>
+                                            <th>Weight</th>
+                                            <th>Height</th>
+                                            <th>BMI</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% with vitals|dictsortreversed:"date_recorded" as vitals_sorted %}
+                                            {% for v in vitals_sorted %}
+                                                {% if v.patient_id == patient.id %}
+                                                <tr>
+                                                    <td>{{ v.bp_systolic }}/{{ v.bp_diastolic }}</td>
+                                                    <td>{{ v.temp_c }}</td>
+                                                    <td>{{ v.heart_rate }}</td>
+                                                    <td>{{ v.spo2 }}</td>
+                                                    <td>{{ v.glucose }}</td>
+                                                    <td>{{ v.weight }} kg</td>
+                                                    <td>{{ v.height }} cm</td>
+                                                    <td>{{ v.bmi }}</td>
+                                                </tr>
+                                                {% endif %}
+                                            {% empty %}
+                                                <tr>
+                                                    <td colspan="8" class="text-center">No vitals recorded</td>
+                                                </tr>
+                                            {% endfor %}
+                                        {% endwith %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Consultations -->
+                        <div>
+                            <h6 class="fw-bold">📋 Consultations</h6>
+                            {% for consult in consultations %}
+                                {% if consult.patient_id == patient.id %}
+                                    <div class="border rounded p-2 mb-2">
+                                        <strong>Diagnosis:</strong> {{ consult.diagnosis }} <br>
+                                        <strong>Notes:</strong> {{ consult.notes }} <br>
+                                        <strong>Referred To:</strong> {{ consult.referred_to|default:"None" }}
+                                    </div>
+                                {% endif %}
+                            {% empty %}
+                                <p>No consultations recorded.</p>
+                            {% endfor %}
+                        </div>
+
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p class="text-muted">No patients found for this outreach.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    {% else %}
+        {% for outreach in outreaches %}
+        <div class="card shadow mb-3">
+            <div class="card-header bg-light">
+                📍 {{ outreach.location }} |
+                📅 {{ outreach.date }} |
+                👥 {{ outreach.team }}
+            </div>
+            <div class="card-body">
+                <p class="text-muted">No patients found for this outreach.</p>
+            </div>
+        </div>
+        {% empty %}
+            <p>No outreach events found.</p>
+        {% endfor %}
+    {% endif %}
+</div>
+{% endblock %}

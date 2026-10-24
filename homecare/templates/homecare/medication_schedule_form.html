@@ -1,0 +1,24 @@
+{% extends "bases.html" %}
+{% block content %}
+<div class="container py-4">
+    <h1>Schedule Medication</h1>
+    <p>{{ medication.medication_name }} — {{ medication.patient }}</p>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        {% for field in form %}
+            <div class="mb-3">
+                {{ field.label_tag }}
+                {{ field }}
+                {{ field.errors }}
+            </div>
+        {% endfor %}
+        <button class="btn btn-primary" type="submit">Save Schedule</button>
+        <a class="btn btn-outline-secondary"
+           href="{% url 'homecare:patient_medications' medication.patient_id %}">
+            Cancel
+        </a>
+    </form>
+</div>
+{% endblock %}

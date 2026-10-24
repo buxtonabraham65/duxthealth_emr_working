@@ -1,0 +1,16 @@
+{% extends 'bases.html' %}
+{% block content %}
+<h2>Visit Schedules</h2>
+<a href="{% url 'homecare:visitschedule_create' %}">Add New Visit Schedule</a>
+<ul>
+  {% for visit in visits %}
+  <li>
+    Visit for {{ visit.care_plan.patient.first_name }} {{ visit.care_plan.patient.last_name }} on {{ visit.scheduled_date|date:"Y-m-d H:i" }} - Status: {{ visit.get_status_display }} |
+    <a href="{% url 'homecare:visitschedule_update' visit.pk %}">Edit</a> |
+    <a href="{% url 'homecare:visitschedule_delete' visit.pk %}">Delete</a>
+  </li>
+  {% empty %}
+  <li>No scheduled visits.</li>
+  {% endfor %}
+</ul>
+{% endblock %}

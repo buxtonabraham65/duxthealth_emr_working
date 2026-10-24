@@ -1,0 +1,177 @@
+{% extends 'base.html' %}
+
+{% block title %}Anonymous Outreach Report | DuxtHealth{% endblock %}
+
+{% block content %}
+
+<style>
+  /* ==========================
+     DUXTHEALTH – OUTREACH REPORT
+  ========================== */
+
+  .report-header {
+    max-width: 1200px;
+    margin: 30px auto 20px;
+  }
+
+  .report-header h2 {
+    font-weight: 800;
+    color: var(--duxt-dark);
+  }
+
+  .report-subtitle {
+    color: #6b7280;
+    font-size: 0.95rem;
+  }
+
+  .filter-box {
+    max-width: 420px;
+    margin: 20px 0 30px;
+  }
+
+  .outreach-card {
+    border-radius: 16px;
+    box-shadow: 0 18px 36px rgba(0,0,0,.08);
+    border: none;
+    overflow: hidden;
+  }
+
+  .outreach-card-header {
+    background: linear-gradient(135deg, var(--duxt-primary), #0b5c59);
+    color: #ffffff;
+    padding: 14px 20px;
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+
+  .outreach-card-header span {
+    color: var(--duxt-gold);
+    font-weight: 700;
+  }
+
+  .section-title {
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: var(--duxt-dark);
+  }
+
+  .list-group-item {
+    border-radius: 10px;
+    margin-bottom: 8px;
+    border: 1px solid #e5e7eb;
+    font-size: 0.9rem;
+  }
+
+  .badge-label {
+    background: rgba(14,111,108,.1);
+    color: var(--duxt-primary);
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    margin-right: 6px;
+  }
+
+  .empty-note {
+    font-size: 0.9rem;
+    color: #6b7280;
+    text-align: center;
+    padding: 12px;
+  }
+</style>
+
+<div class="container">
+
+  <!-- HEADER -->
+  <div class="report-header">
+    <h2>📊 Anonymous Outreach Report</h2>
+    <p class="report-subtitle">
+      Aggregated, de-identified health data for research & planning purposes only.
+    </p>
+  </div>
+
+  <!-- FILTER -->
+  <form method="get" class="filter-box">
+    <label for="filter" class="form-label fw-semibold">
+      Filter by Outreach Event
+    </label>
+    <select name="outreach_id"
+            id="filter"
+            class="form-select"
+            onchange="this.form.submit()">
+      <option value="">All Outreach Events</option>
+      {% for o in all_outreaches %}
+        <option value="{{ o.id }}" {% if selected_outreach_id == o.id %}selected{% endif %}>
+          {{ o.location }} — {{ o.date }}
+        </option>
+      {% endfor %}
+    </select>
+  </form>
+
+  <!-- DATA -->
+  {% for item in outreach_data %}
+    <div class="card outreach-card mb-5">
+
+      <!-- CARD HEADER -->
+      <div class="outreach-card-header">
+        📍 <span>{{ item.outreach.location }}</span>
+        &nbsp; | 🗓 {{ item.outreach.date }}
+        &nbsp; | 👥 Team: {{ item.outreach.team }}
+      </div>
+
+      <div class="card-body">
+
+        <!-- VITALS -->
+        <h5 class="section-title">🩺 Vitals Summary</h5>
+        <ul class="list-group mb-4">
+          {% for v in item.vitals %}
+            <li class="list-group-item">
+              <span class="badge-label">Gender</span> {{ v.patient.gender }}
+              <span class="badge-label">Age</span> {{ v.patient.age }}
+              <br class="d-md-none">
+              <strong>BP:</strong> {{ v.bp_systolic }}/{{ v.bp_diastolic }},
+              <strong>Temp:</strong> {{ v.temp_c }}°C,
+              <strong>HR:</strong> {{ v.heart_rate }},
+              <strong>SpO₂:</strong> {{ v.spo2 }},
+              <strong>Glucose:</strong> {{ v.glucose }},
+              <strong>BMI:</strong> {{ v.bmi }}
+            </li>
+          {% empty %}
+            <li class="list-group-item empty-note">
+              No vitals recorded for this outreach.
+            </li>
+          {% endfor %}
+        </ul>
+
+        <!-- CONSULTATIONS -->
+        <h5 class="section-title">🧠 Consultation Summary</h5>
+        <ul class="list-group">
+          {% for consult in item.consultations %}
+            <li class="list-group-item">
+              <span class="badge-label">Gender</span> {{ consult.patient.gender }}
+              <span class="badge-label">Age</span> {{ consult.patient.age }}
+              <br>
+              <strong>Diagnosis:</strong> {{ consult.diagnosis }}
+              {% if consult.referred_to %}
+                | <strong>Referred:</strong> {{ consult.referred_to }}
+              {% endif %}
+            </li>
+          {% empty %}
+            <li class="list-group-item empty-note">
+              No consultations recorded for this outreach.
+            </li>
+          {% endfor %}
+        </ul>
+
+      </div>
+    </div>
+
+  {% empty %}
+    <p class="text-center text-muted mt-5">
+      No outreach data available.
+    </p>
+  {% endfor %}
+
+</div>
+
+{% endblock %}

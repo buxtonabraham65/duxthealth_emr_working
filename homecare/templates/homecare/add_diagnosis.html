@@ -1,0 +1,31 @@
+{% extends "bases.html" %}
+{% block content %}
+
+<div class="container mt-4">
+    <h2 class="fw-bold mb-4">Add Diagnosis for {{ patient.first_name }} {{ patient.last_name }}</h2>
+
+    <form method="post" novalidate>
+        {% csrf_token %}
+
+        <div class="mb-3">
+            {{ form.diagnosis.label_tag }}
+            {{ form.diagnosis }}
+            {% if form.diagnosis.errors %}
+                <div class="text-danger">{{ form.diagnosis.errors }}</div>
+            {% endif %}
+        </div>
+
+        <div class="mb-3">
+            {{ form.summary.label_tag }}
+            {{ form.summary }}
+            {% if form.summary.errors %}
+                <div class="text-danger">{{ form.summary.errors }}</div>
+            {% endif %}
+        </div>
+
+        <button type="submit" class="btn btn-success">💾 Save Diagnosis</button>
+        <a href="{% url 'homecare:patient_detail' patient.id %}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+
+{% endblock %}

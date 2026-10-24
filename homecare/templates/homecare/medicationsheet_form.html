@@ -1,0 +1,220 @@
+
+{% extends "bases.html" %}
+
+{% block content %}
+
+<style>
+.form-card {
+    max-width: 1000px;
+    margin: 35px auto;
+    padding: 26px;
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 10px 28px rgba(0,0,0,.08);
+}
+.form-card h2 { text-align: center; margin-bottom: 10px; }
+.form-subtitle { text-align: center; color: #6b7280; margin-bottom: 24px; }
+.form-card label { display: block; font-weight: 600; margin-bottom: 6px; }
+.form-card input, .form-card textarea, .form-card select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+}
+.patient-section, .medication-row {
+    padding: 18px;
+    margin-bottom: 18px;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+}
+.medication-row h3 { margin-top: 0; }
+.medication-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+}
+.field { margin-bottom: 12px; }
+.btn-duxt, .btn-outline-duxt, .btn-remove {
+    display: inline-block;
+    padding: 10px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    text-decoration: none;
+    font-weight: 600;
+}
+.btn-duxt { background: #0e6f6c; color: white; border: 0; }
+.btn-outline-duxt { color: #0e6f6c; border: 1px solid #0e6f6c; }
+.btn-remove { color: #b91c1c; border: 1px solid #b91c1c; background: white; }
+.form-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 22px; }
+.errorlist { color: #b91c1c; }
+.delete-field { display: none; }
+
+@media (max-width: 650px) {
+    .medication-grid { grid-template-columns: 1fr; }
+    .form-card { margin: 12px; padding: 16px; }
+}
+</style>
+
+<div class="form-card">
+    <h2>
+        {% if form.instance.pk %}
+            Edit Medication
+        {% elif bulk_create %}
+            Prescribe Multiple Medications
+        {% else %}
+            Add Medication
+        {% endif %}
+    </h2>
+
+    <div class="form-subtitle">
+        DuxtHealth — Medication and treatment records
+    </div>
+
+    <form method="post" novalidate>
+        {% csrf_token %}
+
+        {% if bulk_create %}
+
+            {{ form.non_field_errors }}
+
+            <div class="patient-section">
+                <h3>Patient and Care Plan</h3>
+
+                {% for field in form %}
+                    <div class="field">
+                        {{ field.label_tag }}
+                        {{ field }}
+                        {{ field.errors }}
+                    </div>
+                {% endfor %}
+            </div>
+
+            <h3>Medication Items</h3>
+            <p>Add each prescribed medicine separately. Check every
+               medicine and its instructions before submitting.</p>
+
+            {{ item_formset.management_form }}
+            {{ item_formset.non_form_errors }}
+
+            <div id="medication-rows">
+                {% for item in item_formset %}
+                    <div class="medication-row">
+                        <h3>Medication {{ forloop.counter }}</h3>
+
+                        {{ item.id }}
+
+                        {% for hidden in item.hidden_fields %}
+                            {{ hidden }}
+                        {% endfor %}
+
+                        {% for field in item.visible_fields %}
+                            {% if field.name == "DELETE" %}
+                                <div class="delete-field">
+                                    {{ field }}
+                                </div>
+                            {% else %}
+                                <div class="field">
+                                    {{ field.label_tag }}
+                                    {{ field }}
+                                    {{ field.errors }}
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+
+                        <button type="button" class="btn-remove"
+                                onclick="removeMedication(this)">
+                            Remove medication
+                        </button>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <button type="button" id="add-medication"
+                    class="btn-outline-duxt">
+                + Add Another Medication
+            </button>
+
+            <template id="empty-medication-template">
+                <div class="medication-row">
+                    <h3>New Medication</h3>
+                    {{ item_formset.empty_form }}
+                    <button type="button" class="btn-remove"
+                            onclick="removeMedication(this)">
+                        Remove medication
+                    </button>
+                </div>
+            </template>
+
+        {% else %}
+
+            {{ form.non_field_errors }}
+            {% for field in form %}
+                <div class="field">
+                    {{ field.label_tag }}
+                    {{ field }}
+                    {{ field.errors }}
+                </div>
+            {% endfor %}
+
+        {% endif %}
+
+        <div class="form-actions">
+            <button type="submit" class="btn-duxt">
+                Save Medication{% if bulk_create %} Prescription{% endif %}
+            </button>
+
+            <a href="{% url 'homecare:medicationsheet_list' %}"
+               class="btn-outline-duxt">
+                Cancel
+            </a>
+        </div>
+    </form>
+</div>
+
+{% if bulk_create %}
+<script>
+(function () {
+    const rows = document.getElementById("medication-rows");
+    const addButton = document.getElementById("add-medication");
+    const template = document.getElementById("empty-medication-template");
+    const totalForms = document.getElementById(
+        "id_medications-TOTAL_FORMS"
+    );
+
+    if (!rows || !addButton || !template || !totalForms) return;
+
+    addButton.addEventListener("click", function () {
+        const index = Number(totalForms.value);
+        const html = template.innerHTML.replace(
+            /__prefix__/g,
+            index
+        );
+
+        rows.insertAdjacentHTML("beforeend", html);
+        totalForms.value = index + 1;
+
+        const newRow = rows.lastElementChild;
+        const heading = newRow.querySelector("h3");
+        if (heading) heading.textContent = "Medication " + (index + 1);
+    });
+})();
+
+function removeMedication(button) {
+    const row = button.closest(".medication-row");
+    if (!row) return;
+
+    const deleteInput = row.querySelector(
+        'input[name$="-DELETE"]'
+    );
+
+    if (deleteInput) {
+        deleteInput.checked = true;
+        row.style.display = "none";
+    } else {
+        row.remove();
+    }
+}
+</script>
+{% endif %}
+
+{% endblock %}

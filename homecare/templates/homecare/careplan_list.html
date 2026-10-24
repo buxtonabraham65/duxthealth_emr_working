@@ -1,0 +1,398 @@
+
+{% extends 'bases.html' %}
+{% block content %}
+
+<div class="container mt-4 mb-5">
+
+    <!-- ===================== -->
+    <!-- HEADER -->
+    <!-- ===================== -->
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
+        <div>
+            <h4 class="fw-bold mb-1">📋 Care Plans</h4>
+            <p class="text-muted small mb-0">
+                Review ongoing treatment plans and previous clinical outcomes.
+            </p>
+        </div>
+
+        <a href="{% url 'homecare:careplan_create' %}"
+           class="btn btn-primary btn-sm">
+            ➕ Add Care Plan
+        </a>
+    </div>
+
+    {% if careplans %}
+
+    <!-- ===================== -->
+    <!-- DESKTOP / TABLET VIEW -->
+    <!-- ===================== -->
+    <div class="d-none d-md-block">
+        <div class="table-responsive">
+            <table class="table table-bordered align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th style="width:20%">Patient</th>
+                        <th style="width:35%">Care Plan</th>
+                        <th style="width:20%">Status / Outcome</th>
+                        <th style="width:25%">Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for cp in careplans %}
+                    <tr>
+                        <!-- Patient -->
+                        <td>
+                            <strong>{{ cp.patient }}</strong>
+                        </td>
+
+                        <!-- Care plan details -->
+                        <td>
+                            <div class="card shadow-sm border-0">
+                                <div class="card-body p-2">
+                                    <h6 class="fw-bold mb-1">
+                                        {{ cp.title|default:"Care Plan" }}
+                                    </h6>
+
+                                    <p class="mb-2 text-muted small">
+                                        {{ cp.problem|default:"No problem recorded"|truncatechars:120 }}
+                                    </p>
+
+                                    {% if cp.objective %}
+                                    <p class="small mb-1">
+                                        <strong>Objective:</strong>
+                                        {{ cp.objective|truncatechars:120 }}
+                                    </p>
+                                    {% endif %}
+
+                                    <p class="text-muted small mb-0">
+                                        Started: {{ cp.start_date|date:"d M Y" }}
+
+                                        {% if cp.end_date %}
+                                        <br>Planned end: {{ cp.end_date|date:"d M Y" }}
+                                        {% endif %}
+
+                                        {% if cp.closed_at %}
+                                        <br>Closed: {{ cp.closed_at|date:"d M Y, H:i" }}
+                                        {% endif %}
+                                    </p>
+                                </div>
+                            </div>
+                        </td>
+
+                        <!-- Status -->
+                        <td>
+                            {% if cp.is_active and cp.status == 'ongoing' %}
+                                <span class="badge bg-success">
+                                    Active · Ongoing
+                                </span>
+                            {% elif cp.status == 'achieved' %}
+                                <span class="badge bg-primary">
+                                    Goals Achieved
+                                </span>
+                            {% elif cp.status == 'partially_achieved' %}
+                                <span class="badge bg-warning text-dark">
+                                    Partially Achieved
+                                </span>
+                            {% elif cp.status == 'not_achieved' %}
+                                <span class="badge bg-danger">
+                                    Not Achieved
+                                </span>
+                            {% elif cp.status == 'discontinued' %}
+                                <span class="badge bg-secondary">
+                                    Discontinued
+                                </span>
+                            {% elif not cp.is_active %}
+                                <span class="badge bg-secondary">
+                                    Inactive
+                                </span>
+                            {% else %}
+                                <span class="badge bg-info text-dark">
+                                    {{ cp.get_status_display|default:"Status not recorded" }}
+                                </span>
+                            {% endif %}
+
+                            {% if cp.evaluation %}
+                            <div class="mt-2 small">
+                                <strong>Evaluation:</strong>
+                                <p class="mb-0 text-muted">
+                                    {{ cp.evaluation|truncatechars:180 }}
+                                </p>
+                            </div>
+                            {% endif %}
+
+                            {% if cp.closure_notes %}
+                            <div class="mt-2 small">
+                                <strong>Closure notes:</strong>
+                                <p class="mb-0 text-muted">
+                                    {{ cp.closure_notes|truncatechars:150 }}
+                                </p>
+                            </div>
+                            {% endif %}
+                        </td>
+
+                        <!-- Actions -->
+                        <td>
+                            <div class="d-flex flex-wrap gap-2">
+
+                                {% if cp.is_active and cp.status == 'ongoing' %}
+                                    <a href="{% url 'homecare:careplan_update' cp.pk %}"
+                                       class="btn btn-sm btn-warning">
+                                        ✏️ Edit
+                                    </a>
+                                {% else %}
+                                    <button class="btn btn-sm btn-secondary"
+                                            type="button"
+                                            disabled>
+                                        🔒 Closed
+                                    </button>
+                                {% endif %}
+
+                                <a href="{% url 'homecare:careplan_delete' cp.pk %}"
+                                   class="btn btn-sm btn-outline-danger">
+                                    🗑 Delete
+                                </a>
+
+                            </div>
+
+                            {% if cp.status != 'ongoing' or not cp.is_active %}
+                            <p class="text-muted small mt-2 mb-0">
+                                Historical plan: retain for clinical review.
+                            </p>
+                            {% endif %}
+                        </td>
+                    </tr>
+
+                    <!-- Nursing progress history -->
+                    {% if cp.evaluations.exists %}
+                    <tr>
+                        <td colspan="4" class="bg-light">
+                            <h6 class="text-muted mb-2">
+                                🩺 Nursing Progress History
+                            </h6>
+
+                            <ul class="list-group">
+                                {% for eval in cp.evaluations.all %}
+                                <li class="list-group-item">
+                                    <strong>
+                                        {{ eval.created_at|date:"d M Y, H:i" }}
+                                    </strong>
+
+                                    — {{ eval.get_progress_status_display }}
+
+                                    <br>
+
+                                    {{ eval.note|default:"No progress note recorded" }}
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </td>
+                    </tr>
+                    {% endif %}
+
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- ===================== -->
+    <!-- MOBILE PHONE VIEW -->
+    <!-- ===================== -->
+    <div class="d-md-none">
+        <div class="row g-3">
+
+            {% for cp in careplans %}
+            <div class="col-12">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body">
+
+                        <!-- Patient and status -->
+                        <div class="d-flex justify-content-between align-items-start gap-2">
+                            <h6 class="fw-bold mb-0">
+                                {{ cp.patient }}
+                            </h6>
+
+                            <div class="text-end">
+                                {% if cp.is_active and cp.status == 'ongoing' %}
+                                    <span class="badge bg-success">
+                                        Active
+                                    </span>
+                                {% elif cp.status == 'achieved' %}
+                                    <span class="badge bg-primary">
+                                        Goals Achieved
+                                    </span>
+                                {% elif cp.status == 'partially_achieved' %}
+                                    <span class="badge bg-warning text-dark">
+                                        Partially Achieved
+                                    </span>
+                                {% elif cp.status == 'not_achieved' %}
+                                    <span class="badge bg-danger">
+                                        Not Achieved
+                                    </span>
+                                {% elif cp.status == 'discontinued' %}
+                                    <span class="badge bg-secondary">
+                                        Discontinued
+                                    </span>
+                                {% elif not cp.is_active %}
+                                    <span class="badge bg-secondary">
+                                        Inactive
+                                    </span>
+                                {% else %}
+                                    <span class="badge bg-info text-dark">
+                                        {{ cp.get_status_display|default:"Status not recorded" }}
+                                    </span>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Title -->
+                        <h6 class="fw-semibold mt-3 mb-2">
+                            {{ cp.title|default:"Care Plan" }}
+                        </h6>
+
+                        <!-- Problem -->
+                        <p class="text-muted small mb-2">
+                            <strong>Problem:</strong>
+                            {{ cp.problem|default:"No problem recorded"|truncatechars:180 }}
+                        </p>
+
+                        <!-- Objective -->
+                        {% if cp.objective %}
+                        <p class="small mb-2">
+                            <strong>Objective:</strong>
+                            {{ cp.objective|truncatechars:180 }}
+                        </p>
+                        {% endif %}
+
+                        <!-- Intervention -->
+                        {% if cp.intervention %}
+                        <p class="small mb-2">
+                            <strong>Intervention:</strong>
+                            {{ cp.intervention|truncatechars:180 }}
+                        </p>
+                        {% endif %}
+
+                        <!-- Dates -->
+                        <div class="text-muted small mb-3">
+                            <div>
+                                <strong>Start:</strong>
+                                {{ cp.start_date|date:"d M Y" }}
+                            </div>
+
+                            {% if cp.end_date %}
+                            <div>
+                                <strong>Planned end:</strong>
+                                {{ cp.end_date|date:"d M Y" }}
+                            </div>
+                            {% endif %}
+
+                            {% if cp.closed_at %}
+                            <div>
+                                <strong>Closed:</strong>
+                                {{ cp.closed_at|date:"d M Y, H:i" }}
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Evaluation -->
+                        {% if cp.evaluation %}
+                        <div class="alert alert-light border py-2 px-3 small">
+                            <strong>🩺 Evaluation:</strong>
+                            <p class="mb-0 mt-1">
+                                {{ cp.evaluation }}
+                            </p>
+                        </div>
+                        {% endif %}
+
+                        <!-- Closure notes -->
+                        {% if cp.closure_notes %}
+                        <div class="alert alert-secondary py-2 px-3 small">
+                            <strong>Closure notes:</strong>
+                            <p class="mb-0 mt-1">
+                                {{ cp.closure_notes }}
+                            </p>
+                        </div>
+                        {% endif %}
+
+                        <!-- Actions -->
+                        <div class="d-flex flex-wrap gap-2 mt-3">
+
+                            {% if cp.is_active and cp.status == 'ongoing' %}
+                                <a href="{% url 'homecare:careplan_update' cp.pk %}"
+                                   class="btn btn-warning btn-sm flex-fill">
+                                    ✏️ Update
+                                </a>
+                            {% else %}
+                                <button class="btn btn-secondary btn-sm flex-fill"
+                                        type="button"
+                                        disabled>
+                                    🔒 Closed
+                                </button>
+                            {% endif %}
+
+                            <a href="{% url 'homecare:careplan_delete' cp.pk %}"
+                               class="btn btn-outline-danger btn-sm flex-fill">
+                                🗑 Delete
+                            </a>
+                        </div>
+
+                        <!-- Nursing progress history -->
+                        {% if cp.evaluations.exists %}
+                        <div class="mt-4">
+                            <h6 class="text-muted">
+                                🩺 Nursing Progress History
+                            </h6>
+
+                            <ul class="list-group">
+                                {% for eval in cp.evaluations.all %}
+                                <li class="list-group-item small">
+                                    <strong>
+                                        {{ eval.created_at|date:"d M Y, H:i" }}
+                                    </strong>
+
+                                    <br>
+
+                                    <span class="fw-semibold">
+                                        {{ eval.get_progress_status_display }}
+                                    </span>
+
+                                    <br>
+
+                                    {{ eval.note|default:"No progress note recorded" }}
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        {% endif %}
+
+                        {% if cp.status != 'ongoing' or not cp.is_active %}
+                        <div class="text-muted small mt-3">
+                            Historical care plan — retained for clinical review.
+                        </div>
+                        {% endif %}
+
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+
+        </div>
+    </div>
+
+    {% else %}
+        <div class="alert alert-info">
+            <h6 class="fw-bold">No care plans found</h6>
+            <p class="mb-2">
+                There are currently no care plans available to display.
+            </p>
+            <a href="{% url 'homecare:careplan_create' %}"
+               class="btn btn-primary btn-sm">
+                ➕ Create Care Plan
+            </a>
+        </div>
+    {% endif %}
+
+</div>
+
+{% endblock %}
