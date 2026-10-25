@@ -3,7 +3,6 @@ bpython==0.26
 ConfigParser==7.3.0
 contextlib2==21.6.0
 cryptography==50.0.2
-cx_Oracle==8.3.0
 docutils==0.20.1
 fastapi==0.162.0
 groq==1.7.0
@@ -19,9 +18,7 @@ keyring==25.7.0
 lockfile==0.12.2
 Markdown==3.11.2
 mock==5.2.0
-MySQL-python==1.2.5
 numpy==2.5.4
-oracledb==26.0.1
 pandas==3.1.0
 Pillow==13.0.0
 protobuf==7.36.2
@@ -31,7 +28,6 @@ psycopg_pool==3.3.3
 pydantic==2.14.1
 pylibmc==1.6.3
 pymemcache==4.0.0
-pyOpenSSL==25.0.0
 pyOpenSSL==26.4.0
 pypdf==6.21.2
 python-dotenv==1.2.4
