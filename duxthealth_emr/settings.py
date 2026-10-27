@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-d4_^38_m5p*iij+s$8@f5uyyy$nbg0o+a@o_u-$lo8wk+cu(7w
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['duxthealth-emr-working.onrender.com']
 
 # Application definition
 INSTALLED_APPS = [
@@ -93,7 +93,7 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+        'NAME': 'django.contrib.auth.password_validation.CommonCommonPasswordValidator',
     },
     {
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
