@@ -1,3 +1,4 @@
+
 {% extends 'frontend_base.html' %}
 {% load static %}
 
@@ -6,184 +7,1251 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>DuxtHealth | Trusted Healthcare Anywhere</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#073b4c">
+
+    <title>DuxtHealth | Trusted Healthcare Anywhere</title>
 
     <!-- Bootstrap -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+          rel="stylesheet">
 
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="{% static 'duxthealth_frontend/css/style.css' %}">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap"
+          rel="stylesheet">
+
+    <!-- Existing stylesheet -->
+    <link rel="stylesheet"
+          href="{% static 'duxthealth_frontend/css/style.css' %}">
+
     <style>
-        /* Make cards clickable */
-        .clickable-card {
-            display: block;
-            color: inherit;
-            text-decoration: none;
+        /* =====================================================
+           DUXTHEALTH - MODERN 3D HOMEPAGE
+           ===================================================== */
+
+        :root {
+            --dh-primary: #087f8c;
+            --dh-primary-dark: #07515c;
+            --dh-navy: #073b4c;
+            --dh-accent: #36d6c3;
+            --dh-text: #193449;
+            --dh-muted: #687b8b;
+            --dh-bg: #f3f8fb;
+            --dh-white: #ffffff;
+            --dh-radius: 24px;
+
+            --dh-shadow:
+                0 18px 45px rgba(13, 64, 82, 0.10);
+
+            --dh-shadow-hover:
+                0 28px 55px rgba(13, 64, 82, 0.17);
         }
-        .clickable-card:hover {
+
+        /* Base */
+
+        .dh-home {
+            font-family: 'DM Sans', sans-serif;
+            color: var(--dh-text);
+            background: var(--dh-white);
+            overflow: hidden;
+            line-height: 1.7;
+        }
+
+        .dh-home *,
+        .dh-home *::before,
+        .dh-home *::after {
+            box-sizing: border-box;
+        }
+
+        .dh-home h1,
+        .dh-home h2,
+        .dh-home h3,
+        .dh-home h4 {
+            font-family: 'Manrope', sans-serif;
+            color: var(--dh-navy);
+            letter-spacing: -0.7px;
+        }
+
+        .dh-home p {
+            color: var(--dh-muted);
+        }
+
+        .dh-container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding-left: 24px;
+            padding-right: 24px;
+        }
+
+        /* =====================================================
+           HERO SECTION
+           ===================================================== */
+
+        .dh-hero {
+            position: relative;
+            isolation: isolate;
+            min-height: 650px;
+            display: flex;
+            align-items: center;
+            color: white;
+            background:
+                linear-gradient(
+                    115deg,
+                    rgba(3, 34, 48, 0.96) 0%,
+                    rgba(4, 66, 78, 0.83) 52%,
+                    rgba(4, 62, 76, 0.42) 100%
+                ),
+                url("{% static 'duxthealth_frontend/images/hero-homecare.jpeg' %}")
+                center / cover no-repeat;
+        }
+
+        .dh-hero::before {
+            content: "";
+            position: absolute;
+            z-index: -1;
+            width: 400px;
+            height: 400px;
+            right: -100px;
+            top: -120px;
+            border-radius: 50%;
+            background: rgba(54, 214, 195, 0.12);
+            filter: blur(3px);
+        }
+
+        .dh-hero::after {
+            content: "";
+            position: absolute;
+            z-index: -1;
+            width: 280px;
+            height: 280px;
+            bottom: -130px;
+            left: 10%;
+            border-radius: 50%;
+            background: rgba(54, 214, 195, 0.10);
+        }
+
+        .dh-hero-inner {
+            width: 100%;
+            padding-top: 100px;
+            padding-bottom: 110px;
+        }
+
+        .dh-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 9px 17px;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            border-radius: 100px;
+            color: #e3fffa;
+            background: rgba(255, 255, 255, 0.09);
+            backdrop-filter: blur(12px);
+            font-size: 0.84rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            margin-bottom: 24px;
+        }
+
+        .dh-eyebrow-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--dh-accent);
+            box-shadow: 0 0 14px var(--dh-accent);
+        }
+
+        .dh-hero h1 {
+            max-width: 850px;
+            margin: 0 auto;
+            color: #fff;
+            font-size: clamp(2.5rem, 6vw, 5rem);
+            font-weight: 800;
+            line-height: 1.12;
+            letter-spacing: -2.5px;
+            text-shadow: 0 5px 25px rgba(0, 0, 0, 0.20);
+        }
+
+        .dh-hero h1 span {
+            color: var(--dh-accent);
+        }
+
+        .dh-hero-description {
+            max-width: 720px;
+            margin: 25px auto 0;
+            color: rgba(255, 255, 255, 0.86) !important;
+            font-size: clamp(1rem, 2vw, 1.18rem);
+            line-height: 1.9;
+        }
+
+        .dh-hero-actions {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 36px;
+        }
+
+        /* =====================================================
+           3D BUTTONS
+           ===================================================== */
+
+        .dh-btn {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            min-height: 54px;
+            padding: 15px 24px;
+            border: 1px solid transparent;
+            border-radius: 14px;
+            font-family: 'Manrope', sans-serif;
+            font-size: 0.92rem;
+            font-weight: 800;
+            line-height: 1.35;
+            text-align: center;
             text-decoration: none;
+            cursor: pointer;
+            transform: translateY(0);
+            transition:
+                transform 0.22s ease,
+                box-shadow 0.22s ease,
+                background 0.22s ease,
+                border-color 0.22s ease;
+        }
+
+        .dh-btn-primary {
+            color: #fff;
+            background: linear-gradient(
+                145deg,
+                #13a89c,
+                #087481
+            );
+            box-shadow:
+                0 6px 0 #04545e,
+                0 12px 25px rgba(0, 0, 0, 0.19),
+                inset 0 1px 0 rgba(255, 255, 255, 0.30);
+        }
+
+        .dh-btn-primary:hover {
+            color: #fff;
+            background: linear-gradient(
+                145deg,
+                #20c7b6,
+                #087f8c
+            );
+            transform: translateY(-4px);
+            box-shadow:
+                0 9px 0 #04545e,
+                0 20px 32px rgba(0, 0, 0, 0.23),
+                inset 0 1px 0 rgba(255, 255, 255, 0.35);
+        }
+
+        .dh-btn-primary:active {
+            transform: translateY(4px);
+            box-shadow:
+                0 2px 0 #04545e,
+                0 5px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .dh-btn-glass {
+            color: #fff;
+            border-color: rgba(255, 255, 255, 0.40);
+            background: rgba(255, 255, 255, 0.10);
+            box-shadow:
+                0 6px 0 rgba(0, 0, 0, 0.17),
+                inset 0 1px 0 rgba(255, 255, 255, 0.18);
+            backdrop-filter: blur(12px);
+        }
+
+        .dh-btn-glass:hover {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.21);
+            border-color: rgba(255, 255, 255, 0.7);
+            transform: translateY(-4px);
+            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.2);
+        }
+
+        .dh-btn-light {
+            color: var(--dh-primary-dark);
+            background: #fff;
+            border-color: #e0edf0;
+            box-shadow:
+                0 5px 0 #d5e4e8,
+                0 10px 20px rgba(8, 67, 82, 0.07);
+        }
+
+        .dh-btn-light:hover {
+            color: var(--dh-primary-dark);
+            background: #f2fffc;
+            transform: translateY(-4px);
+            box-shadow:
+                0 8px 0 #c5e1e1,
+                0 17px 28px rgba(8, 67, 82, 0.12);
+        }
+
+        .dh-btn-outline {
+            color: var(--dh-primary-dark);
+            background: #fff;
+            border: 1px solid #b9dfe0;
+            box-shadow: 0 5px 0 #e0eded;
+        }
+
+        .dh-btn-outline:hover {
+            color: #fff;
+            background: var(--dh-primary);
+            border-color: var(--dh-primary);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 0 #07515c;
+        }
+
+        .dh-btn:focus-visible,
+        .dh-card-link:focus-visible {
+            outline: 3px solid #ffcb69;
+            outline-offset: 5px;
+        }
+
+        .dh-arrow {
+            display: inline-block;
+            transition: transform 0.2s ease;
+            font-size: 1.1rem;
+        }
+
+        .dh-btn:hover .dh-arrow {
+            transform: translateX(4px);
+        }
+
+        /* =====================================================
+           TRUST STRIP
+           ===================================================== */
+
+        .dh-trust-wrap {
+            position: relative;
+            z-index: 2;
+            padding: 0 24px;
+            margin-top: -38px;
+        }
+
+        .dh-trust-strip {
+            max-width: 1060px;
+            margin: 0 auto;
+            padding: 26px 20px;
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 18px;
+            border: 1px solid rgba(221, 237, 240, 0.9);
+            border-radius: 22px;
+            background: #fff;
+            box-shadow: 0 18px 45px rgba(7, 59, 76, 0.12);
+        }
+
+        .dh-trust-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            min-width: 0;
+        }
+
+        .dh-trust-icon {
+            display: grid;
+            place-items: center;
+            flex-shrink: 0;
+            width: 45px;
+            height: 45px;
+            border-radius: 14px;
+            color: var(--dh-primary);
+            background: #e8f9f6;
+            box-shadow: inset 0 2px 5px rgba(8, 127, 140, 0.08);
+            font-size: 1.35rem;
+        }
+
+        .dh-trust-item strong {
+            display: block;
+            color: var(--dh-navy);
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .dh-trust-item small {
+            display: block;
+            color: var(--dh-muted);
+            font-size: 0.78rem;
+            line-height: 1.5;
+        }
+
+        /* =====================================================
+           SHARED SECTION STYLES
+           ===================================================== */
+
+        .dh-section {
+            padding: 100px 0;
+        }
+
+        .dh-section-soft {
+            background:
+                radial-gradient(
+                    circle at 5% 10%,
+                    rgba(54, 214, 195, 0.07),
+                    transparent 30%
+                ),
+                var(--dh-bg);
+        }
+
+        .dh-section-heading {
+            max-width: 760px;
+            margin: 0 auto 55px;
+            text-align: center;
+        }
+
+        .dh-section-label {
+            display: inline-block;
+            margin-bottom: 15px;
+            padding: 7px 14px;
+            border-radius: 100px;
+            color: var(--dh-primary-dark);
+            background: #e4f7f3;
+            font-size: 0.76rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1.3px;
+        }
+
+        .dh-section-heading h2 {
+            margin-bottom: 18px;
+            font-size: clamp(2rem, 4vw, 3.2rem);
+            font-weight: 800;
+            line-height: 1.2;
+        }
+
+        .dh-section-heading p {
+            max-width: 650px;
+            margin: 0 auto;
+            font-size: 1.04rem;
+            line-height: 1.9;
+        }
+
+        /* =====================================================
+           3D SERVICE CARDS
+           ===================================================== */
+
+        .dh-services-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 30px;
+        }
+
+        .dh-service-card {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            overflow: hidden;
+            border: 1px solid #e5eff2;
+            border-radius: var(--dh-radius);
+            background: #fff;
+            box-shadow: var(--dh-shadow);
+            transition:
+                transform 0.3s ease,
+                box-shadow 0.3s ease,
+                border-color 0.3s ease;
+        }
+
+        .dh-service-card:hover {
+            transform: translateY(-9px);
+            border-color: #b9e4df;
+            box-shadow: var(--dh-shadow-hover);
+        }
+
+        .dh-card-image-wrap {
+            position: relative;
+            height: 280px;
+            overflow: hidden;
+            background: #eaf3f5;
+        }
+
+        .dh-card-image {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.55s ease;
+        }
+
+        .dh-service-card:hover .dh-card-image {
+            transform: scale(1.055);
+        }
+
+        .dh-image-overlay {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            background: linear-gradient(
+                to top,
+                rgba(5, 42, 56, 0.25),
+                transparent 45%
+            );
+        }
+
+        .dh-card-number {
+            position: absolute;
+            top: 18px;
+            left: 18px;
+            display: grid;
+            place-items: center;
+            width: 46px;
+            height: 46px;
+            border: 1px solid rgba(255, 255, 255, 0.65);
+            border-radius: 15px;
+            color: #fff;
+            background: rgba(5, 61, 74, 0.72);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.12);
+            font-weight: 800;
+        }
+
+        .dh-card-body {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            align-items: flex-start;
+            padding: 30px;
+        }
+
+        .dh-card-tag {
+            margin-bottom: 13px;
+            color: var(--dh-primary);
+            font-size: 0.76rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .dh-card-body h3 {
+            margin-bottom: 13px;
+            font-size: clamp(1.3rem, 2.5vw, 1.65rem);
+            font-weight: 800;
+            line-height: 1.35;
+        }
+
+        .dh-card-body p {
+            flex: 1;
+            margin-bottom: 25px;
+            font-size: 0.96rem;
+            line-height: 1.85;
+        }
+
+        .dh-card-body .dh-btn {
+            width: 100%;
+        }
+
+        /* =====================================================
+           FEATURE BAND
+           ===================================================== */
+
+        .dh-feature-band {
+            padding: 70px 0;
+            color: #fff;
+            background:
+                radial-gradient(
+                    circle at 90% 20%,
+                    rgba(54, 214, 195, 0.17),
+                    transparent 30%
+                ),
+                linear-gradient(120deg, #073b4c, #086d78);
+        }
+
+        .dh-feature-layout {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            align-items: center;
+            gap: 45px;
+        }
+
+        .dh-feature-band h2 {
+            margin-bottom: 17px;
+            color: #fff;
+            font-size: clamp(1.9rem, 4vw, 2.8rem);
+            font-weight: 800;
+            line-height: 1.25;
+        }
+
+        .dh-feature-band p {
+            max-width: 650px;
+            margin-bottom: 0;
+            color: rgba(255, 255, 255, 0.79);
+            line-height: 1.9;
+        }
+
+        .dh-feature-actions {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+            gap: 14px;
+        }
+
+        /* =====================================================
+           ADMINISTRATIVE ACCESS
+           ===================================================== */
+
+        .dh-admin {
+            padding: 38px 0;
+            text-align: center;
+            background: #fff;
+        }
+
+        .dh-admin p {
+            margin-bottom: 12px;
+            font-size: 0.85rem;
+        }
+
+        .dh-admin-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 9px 17px;
+            border: 1px solid #dbe6eb;
+            border-radius: 10px;
+            color: #526777;
+            background: #f7fafb;
+            box-shadow: 0 3px 0 #e2eaee;
+            text-decoration: none;
+            font-size: 0.83rem;
+            font-weight: 700;
+            transition: all 0.2s ease;
+        }
+
+        .dh-admin-btn:hover {
+            color: var(--dh-primary-dark);
+            background: #e9f8f5;
+            transform: translateY(-2px);
+        }
+
+        /* =====================================================
+           FOOTER
+           ===================================================== */
+
+        .dh-footer {
+            padding: 40px 0 25px;
+            color: rgba(255, 255, 255, 0.78);
+            background: #052c3a;
+            text-align: center;
+        }
+
+        .dh-footer-brand {
+            margin-bottom: 5px;
+            color: #fff;
+            font-family: 'Manrope', sans-serif;
+            font-size: 1.55rem;
+            font-weight: 800;
+            letter-spacing: -0.6px;
+        }
+
+        .dh-footer-brand span {
+            color: var(--dh-accent);
+        }
+
+        .dh-footer p {
+            margin-bottom: 5px;
+            color: rgba(255, 255, 255, 0.70);
+        }
+
+        .dh-footer-note {
+            font-size: 0.83rem;
+        }
+
+        /* =====================================================
+           RESPONSIVE TABLET
+           ===================================================== */
+
+        @media (max-width: 991.98px) {
+            .dh-hero {
+                min-height: 590px;
+            }
+
+            .dh-hero-inner {
+                padding-top: 85px;
+                padding-bottom: 90px;
+            }
+
+            .dh-section {
+                padding: 75px 0;
+            }
+
+            .dh-services-grid {
+                gap: 22px;
+            }
+
+            .dh-card-image-wrap {
+                height: 235px;
+            }
+
+            .dh-card-body {
+                padding: 24px;
+            }
+
+            .dh-feature-layout {
+                grid-template-columns: 1fr;
+                gap: 25px;
+                text-align: center;
+            }
+
+            .dh-feature-band p {
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            .dh-feature-actions {
+                justify-content: center;
+            }
+        }
+
+        /* =====================================================
+           RESPONSIVE MOBILE
+           ===================================================== */
+
+        @media (max-width: 767.98px) {
+            .dh-container {
+                padding-left: 18px;
+                padding-right: 18px;
+            }
+
+            .dh-hero {
+                min-height: auto;
+                background-position: center;
+            }
+
+            .dh-hero-inner {
+                padding-top: 78px;
+                padding-bottom: 85px;
+            }
+
+            .dh-hero h1 {
+                font-size: clamp(2.25rem, 9vw, 3.6rem);
+                letter-spacing: -1.5px;
+            }
+
+            .dh-hero-description {
+                margin-top: 20px;
+                font-size: 0.98rem;
+                line-height: 1.8;
+            }
+
+            .dh-eyebrow {
+                font-size: 0.72rem;
+                padding: 8px 12px;
+            }
+
+            .dh-hero-actions {
+                display: grid;
+                grid-template-columns: minmax(0, 1fr);
+                width: 100%;
+                max-width: 410px;
+                margin: 30px auto 0;
+                gap: 16px;
+            }
+
+            .dh-btn {
+                width: 100%;
+                min-height: 54px;
+                padding: 14px 16px;
+                font-size: 0.88rem;
+            }
+
+            .dh-trust-wrap {
+                padding: 0 18px;
+                margin-top: -25px;
+            }
+
+            .dh-trust-strip {
+                grid-template-columns: 1fr;
+                gap: 16px;
+                padding: 22px;
+                border-radius: 19px;
+            }
+
+            .dh-trust-item {
+                justify-content: flex-start;
+            }
+
+            .dh-trust-icon {
+                width: 42px;
+                height: 42px;
+            }
+
+            .dh-section {
+                padding: 65px 0;
+            }
+
+            .dh-section-heading {
+                margin-bottom: 35px;
+            }
+
+            .dh-section-heading h2 {
+                font-size: 2rem;
+                letter-spacing: -1px;
+            }
+
+            .dh-section-heading p {
+                font-size: 0.95rem;
+            }
+
+            .dh-services-grid {
+                grid-template-columns: minmax(0, 1fr);
+                gap: 24px;
+            }
+
+            .dh-service-card {
+                border-radius: 20px;
+            }
+
+            .dh-card-image-wrap {
+                height: auto;
+                aspect-ratio: 16 / 10;
+            }
+
+            .dh-card-body {
+                padding: 23px;
+            }
+
+            .dh-card-body h3 {
+                font-size: 1.4rem;
+            }
+
+            .dh-card-body p {
+                font-size: 0.93rem;
+            }
+
+            .dh-feature-band {
+                padding: 58px 0;
+            }
+
+            .dh-feature-band h2 {
+                font-size: 2rem;
+            }
+
+            .dh-feature-actions {
+                display: grid;
+                grid-template-columns: minmax(0, 1fr);
+                width: 100%;
+                max-width: 410px;
+                margin: 0 auto;
+            }
+
+            .dh-admin {
+                padding: 30px 0;
+            }
+
+            .dh-footer {
+                padding: 34px 18px 22px;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .dh-container {
+                padding-left: 14px;
+                padding-right: 14px;
+            }
+
+            .dh-hero h1 {
+                font-size: 2.1rem;
+            }
+
+            .dh-card-body {
+                padding: 19px;
+            }
+
+            .dh-trust-wrap {
+                padding-left: 14px;
+                padding-right: 14px;
+            }
+        }
+
+        /* Accessibility: respect reduced-motion preferences */
+
+        @media (prefers-reduced-motion: reduce) {
+            .dh-home *,
+            .dh-home *::before,
+            .dh-home *::after {
+                scroll-behavior: auto !important;
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
         }
     </style>
 </head>
 
 <body>
 
-<!-- ================= HERO ================= -->
-<section class="hero-section text-center text-white"
-    style="background:
-    linear-gradient(rgba(0,0,0,.6),rgba(0,0,0,.6)),
-    url('{% static 'duxthealth_frontend/images/hero-homecare.jpeg' %}')
-    center/cover no-repeat;">
+<main class="dh-home">
 
-    <div class="container py-5">
-        <h1 class="fw-bold display-5">
-            Healthcare You Can Trust
-        </h1>
-        <p class="lead mt-3">
-            Professional care delivered safely — at home or in the community.
-        </p>
-        <p class="lead mt-3">Nurses, doctors, and caregivers — delivered to your doorstep with hospital-level standards.</p>
+    <!-- ================= HERO ================= -->
 
-        <!-- PRIMARY ACTION -->
-        <div class="mt-4 d-flex flex-wrap justify-content-center gap-3">
-            <a href="{% url 'homecare:homecare_apply' %}"
-               class="btn btn-primary btn-lg px-5">
-                Request Homecare Service
-            </a>
-            <a href="{% url 'homecare:homecare_apply' %}"
-               class="btn btn-primary btn-lg px-5">
-                Request as a Health Personnel
-            </a>
+    <section class="dh-hero">
+        <div class="dh-container dh-hero-inner text-center">
 
-            <a href="{% url 'homecare:homecare_home' %}"
-               class="btn btn-primary btn-lg px-5">
-                Clinician Portal
-            </a>
-
-            <a href="{% url 'patient_dashboard:dashboard' %}"
-               class="btn btn-primary btn-lg px-5">
-                Patient Portal
-            </a>
-        </div>
-    </div>
-</section>
-
-<!-- ================= PATIENT FIRST ================= -->
-<a href="{% url 'patient_dashboard:dashboard' %}" class="clickable-card">
-<section class="py-5">
-    <div class="container">
-        <div class="row align-items-center g-4">
-            <div class="col-md-6">
-                <img src="{% static 'duxthealth_frontend/images/patient-portal.jpeg' %}"
-                     class="img-fluid rounded">
+            <div class="dh-eyebrow">
+                <span class="dh-eyebrow-dot"></span>
+                QUALITY CARE. WHERE YOU NEED IT.
             </div>
-            <div class="col-md-6">
-                <h2 class="fw-bold">For Patients & Families</h2>
-                <p class="lead">
-                    Access your care records, visits, medications, and updates
-                    in one secure place.
-                </p>
-                <span class="btn btn-outline-primary btn-lg mt-2">
-                    Go to Patient Portal
-                </span>
-            </div>
-        </div>
-    </div>
-</section>
-</a>
 
-<!-- ================= HOMECARE ================= -->
-<a href="{% url 'homecare:homecare_apply' %}" class="clickable-card">
-<section class="bg-light py-5">
-    <div class="container">
-        <div class="row align-items-center g-4">
-            <div class="col-md-6 order-md-2">
-                <img src="{% static 'duxthealth_frontend/images/homecare-card.jpeg' %}"
-                     class="img-fluid rounded">
-            </div>
-            <div class="col-md-6">
-                <h2 class="fw-bold">Apply for a Homecare Role</h2>
-                <p class="lead">
-                    Join DuxtHealth as a nurse, doctor, or caregiver. Contribute to bringing trusted healthcare directly to homes and communities. Apply now to be part of our compassionate, professional, and patient-focused team.
-                </p>
-                <span class="btn btn-primary btn-lg mt-2">
-                    Register for Homecare
-                </span>
-            </div>
-        </div>
-    </div>
-</section>
-</a>
+            <h1>
+                Healthcare You Can
+                <span>Trust.</span>
+            </h1>
 
-<!-- ================= STAFF ================= -->
-<a href="{% url 'homecare:homecare_home' %}" class="clickable-card">
-<section class="py-5">
-    <div class="container">
-        <div class="row align-items-center g-4">
-            <div class="col-md-6">
-                <img src="{% static 'duxthealth_frontend/images/clinician-portal.jpeg' %}"
-                     class="img-fluid rounded">
-            </div>
-            <div class="col-md-6">
-                <h2 class="fw-bold">For Healthcare Professionals</h2>
-                <p class="lead">
-                    Manage patients, visits, clinical notes, and care coordination
-                    securely and efficiently.
-                </p>
-                <span class="btn btn-outline-primary btn-lg mt-2">
+            <p class="dh-hero-description">
+                Professional healthcare delivered safely at home and
+                throughout the community. Connect with nurses, doctors,
+                and caregivers through DuxtHealth's integrated care services.
+            </p>
+
+            <div class="dh-hero-actions">
+
+                <a href="{% url 'homecare:homecare_apply' %}"
+                   class="dh-btn dh-btn-primary">
+                    Request Homecare
+                    <span class="dh-arrow" aria-hidden="true">&rarr;</span>
+                </a>
+
+                <a href="{% url 'homecare:homecare_apply' %}"
+                   class="dh-btn dh-btn-glass">
+                    Join as Health Personnel
+                    <span class="dh-arrow" aria-hidden="true">&rarr;</span>
+                </a>
+
+                <a href="{% url 'homecare:homecare_home' %}"
+                   class="dh-btn dh-btn-glass">
                     Clinician Portal
-                </span>
+                    <span class="dh-arrow" aria-hidden="true">&rarr;</span>
+                </a>
+
+                <a href="{% url 'patient_dashboard:dashboard' %}"
+                   class="dh-btn dh-btn-glass">
+                    Patient Portal
+                    <span class="dh-arrow" aria-hidden="true">&rarr;</span>
+                </a>
+
             </div>
         </div>
-    </div>
-</section>
-</a>
+    </section>
 
-<!-- ================= OUTREACH ================= -->
-<a href="{% url 'home' %}" class="clickable-card">
-<section class="bg-light py-5">
-    <div class="container">
-        <div class="row align-items-center g-4">
-            <div class="col-md-6 order-md-2">
-                <img src="{% static 'duxthealth_frontend/images/outreach-card.jpeg' %}"
-                     class="img-fluid rounded">
+
+    <!-- ================= TRUST STRIP ================= -->
+
+    <div class="dh-trust-wrap">
+        <div class="dh-trust-strip">
+
+            <div class="dh-trust-item">
+                <div class="dh-trust-icon" aria-hidden="true">
+                    &#10010;
+                </div>
+                <div>
+                    <strong>Patient-Focused Care</strong>
+                    <small>Care built around individual needs</small>
+                </div>
             </div>
-            <div class="col-md-6">
-                <h2 class="fw-bold">Health Outreach EMR</h2>
-                <p class="lead">
-                    Digital records for community outreach programs and public
-                    health initiatives.
+
+            <div class="dh-trust-item">
+                <div class="dh-trust-icon" aria-hidden="true">
+                    &#10003;
+                </div>
+                <div>
+                    <strong>Connected Care Services</strong>
+                    <small>Patients and professionals in one system</small>
+                </div>
+            </div>
+
+            <div class="dh-trust-item">
+                <div class="dh-trust-icon" aria-hidden="true">
+                    &#9825;
+                </div>
+                <div>
+                    <strong>Care Beyond Hospitals</strong>
+                    <small>Supporting home and community care</small>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- ================= SERVICES INTRO ================= -->
+
+    <section class="dh-section">
+        <div class="dh-container">
+
+            <div class="dh-section-heading">
+                <span class="dh-section-label">Explore DuxtHealth</span>
+
+                <h2>
+                    Healthcare services, thoughtfully connected
+                </h2>
+
+                <p>
+                    Whether you need care, manage clinical services,
+                    or support community health programmes, find the
+                    right place to get started.
                 </p>
-                <span class="btn btn-outline-secondary btn-lg mt-2">
-                    Access Outreach System
-                </span>
+            </div>
+
+
+            <!-- ================= SERVICE CARDS ================= -->
+
+            <div class="dh-services-grid">
+
+                <!-- PATIENT PORTAL -->
+
+                <article class="dh-service-card">
+
+                    <div class="dh-card-image-wrap">
+                        <img
+                            src="{% static 'duxthealth_frontend/images/patient-portal.jpeg' %}"
+                            class="dh-card-image"
+                            alt="Patient accessing healthcare services"
+                            loading="lazy">
+
+                        <div class="dh-image-overlay"></div>
+
+                        <div class="dh-card-number">01</div>
+                    </div>
+
+                    <div class="dh-card-body">
+
+                        <div class="dh-card-tag">
+                            For Patients & Families
+                        </div>
+
+                        <h3>Your Health, All in One Place</h3>
+
+                        <p>
+                            Access your care records, appointments,
+                            medication information, visits, and updates
+                            through your patient dashboard.
+                        </p>
+
+                        <a href="{% url 'patient_dashboard:dashboard' %}"
+                           class="dh-btn dh-btn-primary">
+                            Go to Patient Portal
+                            <span class="dh-arrow" aria-hidden="true">&rarr;</span>
+                        </a>
+
+                    </div>
+                </article>
+
+
+                <!-- HOMECARE -->
+
+                <article class="dh-service-card">
+
+                    <div class="dh-card-image-wrap">
+                        <img
+                            src="{% static 'duxthealth_frontend/images/homecare-card.jpeg' %}"
+                            class="dh-card-image"
+                            alt="Homecare and professional care services"
+                            loading="lazy">
+
+                        <div class="dh-image-overlay"></div>
+
+                        <div class="dh-card-number">02</div>
+                    </div>
+
+                    <div class="dh-card-body">
+
+                        <div class="dh-card-tag">
+                            Homecare Services
+                        </div>
+
+                        <h3>Professional Care at Home</h3>
+
+                        <p>
+                            Request homecare services and connect with
+                            the care team supporting your health needs
+                            in the comfort of your home.
+                        </p>
+
+                        <a href="{% url 'homecare:homecare_apply' %}"
+                           class="dh-btn dh-btn-primary">
+                            Request Homecare
+                            <span class="dh-arrow" aria-hidden="true">&rarr;</span>
+                        </a>
+
+                    </div>
+                </article>
+
+
+                <!-- CLINICIAN PORTAL -->
+
+                <article class="dh-service-card">
+
+                    <div class="dh-card-image-wrap">
+                        <img
+                            src="{% static 'duxthealth_frontend/images/clinician-portal.jpeg' %}"
+                            class="dh-card-image"
+                            alt="Healthcare professional working with clinical information"
+                            loading="lazy">
+
+                        <div class="dh-image-overlay"></div>
+
+                        <div class="dh-card-number">03</div>
+                    </div>
+
+                    <div class="dh-card-body">
+
+                        <div class="dh-card-tag">
+                            For Healthcare Professionals
+                        </div>
+
+                        <h3>Care Coordination Made Easier</h3>
+
+                        <p>
+                            Manage patient visits, clinical notes,
+                            care activities, and coordination workflows
+                            through your clinician portal.
+                        </p>
+
+                        <a href="{% url 'homecare:homecare_home' %}"
+                           class="dh-btn dh-btn-primary">
+                            Open Clinician Portal
+                            <span class="dh-arrow" aria-hidden="true">&rarr;</span>
+                        </a>
+
+                    </div>
+                </article>
+
+
+                <!-- OUTREACH EMR -->
+
+                <article class="dh-service-card">
+
+                    <div class="dh-card-image-wrap">
+                        <img
+                            src="{% static 'duxthealth_frontend/images/outreach-card.jpeg' %}"
+                            class="dh-card-image"
+                            alt="Community health outreach programme"
+                            loading="lazy">
+
+                        <div class="dh-image-overlay"></div>
+
+                        <div class="dh-card-number">04</div>
+                    </div>
+
+                    <div class="dh-card-body">
+
+                        <div class="dh-card-tag">
+                            Community Health
+                        </div>
+
+                        <h3>Health Outreach EMR</h3>
+
+                        <p>
+                            Support community outreach programmes
+                            with organised digital records and
+                            workflows for public health initiatives.
+                        </p>
+
+                        <a href="{% url 'home' %}"
+                           class="dh-btn dh-btn-outline">
+                            Access Outreach System
+                            <span class="dh-arrow" aria-hidden="true">&rarr;</span>
+                        </a>
+
+                    </div>
+                </article>
+
             </div>
         </div>
-    </div>
-</section>
-</a>
+    </section>
 
-<!-- ================= ADMIN (QUIET) ================= -->
-<section class="py-5 text-center">
-    <div class="container">
-        <p class="text-muted mb-2">
-            Administrative access
-        </p>
-        <a href="{% url 'homecare:admin_dashboard' %}"
-           class="btn btn-sm btn-outline-dark">
-            Admin Portal
-        </a>
-    </div>
-</section>
 
-<!-- ================= FOOTER ================= -->
-<footer class="footer text-center py-4 bg-dark text-white">
-    <div class="container">
-        <p class="mb-1 fw-bold">DuxtHealth</p>
-        <p class="small mb-0">© 2026 — Care without boundaries</p>
-    </div>
-</footer>
+    <!-- ================= HEALTHCARE PROFESSIONAL CTA ================= -->
+
+    <section class="dh-feature-band">
+        <div class="dh-container">
+
+            <div class="dh-feature-layout">
+
+                <div>
+                    <div class="dh-eyebrow">
+                        <span class="dh-eyebrow-dot"></span>
+                        GROW WITH DUXTHEALTH
+                    </div>
+
+                    <h2>
+                        Make a difference in the lives you care for.
+                    </h2>
+
+                    <p>
+                        Are you a nurse, doctor, caregiver, or other
+                        healthcare professional? Explore opportunities
+                        to contribute to compassionate, patient-focused
+                        care across homes and communities.
+                    </p>
+                </div>
+
+                <div class="dh-feature-actions">
+
+                    <a href="{% url 'homecare:homecare_apply' %}"
+                       class="dh-btn dh-btn-primary">
+                        Apply for Homecare
+                        <span class="dh-arrow" aria-hidden="true">&rarr;</span>
+                    </a>
+
+                    <a href="{% url 'homecare:homecare_home' %}"
+                       class="dh-btn dh-btn-glass">
+                        Clinician Portal
+                        <span class="dh-arrow" aria-hidden="true">&rarr;</span>
+                    </a>
+
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+
+    <!-- ================= ADMINISTRATIVE ACCESS ================= -->
+
+    <section class="dh-admin">
+        <div class="dh-container">
+
+            <p>Administrative access</p>
+
+            <a href="{% url 'homecare:admin_dashboard' %}"
+               class="dh-admin-btn">
+                <span aria-hidden="true">&#9881;</span>
+                Admin Portal
+                <span aria-hidden="true">&rarr;</span>
+            </a>
+
+        </div>
+    </section>
+
+
+    <!-- ================= FOOTER ================= -->
+
+    <footer class="dh-footer">
+        <div class="dh-container">
+
+            <div class="dh-footer-brand">
+                Duxt<span>Health</span>
+            </div>
+
+            <p>Care without boundaries.</p>
+
+            <p class="dh-footer-note">
+                &copy; 2026 DuxtHealth. All rights reserved.
+            </p>
+
+        </div>
+    </footer>
+
+</main>
 
 </body>
 </html>
