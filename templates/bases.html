@@ -1,191 +1,875 @@
+
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>{% block title %}DuxtHealth | Clinical Workspace{% endblock %}</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#073b4c">
 
-  <!-- Bootstrap 5 -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <title>{% block title %}DuxtHealth | Clinical Workspace{% endblock %}</title>
 
-  <!-- DuxtHealth Clinical UI -->
-  <style>
-    :root {
-      --duxt-primary: #0E6F6C;
-      --duxt-secondary: #7ED6C2;
-      --duxt-gold: #C9A24D;
-      --duxt-dark: #1F2937;
-      --duxt-bg: #f4f7f8;
-      --duxt-gradient: linear-gradient(135deg, #0E6F6C, #0b5c59);
-    }
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+          rel="stylesheet">
 
-    body {
-      font-family: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-      background-color: var(--duxt-bg);
-      color: var(--duxt-dark);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap"
+          rel="stylesheet">
 
-    /* =========================
-       NAVBAR
-       ========================= */
-    .navbar {
-      background: var(--duxt-gradient);
-      box-shadow: 0 6px 18px rgba(0,0,0,.08);
-    }
+    <style>
+        :root {
+            --duxt-primary: #087f8c;
+            --duxt-primary-dark: #07515c;
+            --duxt-secondary: #36d6c3;
+            --duxt-gold: #e5bf68;
+            --duxt-dark: #17384a;
+            --duxt-muted: #6b7f8e;
+            --duxt-bg: #f2f7fa;
+            --duxt-white: #ffffff;
 
-    .navbar-brand {
-      font-weight: 700;
-      font-size: 1.25rem;
-      letter-spacing: 0.4px;
-    }
+            --duxt-gradient:
+                linear-gradient(135deg, #073b4c, #087f8c);
 
-    .navbar-brand span {
-      color: var(--duxt-gold);
-    }
+            --duxt-shadow:
+                0 12px 30px rgba(7, 59, 76, .10);
+        }
 
-    .nav-link {
-      color: rgba(255,255,255,.9) !important;
-      font-weight: 500;
-      margin-right: 12px;
-      transition: color .2s ease;
-    }
+        /* ================= BASE ================= */
 
-    .nav-link:hover {
-      color: var(--duxt-secondary) !important;
-    }
+        html {
+            scroll-behavior: smooth;
+        }
 
-    .user-badge {
-      background: rgba(255,255,255,.15);
-      padding: 6px 14px;
-      border-radius: 20px;
-      font-size: 0.9rem;
-    }
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            font-family: "DM Sans", "Segoe UI", sans-serif;
+            color: var(--duxt-dark);
+            background:
+                radial-gradient(
+                    circle at 0% 0%,
+                    rgba(54, 214, 195, .06),
+                    transparent 32%
+                ),
+                var(--duxt-bg);
+        }
 
-    /* =========================
-       MAIN CONTENT
-       ========================= */
-    main.container {
-      max-width: 1200px;
-      flex: 1;
-    }
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+        }
 
-    /* =========================
-       FOOTER (MATCHES NAVBAR)
-       ========================= */
-    footer.footer {
-      background: var(--duxt-gradient);
-      color: rgba(255,255,255,.9);
-      padding: 2rem 0;
-      box-shadow: 0 -6px 18px rgba(0,0,0,.08);
-    }
+        a {
+            text-decoration: none;
+        }
 
-    .footer-brand {
-      font-weight: 700;
-      font-size: 1.1rem;
-      letter-spacing: 0.4px;
-    }
+        img {
+            max-width: 100%;
+        }
 
-    .footer-brand span {
-      color: var(--duxt-gold);
-    }
+        /* ================= 3D NAVBAR ================= */
 
-    .footer-tagline {
-      font-size: 0.85rem;
-      opacity: 0.85;
-    }
-  </style>
+        .duxt-navbar {
+            position: relative;
+            z-index: 1030;
+            background: var(--duxt-gradient);
+            border-bottom: 1px solid rgba(255,255,255,.13);
+            box-shadow:
+                0 5px 0 #043b46,
+                0 12px 28px rgba(4, 45, 58, .19),
+                inset 0 1px 0 rgba(255,255,255,.15);
+        }
 
-  {% block extra_head %}{% endblock %}
+        .duxt-navbar .container {
+            min-height: 76px;
+        }
+
+        .duxt-brand {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            color: #fff !important;
+            font-family: "Manrope", sans-serif;
+            font-size: 1.35rem;
+            font-weight: 800;
+            letter-spacing: -.5px;
+            flex-shrink: 0;
+        }
+
+        /* Logo beside the navbar brand */
+
+        .duxt-brand-logo {
+            display: block;
+            width: 42px;
+            height: 42px;
+            flex: 0 0 42px;
+            object-fit: contain;
+            border-radius: 10px;
+            background: #ffffff;
+            padding: 3px;
+            box-shadow:
+                0 4px 0 rgba(0,0,0,.18),
+                0 7px 14px rgba(0,0,0,.12),
+                inset 0 1px 0 #fff;
+        }
+
+        .duxt-brand-name {
+            display: inline-block;
+            white-space: nowrap;
+        }
+
+        .duxt-brand-name span {
+            color: var(--duxt-gold);
+        }
+
+        .duxt-navbar .navbar-toggler {
+            padding: 9px 11px;
+            border: 1px solid rgba(255,255,255,.28);
+            border-radius: 12px;
+            background: rgba(255,255,255,.09);
+            box-shadow:
+                0 3px 0 rgba(0,0,0,.15),
+                inset 0 1px 0 rgba(255,255,255,.12);
+        }
+
+        .duxt-navbar .navbar-toggler:focus {
+            box-shadow: 0 0 0 3px rgba(54,214,195,.3);
+        }
+
+        .duxt-navbar .navbar-toggler-icon {
+            width: 1.25em;
+            height: 1.25em;
+        }
+
+        /* ================= NAVIGATION LINKS ================= */
+
+        .duxt-navbar .navbar-nav {
+            gap: 5px;
+        }
+
+        .duxt-navbar .nav-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            padding: 10px 12px !important;
+            border: 1px solid transparent;
+            border-radius: 11px;
+            color: rgba(255,255,255,.91) !important;
+            font-size: .86rem;
+            font-weight: 700;
+            transition:
+                background .2s ease,
+                transform .2s ease,
+                border-color .2s ease,
+                box-shadow .2s ease;
+        }
+
+        .duxt-navbar .nav-link:hover {
+            color: #fff !important;
+            border-color: rgba(255,255,255,.15);
+            background: rgba(255,255,255,.12);
+            transform: translateY(-2px);
+            box-shadow:
+                0 3px 0 rgba(0,0,0,.12),
+                inset 0 1px 0 rgba(255,255,255,.08);
+        }
+
+        .duxt-navbar .nav-link:focus-visible {
+            outline: 3px solid var(--duxt-gold);
+            outline-offset: 3px;
+        }
+
+        .duxt-user-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 9px 12px;
+            border: 1px solid rgba(255,255,255,.18);
+            border-radius: 13px;
+            color: #fff;
+            background: rgba(255,255,255,.10);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,.1);
+            font-size: .83rem;
+            font-weight: 700;
+        }
+
+        .duxt-auth-link {
+            padding: 10px 15px !important;
+            border-radius: 11px !important;
+            color: #064b56 !important;
+            background: linear-gradient(145deg, #fff, #e6fffa);
+            box-shadow:
+                0 4px 0 #b8e6df,
+                0 7px 12px rgba(0,0,0,.10);
+            transition: transform .2s ease, box-shadow .2s ease;
+        }
+
+        .duxt-auth-link:hover {
+            color: #064b56 !important;
+            background: #fff;
+            transform: translateY(-2px);
+            box-shadow:
+                0 6px 0 #b8e6df,
+                0 10px 16px rgba(0,0,0,.13);
+        }
+
+        /* ================= QUICK ACCESS PANEL ================= */
+
+        .duxt-quick-wrap {
+            position: relative;
+            z-index: 10;
+            padding: 16px 0;
+            background: rgba(255,255,255,.96);
+            border-bottom: 1px solid #e1ebef;
+            box-shadow: 0 5px 16px rgba(7,59,76,.045);
+        }
+
+        .duxt-quick-heading {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            margin-bottom: 12px;
+            color: var(--duxt-dark);
+            font-size: .77rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .duxt-quick-heading span {
+            display: inline-grid;
+            place-items: center;
+            width: 27px;
+            height: 27px;
+            border-radius: 9px;
+            color: var(--duxt-primary);
+            background: #e5f8f4;
+            box-shadow: 0 2px 0 #cdebe5;
+            font-size: .95rem;
+        }
+
+        .duxt-quick-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .duxt-quick-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-height: 41px;
+            padding: 9px 13px;
+            border: 1px solid #e0eaee;
+            border-radius: 11px;
+            color: #315267;
+            background: linear-gradient(145deg, #fff, #f5f9fb);
+            box-shadow:
+                0 3px 0 #e0e9ed,
+                0 5px 10px rgba(7,59,76,.04);
+            font-size: .81rem;
+            font-weight: 700;
+            line-height: 1.4;
+            transition:
+                transform .2s ease,
+                box-shadow .2s ease,
+                background .2s ease,
+                border-color .2s ease;
+        }
+
+        .duxt-quick-btn .duxt-quick-icon {
+            display: inline-grid;
+            place-items: center;
+            width: 25px;
+            height: 25px;
+            flex-shrink: 0;
+            border-radius: 8px;
+            color: var(--duxt-primary);
+            background: #e4f7f3;
+            font-size: .94rem;
+        }
+
+        .duxt-quick-btn:hover {
+            color: var(--duxt-primary-dark);
+            border-color: #b6dfdc;
+            background: #f0fffb;
+            transform: translateY(-3px);
+            box-shadow:
+                0 5px 0 #c9e5e2,
+                0 9px 14px rgba(7,59,76,.08);
+        }
+
+        .duxt-quick-btn:active {
+            transform: translateY(2px);
+            box-shadow: 0 1px 0 #d4e5e8;
+        }
+
+        .duxt-quick-btn:focus-visible {
+            outline: 3px solid var(--duxt-gold);
+            outline-offset: 3px;
+        }
+
+        /* Button accents */
+
+        .duxt-quick-btn.ai .duxt-quick-icon {
+            color: #7751a6;
+            background: #f0eafb;
+        }
+
+        .duxt-quick-btn.care .duxt-quick-icon {
+            color: #087f8c;
+            background: #e3f8f5;
+        }
+
+        .duxt-quick-btn.notes .duxt-quick-icon {
+            color: #b46c11;
+            background: #fff2dc;
+        }
+
+        .duxt-quick-btn.medication .duxt-quick-icon {
+            color: #16836a;
+            background: #e3f7ef;
+        }
+
+        .duxt-quick-btn.vitals .duxt-quick-icon {
+            color: #b64b54;
+            background: #fff0f0;
+        }
+
+        /* ================= MAIN CONTENT ================= */
+
+        main.duxt-main {
+            width: 100%;
+            max-width: 1250px;
+            flex: 1;
+            margin: 0 auto;
+            padding: 32px 24px 55px;
+        }
+
+        main.duxt-main > :first-child {
+            margin-top: 0;
+        }
+
+        /* ================= 3D FOOTER ================= */
+
+        .duxt-footer {
+            position: relative;
+            overflow: hidden;
+            padding: 34px 0 25px;
+            color: rgba(255,255,255,.82);
+            background: var(--duxt-gradient);
+            border-top: 1px solid rgba(255,255,255,.12);
+            box-shadow:
+                0 -5px 0 #06434d,
+                0 -10px 25px rgba(7,59,76,.09);
+        }
+
+        .duxt-footer::before {
+            content: "";
+            position: absolute;
+            width: 220px;
+            height: 220px;
+            top: -145px;
+            left: 12%;
+            border-radius: 50%;
+            background: rgba(54,214,195,.11);
+            pointer-events: none;
+        }
+
+        .duxt-footer-inner {
+            position: relative;
+            z-index: 1;
+        }
+
+        .duxt-footer-brand {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 11px;
+            margin-bottom: 7px;
+            color: #fff;
+            font-family: "Manrope", sans-serif;
+            font-size: 1.35rem;
+            font-weight: 800;
+            letter-spacing: -.4px;
+        }
+
+        .duxt-footer-logo {
+            display: block;
+            width: 43px;
+            height: 43px;
+            flex: 0 0 43px;
+            object-fit: contain;
+            border-radius: 10px;
+            background: #ffffff;
+            padding: 3px;
+            box-shadow:
+                0 4px 0 rgba(0,0,0,.18),
+                0 7px 14px rgba(0,0,0,.12),
+                inset 0 1px 0 #fff;
+        }
+
+        .duxt-footer-brand > span > span {
+            color: var(--duxt-gold);
+        }
+
+        .duxt-footer-tagline {
+            margin-bottom: 17px;
+            color: rgba(255,255,255,.76);
+            font-size: .88rem;
+        }
+
+        .duxt-footer-divider {
+            width: 55px;
+            height: 3px;
+            margin: 0 auto 16px;
+            border-radius: 20px;
+            background: var(--duxt-secondary);
+            box-shadow: 0 0 12px rgba(54,214,195,.25);
+        }
+
+        .duxt-footer-copy {
+            margin: 0;
+            color: rgba(255,255,255,.67);
+            font-size: .79rem;
+        }
+
+        /* ================= RESPONSIVE ================= */
+
+        @media (min-width: 992px) {
+            .duxt-navbar .navbar-collapse {
+                align-items: center;
+            }
+        }
+
+        @media (max-width: 991.98px) {
+            .duxt-navbar .container {
+                padding-top: 10px;
+                padding-bottom: 10px;
+            }
+
+            .duxt-navbar .navbar-collapse {
+                padding-top: 16px;
+                padding-bottom: 10px;
+            }
+
+            .duxt-navbar .navbar-nav {
+                align-items: stretch !important;
+                gap: 5px;
+            }
+
+            .duxt-navbar .nav-link {
+                justify-content: flex-start;
+                width: 100%;
+                padding: 11px 13px !important;
+            }
+
+            .duxt-navbar .duxt-user-badge {
+                width: fit-content;
+                margin-top: 8px;
+                margin-bottom: 8px;
+            }
+
+            .duxt-navbar .duxt-auth-link {
+                justify-content: center;
+                width: fit-content;
+                margin-top: 5px;
+            }
+
+            .duxt-quick-wrap {
+                padding: 14px 0;
+            }
+
+            .duxt-quick-links {
+                gap: 9px;
+            }
+
+            main.duxt-main {
+                padding-top: 25px;
+            }
+        }
+
+        @media (max-width: 575.98px) {
+            .duxt-brand {
+                gap: 8px;
+                font-size: 1.19rem;
+            }
+
+            .duxt-brand-logo {
+                width: 35px;
+                height: 35px;
+                flex-basis: 35px;
+            }
+
+            .duxt-footer-brand {
+                font-size: 1.2rem;
+            }
+
+            .duxt-footer-logo {
+                width: 38px;
+                height: 38px;
+                flex-basis: 38px;
+            }
+
+            .duxt-quick-wrap .container {
+                padding-left: 15px;
+                padding-right: 15px;
+            }
+
+            .duxt-quick-links {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 9px;
+            }
+
+            .duxt-quick-btn {
+                justify-content: flex-start;
+                min-width: 0;
+                min-height: 48px;
+                padding: 9px 10px;
+                font-size: .76rem;
+                overflow-wrap: anywhere;
+            }
+
+            .duxt-quick-btn .duxt-quick-icon {
+                width: 23px;
+                height: 23px;
+            }
+
+            main.duxt-main {
+                padding: 22px 15px 38px;
+            }
+
+            .duxt-footer {
+                padding: 30px 15px 22px;
+            }
+        }
+
+        @media (max-width: 350px) {
+            .duxt-quick-links {
+                grid-template-columns: minmax(0, 1fr);
+            }
+
+            .duxt-quick-btn {
+                width: 100%;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            html {
+                scroll-behavior: auto;
+            }
+
+            *,
+            *::before,
+            *::after {
+                transition-duration: .01ms !important;
+                animation-duration: .01ms !important;
+                animation-iteration-count: 1 !important;
+            }
+        }
+    </style>
+
+    {% block extra_head %}{% endblock %}
 </head>
+
 <body>
 
-<!-- =========================
+<!-- =====================================================
      NAVBAR
-     ========================= -->
-<nav class="navbar navbar-expand-lg navbar-dark">
-  <div class="container">
+     ===================================================== -->
 
-    <a class="navbar-brand" href="{% url 'homecare:home' %}">
-      Duxt<span>Health</span>
-    </a>
+<nav class="navbar navbar-expand-lg navbar-dark duxt-navbar">
+    <div class="container">
 
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-      <span class="navbar-toggler-icon"></span>
-    </button>
+        <a class="navbar-brand duxt-brand"
+           href="{% url 'homecare:homecare_home' %}"
+           aria-label="DuxtHealth Dashboard">
 
-    <div class="collapse navbar-collapse" id="navbarNav">
 
-      <ul class="navbar-nav">
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'homecare:patient_list' %}">Patients</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'homecare:homecare_home' %}">Dashboard</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'homecare:careplan_list' %}">Care Plans</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'homecare:doctornote_list' %}">Clinical Notes</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'homecare:vitalsign_list' %}">Vital Sign</a>
-        </li>
-      </ul>
+            <span class="duxt-brand-name">Duxt<span>Health</span></span>
+        </a>
 
-      <ul class="navbar-nav ms-auto align-items-lg-center">
-        {% if user.is_authenticated %}
-          <li class="nav-item me-2">
-            <span class="nav-link user-badge">👤 {{ user.first_name|capfirst }}</span>
-          </li>
-          
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'password_change' %}">Security</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'logout' %}">Logout</a>
-          </li>
-        {% else %}
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'login' %}">Login</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'signup' %}">Request Access</a>
-          </li>
-        {% endif %}
-      </ul>
+        <button class="navbar-toggler"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#duxtNavbar"
+                aria-controls="duxtNavbar"
+                aria-expanded="false"
+                aria-label="Toggle navigation">
 
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="duxtNavbar">
+
+            <!-- Main navigation -->
+
+            <ul class="navbar-nav ms-lg-3 me-auto">
+
+                <li class="nav-item">
+                    <a class="nav-link"
+                       href="{% url 'homecare:home' %}">
+                        <span aria-hidden="true">&#8962;</span>
+                        Home
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link"
+                       href="{% url 'homecare:patient_list' %}">
+                        Patients
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link"
+                       href="{% url 'homecare:homecare_home' %}">
+                        Dashboard
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link"
+                       href="{% url 'homecare:careplan_list' %}">
+                        Care Plans
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link"
+                       href="{% url 'homecare:doctornote_list' %}">
+                        Clinical Notes
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link"
+                       href="{% url 'homecare:vitalsign_list' %}">
+                        Vital Signs
+                    </a>
+                </li>
+
+            </ul>
+
+            <!-- User navigation -->
+
+            <ul class="navbar-nav align-items-lg-center">
+
+                {% if user.is_authenticated %}
+
+                    <li class="nav-item me-lg-2">
+                        <span class="duxt-user-badge">
+                            <span aria-hidden="true">&#128100;</span>
+
+                            {% if user.first_name %}
+                                {{ user.first_name|capfirst }}
+                            {% else %}
+                                {{ user.username }}
+                            {% endif %}
+                        </span>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link"
+                           href="{% url 'password_change' %}">
+                            Security
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link"
+                           href="{% url 'logout' %}">
+                            Logout
+                        </a>
+                    </li>
+
+                {% else %}
+
+                    <li class="nav-item">
+                        <a class="nav-link"
+                           href="{% url 'login' %}">
+                            Login
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link duxt-auth-link"
+                           href="{% url 'signup' %}">
+                            Request Access &rarr;
+                        </a>
+                    </li>
+
+                {% endif %}
+
+            </ul>
+
+        </div>
     </div>
-  </div>
 </nav>
 
-<!-- =========================
-     MAIN CONTENT
-     ========================= -->
-<main class="container my-4">
-  {% block content %}{% endblock %}
+
+
+<!-- =====================================================
+     MAIN PAGE CONTENT
+     ===================================================== -->
+
+<main class="duxt-main">
+
+    {% block content %}{% endblock %}
+
 </main>
 
-<!-- =========================
-     FOOTER
-     ========================= -->
-<footer class="footer text-center">
-  <div class="container">
-    <p class="mb-1 footer-brand">
-      Duxt<span>Health</span>
-    </p>
-    <p class="footer-tagline mb-0">
-      © 2026 · Care without boundaries
-    </p>
-  </div>
-</footer>
+<!-- =====================================================
+     QUICK-ACCESS CLINICAL NAVIGATION
+     Placed directly below the navbar
+     ===================================================== -->
 
-<!-- Bootstrap JS -->
+<section class="duxt-quick-wrap" aria-label="Clinical quick access">
+    <div class="container">
+
+        <div class="duxt-quick-heading">
+            <span aria-hidden="true">&#9881;</span>
+            Quick Clinical Access
+        </div>
+
+        <div class="duxt-quick-links">
+
+            <!-- Patients -->
+
+            <a href="{% url 'homecare:patient_list' %}"
+               class="duxt-quick-btn">
+                <span class="duxt-quick-icon" aria-hidden="true">
+                    &#9829;
+                </span>
+                My Patients
+            </a>
+
+            <!-- Patient AI: currently opens the patient list -->
+
+            <a href="{% url 'homecare:patient_list' %}"
+               class="duxt-quick-btn ai"
+               title="Open your patient list to select a patient">
+                <span class="duxt-quick-icon" aria-hidden="true">
+                    &#10024;
+                </span>
+                Patient AI
+            </a>
+
+            <!-- Care plans -->
+
+            <a href="{% url 'homecare:careplan_list' %}"
+               class="duxt-quick-btn care">
+                <span class="duxt-quick-icon" aria-hidden="true">
+                    &#10003;
+                </span>
+                Care Plans
+            </a>
+
+            <!-- Nurses notes -->
+
+            <a href="{% url 'homecare:nursesnote_list' %}"
+               class="duxt-quick-btn notes">
+                <span class="duxt-quick-icon" aria-hidden="true">
+                    &#9998;
+                </span>
+                Nurses' Notes
+            </a>
+
+            <!-- Doctors notes -->
+
+            <a href="{% url 'homecare:doctornote_list' %}"
+               class="duxt-quick-btn notes">
+                <span class="duxt-quick-icon" aria-hidden="true">
+                    &#9877;
+                </span>
+                Doctors' Notes
+            </a>
+
+            <!-- Medication sheets -->
+
+            <a href="{% url 'homecare:medicationsheet_list' %}"
+               class="duxt-quick-btn medication">
+                <span class="duxt-quick-icon" aria-hidden="true">
+                    &#9881;
+                </span>
+                Medication Sheets
+            </a>
+
+            <!-- Vital signs -->
+
+            <a href="{% url 'homecare:vitalsign_list' %}"
+               class="duxt-quick-btn vitals">
+                <span class="duxt-quick-icon" aria-hidden="true">
+                    &#9829;
+                </span>
+                Vital Signs
+            </a>
+
+            <!-- Treatment sheets -->
+
+            <a href="{% url 'homecare:treatmentsheet_list' %}"
+               class="duxt-quick-btn">
+                <span class="duxt-quick-icon" aria-hidden="true">
+                    &#10010;
+                </span>
+                Treatment Sheets
+            </a>
+
+            <!-- Visit schedules -->
+
+            <a href="{% url 'homecare:visitschedule_list' %}"
+               class="duxt-quick-btn">
+                <span class="duxt-quick-icon" aria-hidden="true">
+                    &#128197;
+                </span>
+                Visit Schedules
+            </a>
+
+        </div>
+    </div>
+</section>
+
+{% load static %}
+
+<footer class="duxt-footer text-center">
+    <div class="container duxt-footer-inner">
+
+        <div class="duxt-footer-brand">
+            <img
+                src="{% static 'duxthealth_frontend/images/logo1.jpeg' %}"
+                class="duxt-footer-logo"
+                alt="DuxtHealth logo"
+            >
+
+            <span>Duxt<span>Health</span></span>
+        </div>
+
+        <p class="duxt-footer-tagline">
+            Connected care. Better coordination. Health without boundaries.
+        </p>
+
+        <div class="duxt-footer-divider"></div>
+
+        <p class="duxt-footer-copy">
+            &copy; 2026 DuxtHealth. All rights reserved.
+        </p>
+
+    </div>
+</footer>
+<!-- Bootstrap JavaScript -->
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 {% block extra_scripts %}{% endblock %}
+
 </body>
 </html>
