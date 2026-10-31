@@ -1,68 +1,468 @@
 {% extends "frontend_base.html" %}
+
 {% block content %}
 
-<div class="container mt-5" style="max-width:720px;">
-  <div class="card shadow-lg border-0 p-4">
+<style>
+    /* Main page */
+    .dh-application-page {
+        background: #f3f8f9;
+        padding: 55px 16px 70px;
+        min-height: 80vh;
+    }
 
-    <h3 class="fw-bold mb-2">🩺 Apply for Homecare Services</h3>
-    <p class="text-muted">
-      Fill this form and our care team will contact you shortly.
-    </p>
+    /* Form container */
+    .dh-application-card {
+        max-width: 760px;
+        margin: 0 auto;
+        background: #ffffff;
+        border: 1px solid #e3edef;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 15px 45px rgba(17, 71, 79, 0.09);
+    }
 
-    {% if success %}
-      <div class="alert alert-success">
-        ✅ Your request has been received. Our team will contact you shortly.
-      </div>
+    /* Header section */
+    .dh-application-header {
+        background: linear-gradient(135deg, #075b64, #0b8184);
+        padding: 35px 35px 32px;
+        color: #ffffff;
+    }
 
-      <a href="{{ whatsapp_url }}" target="_blank" class="btn btn-success">
-        💬 Chat with us on WhatsApp
-      </a>
-    {% else %}
-      <form method="post">
-        {% csrf_token %}
+    .dh-application-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 58px;
+        height: 58px;
+        border-radius: 16px;
+        background: rgba(255, 255, 255, 0.15);
+        font-size: 29px;
+        margin-bottom: 17px;
+    }
 
-        <div class="mb-3">
-          {{ form.full_name.label_tag }}
-          {{ form.full_name }}
+    .dh-application-header h2 {
+        margin: 0 0 10px;
+        font-size: clamp(1.55rem, 4vw, 2rem);
+        font-weight: 750;
+        letter-spacing: -0.5px;
+    }
+
+    .dh-application-header p {
+        margin: 0;
+        max-width: 520px;
+        color: #e0f4f3;
+        font-size: 0.98rem;
+        line-height: 1.7;
+    }
+
+    /* Form body */
+    .dh-application-body {
+        padding: 35px;
+    }
+
+    .dh-form-intro {
+        color: #5d7178;
+        font-size: 0.92rem;
+        margin-bottom: 26px;
+        line-height: 1.6;
+    }
+
+    .dh-form-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 22px 20px;
+    }
+
+    .dh-form-field {
+        min-width: 0;
+    }
+
+    .dh-form-field-full {
+        grid-column: 1 / -1;
+    }
+
+    .dh-form-field label {
+        display: block;
+        color: #183b42;
+        font-size: 0.91rem;
+        font-weight: 650;
+        margin-bottom: 9px;
+    }
+
+    /* Django-generated inputs */
+    .dh-form-field input,
+    .dh-form-field select,
+    .dh-form-field textarea {
+        display: block;
+        width: 100%;
+        max-width: 100%;
+        min-height: 49px;
+        padding: 12px 14px;
+        border: 1px solid #d4e1e4;
+        border-radius: 10px;
+        background-color: #fbfdfd;
+        color: #203b40;
+        font-family: inherit;
+        font-size: 0.95rem;
+        line-height: 1.5;
+        box-sizing: border-box;
+        outline: none;
+        transition: border-color 0.2s ease,
+                    box-shadow 0.2s ease,
+                    background-color 0.2s ease;
+    }
+
+    .dh-form-field textarea {
+        min-height: 135px;
+        resize: vertical;
+    }
+
+    .dh-form-field input::placeholder,
+    .dh-form-field textarea::placeholder {
+        color: #91a3a8;
+    }
+
+    .dh-form-field input:focus,
+    .dh-form-field select:focus,
+    .dh-form-field textarea:focus {
+        border-color: #0b8184;
+        background: #ffffff;
+        box-shadow: 0 0 0 4px rgba(11, 129, 132, 0.11);
+    }
+
+    .dh-form-field select {
+        cursor: pointer;
+    }
+
+    /* Django validation errors */
+    .dh-form-field .errorlist {
+        list-style: none;
+        padding: 0;
+        margin: 7px 0 0;
+        color: #b42318;
+        font-size: 0.85rem;
+    }
+
+    .dh-form-errors {
+        padding: 14px 16px;
+        margin-bottom: 24px;
+        border: 1px solid #f2c6c3;
+        border-radius: 10px;
+        background: #fff5f4;
+        color: #a12622;
+    }
+
+    .dh-form-errors ul {
+        margin: 8px 0 0;
+        padding-left: 20px;
+    }
+
+    /* Privacy note */
+    .dh-privacy-note {
+        display: flex;
+        gap: 10px;
+        align-items: flex-start;
+        padding: 14px 15px;
+        margin-top: 26px;
+        border: 1px solid #dceeed;
+        border-radius: 10px;
+        background: #f1f9f8;
+        color: #45666b;
+        font-size: 0.85rem;
+        line-height: 1.6;
+    }
+
+    .dh-privacy-note span {
+        flex-shrink: 0;
+    }
+
+    /* Submit button */
+    .dh-submit-button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        width: 100%;
+        min-height: 54px;
+        margin-top: 25px;
+        padding: 14px 20px;
+        border: 0;
+        border-radius: 11px;
+        background: #08777b;
+        color: #ffffff;
+        font-family: inherit;
+        font-size: 1rem;
+        font-weight: 700;
+        cursor: pointer;
+        box-shadow: 0 6px 15px rgba(8, 119, 123, 0.18);
+        transition: background 0.2s ease,
+                    transform 0.2s ease,
+                    box-shadow 0.2s ease;
+    }
+
+    .dh-submit-button:hover {
+        background: #065e63;
+        box-shadow: 0 9px 20px rgba(8, 119, 123, 0.23);
+        transform: translateY(-1px);
+    }
+
+    .dh-submit-button:focus-visible,
+    .dh-whatsapp-button:focus-visible {
+        outline: 3px solid #f2c66d;
+        outline-offset: 3px;
+    }
+
+    /* Success message */
+    .dh-success-panel {
+        padding: 35px;
+        text-align: center;
+    }
+
+    .dh-success-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 76px;
+        height: 76px;
+        margin-bottom: 20px;
+        border-radius: 50%;
+        background: #e7f7ee;
+        color: #16804a;
+        font-size: 38px;
+    }
+
+    .dh-success-panel h3 {
+        color: #183b42;
+        font-weight: 750;
+        margin-bottom: 12px;
+    }
+
+    .dh-success-panel p {
+        color: #61757a;
+        line-height: 1.7;
+        margin-bottom: 25px;
+    }
+
+    .dh-whatsapp-button {
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        gap: 9px;
+        width: 100%;
+        max-width: 350px;
+        min-height: 50px;
+        padding: 13px 20px;
+        border-radius: 10px;
+        background: #168c58;
+        color: #ffffff;
+        font-weight: 700;
+        text-decoration: none;
+        transition: background 0.2s ease;
+    }
+
+    .dh-whatsapp-button:hover {
+        background: #106d44;
+        color: #ffffff;
+    }
+
+    .dh-footer-note {
+        margin: 25px 0 0;
+        text-align: center;
+        color: #71858a;
+        font-size: 0.84rem;
+    }
+
+    /* Tablet and mobile */
+    @media (max-width: 600px) {
+        .dh-application-page {
+            padding: 25px 12px 40px;
+        }
+
+        .dh-application-card {
+            border-radius: 15px;
+        }
+
+        .dh-application-header {
+            padding: 27px 22px;
+        }
+
+        .dh-application-icon {
+            width: 50px;
+            height: 50px;
+            font-size: 25px;
+            border-radius: 13px;
+        }
+
+        .dh-application-body {
+            padding: 25px 20px;
+        }
+
+        .dh-form-grid {
+            grid-template-columns: 1fr;
+            gap: 19px;
+        }
+
+        .dh-form-field-full {
+            grid-column: auto;
+        }
+
+        .dh-form-field input,
+        .dh-form-field select,
+        .dh-form-field textarea {
+            font-size: 16px;
+        }
+
+        .dh-submit-button {
+            min-height: 52px;
+        }
+
+        .dh-success-panel {
+            padding: 30px 20px;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .dh-form-field input,
+        .dh-form-field select,
+        .dh-form-field textarea,
+        .dh-submit-button,
+        .dh-whatsapp-button {
+            transition: none;
+        }
+    }
+</style>
+
+<div class="dh-application-page">
+    <div class="dh-application-card">
+
+        <div class="dh-application-header">
+            <div class="dh-application-icon" aria-hidden="true">
+                🩺
+            </div>
+
+            <h2>Apply for Homecare Services</h2>
+
+            <p>
+                Professional healthcare, delivered closer to you.
+                Tell us what you need, and our care team will contact you.
+            </p>
         </div>
 
-        <div class="mb-3">
-          {{ form.phone_number.label_tag }}
-          {{ form.phone_number }}
-        </div>
+        {% if success %}
 
-        <div class="mb-3">
-          {{ form.whatsapp_number.label_tag }}
-          {{ form.whatsapp_number }}
-        </div>
+            <div class="dh-success-panel" role="status">
+                <div class="dh-success-icon" aria-hidden="true">
+                    ✓
+                </div>
 
-        <div class="mb-3">
-          {{ form.email.label_tag }}
-          {{ form.email }}
-        </div>
+                <h3>Request Received Successfully!</h3>
 
-        <div class="mb-3">
-          {{ form.location.label_tag }}
-          {{ form.location }}
-        </div>
+                <p>
+                    Thank you for choosing DuxtHealth. Your homecare request
+                    has been received. Our team will contact you shortly.
+                </p>
 
-        <div class="mb-3">
-          {{ form.service_needed.label_tag }}
-          {{ form.service_needed }}
-        </div>
+                <a href="{{ whatsapp_url }}"
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   class="dh-whatsapp-button">
+                    <span aria-hidden="true">💬</span>
+                    Chat with us on WhatsApp
+                </a>
+            </div>
 
-        <div class="mb-3">
-          {{ form.message.label_tag }}
-          {{ form.message }}
-        </div>
+        {% else %}
 
-        <button class="btn btn-primary w-100">
-          📩 Submit Application
-        </button>
-      </form>
-    {% endif %}
+            <div class="dh-application-body">
 
-  </div>
+                <p class="dh-form-intro">
+                    Please provide the details below. Fields marked as
+                    required by the form must be completed before submission.
+                </p>
+
+                {% if form.non_field_errors %}
+                    <div class="dh-form-errors" role="alert">
+                        <strong>Please check the following:</strong>
+                        {{ form.non_field_errors }}
+                    </div>
+                {% endif %}
+
+                <form method="post">
+                    {% csrf_token %}
+
+                    <div class="dh-form-grid">
+
+                        <div class="dh-form-field">
+                            {{ form.full_name.label_tag }}
+                            {{ form.full_name }}
+                            {{ form.full_name.errors }}
+                        </div>
+
+                        <div class="dh-form-field">
+                            {{ form.phone_number.label_tag }}
+                            {{ form.phone_number }}
+                            {{ form.phone_number.errors }}
+                        </div>
+
+                        <div class="dh-form-field">
+                            {{ form.whatsapp_number.label_tag }}
+                            {{ form.whatsapp_number }}
+                            {{ form.whatsapp_number.errors }}
+                        </div>
+
+                        <div class="dh-form-field">
+                            {{ form.email.label_tag }}
+                            {{ form.email }}
+                            {{ form.email.errors }}
+                        </div>
+
+                        <div class="dh-form-field dh-form-field-full">
+                            {{ form.location.label_tag }}
+                            {{ form.location }}
+                            {{ form.location.errors }}
+                        </div>
+
+                        <div class="dh-form-field dh-form-field-full">
+                            {{ form.service_needed.label_tag }}
+                            {{ form.service_needed }}
+                            {{ form.service_needed.errors }}
+                        </div>
+
+                        <div class="dh-form-field dh-form-field-full">
+                            {{ form.message.label_tag }}
+                            {{ form.message }}
+                            {{ form.message.errors }}
+                        </div>
+
+                    </div>
+
+                    <div class="dh-privacy-note">
+                        <span aria-hidden="true">🔒</span>
+                        <div>
+                            <strong>Your information matters.</strong>
+                            Please provide accurate contact details so our
+                            team can respond to your request. Avoid entering
+                            unnecessary sensitive medical information here.
+                        </div>
+                    </div>
+
+                    <button type="submit" class="dh-submit-button">
+                        <span aria-hidden="true">📩</span>
+                        Submit Homecare Request
+                        <span aria-hidden="true">→</span>
+                    </button>
+
+                </form>
+
+                <p class="dh-footer-note">
+                    DuxtHealth · Making Primary Healthcare Accessible to Everyone
+                </p>
+
+            </div>
+
+        {% endif %}
+
+    </div>
 </div>
 
 {% endblock %}
