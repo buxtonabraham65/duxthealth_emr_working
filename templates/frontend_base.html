@@ -76,9 +76,19 @@
   <div class="container">
 
     <!-- Brand -->
-    <a class="navbar-brand" href="{% url 'homecare:home' %}">
-      Duxt<span>Health</span>
-    </a>
+    <a class="navbar-brand duxt-brand"
+   href="{% url 'homecare:home' %}"
+   aria-label="DuxtHealth Homepage">
+
+    <img
+        src="{% static 'duxthealth_frontend/images/logo1.jpeg' %}"
+        class="duxt-brand-logo"
+        alt="DuxtHealth logo"
+    >
+
+    <span class="duxt-brand-name">Duxt<span>Health</span></span>
+
+</a>
 
     <!-- Mobile Toggle -->
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
