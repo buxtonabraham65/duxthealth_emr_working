@@ -1,156 +1,1112 @@
+
 {% extends "bases.html" %}
 {% load static %}
 
 {% block content %}
 
-<!-- HERO SECTION -->
-<section class="hero-section text-center"
-    style="background:
-    linear-gradient(rgba(0,0,0,.45),rgba(0,0,0,.45)),
-    url('{% static 'duxthealth_frontend/images/hero-homecare.jpeg' %}')
-    center/cover no-repeat;">
-    <div class="container text-white py-5">
-        <h1 class="fw-bold">Healthcare, Anywhere. Anytime.</h1>
-        <p class="lead mt-3">Making healthcare accessible to everyone, everywhere.</p>
-        <p class="lead">Health to the future.</p>
-    </div>
-</section>
+<style>
+/* =========================================================
+   DUXTHEALTH HOMECARE DASHBOARD
+   Modern 3D Design | Responsive | Clickable Cards
+   ========================================================= */
 
-<!-- DASHBOARD -->
-<div class="container mt-5">
-    <h1 class="mb-4 text-center">HomeCare Management System Dashboard</h1>
+.dh-dashboard {
+    --dh-primary: #087f8c;
+    --dh-primary-dark: #07515c;
+    --dh-navy: #073b4c;
+    --dh-mint: #36d6c3;
+    --dh-text: #203b4d;
+    --dh-muted: #6b7f8e;
+    --dh-bg: #f3f8fb;
+    --dh-border: #e2edf1;
 
-    <!-- ROW 1 -->
-    <div class="row g-4">
+    color: var(--dh-text);
+    background: var(--dh-bg);
+    font-family: "DM Sans", "Segoe UI", sans-serif;
+    min-height: 100vh;
+    overflow: hidden;
+}
 
-        <!-- Patients -->
-        <div class="col-md-4">
-            <div class="card border-primary h-100 shadow-sm">
-                <div class="card-body d-flex flex-column">
-                    <h5 class="card-title">My Patients & Clinical AI Assistance</h5>
-                    <p class="card-text flex-grow-1">View patients assigned to you,and use DuxtHealth patient based AI support for clinical decisions.</p>
-                    <a href="{% url 'homecare:patient_list' %}" class="btn btn-primary w-100 mt-auto">
-                        View Patients
-                    </a>
+.dh-dashboard *,
+.dh-dashboard *::before,
+.dh-dashboard *::after {
+    box-sizing: border-box;
+}
+
+/* ================= HERO ================= */
+
+.dh-dashboard .dh-hero {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    padding: 95px 20px 110px;
+    text-align: center;
+    color: #fff;
+    background:
+        linear-gradient(
+            120deg,
+            rgba(3, 35, 49, .96),
+            rgba(5, 89, 101, .82),
+            rgba(4, 52, 70, .69)
+        ),
+        url("{% static 'duxthealth_frontend/images/hero-homecare.jpeg' %}")
+        center / cover no-repeat;
+}
+
+.dh-dashboard .dh-hero::before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    width: 350px;
+    height: 350px;
+    right: -100px;
+    top: -140px;
+    border-radius: 50%;
+    background: rgba(54, 214, 195, .15);
+    box-shadow: 0 0 100px rgba(54, 214, 195, .12);
+}
+
+.dh-dashboard .dh-hero::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    width: 230px;
+    height: 230px;
+    left: -90px;
+    bottom: -100px;
+    border-radius: 50%;
+    background: rgba(54, 214, 195, .12);
+}
+
+.dh-dashboard .dh-hero-content {
+    position: relative;
+    max-width: 950px;
+    margin: auto;
+}
+
+.dh-dashboard .dh-hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    margin-bottom: 22px;
+    padding: 9px 17px;
+    border: 1px solid rgba(255,255,255,.25);
+    border-radius: 50px;
+    color: #e3fffa;
+    background: rgba(255,255,255,.09);
+    backdrop-filter: blur(12px);
+    font-size: .79rem;
+    font-weight: 800;
+    letter-spacing: 1.1px;
+}
+
+.dh-dashboard .dh-status-dot {
+    width: 8px;
+    height: 8px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: var(--dh-mint);
+    box-shadow: 0 0 12px var(--dh-mint);
+}
+
+.dh-dashboard .dh-hero h1 {
+    margin: 0;
+    color: #fff;
+    font-family: "Manrope", "Segoe UI", sans-serif;
+    font-size: clamp(2.2rem, 5.5vw, 4.4rem);
+    font-weight: 800;
+    line-height: 1.15;
+    letter-spacing: -2px;
+    text-shadow: 0 6px 25px rgba(0,0,0,.2);
+}
+
+.dh-dashboard .dh-hero h1 span {
+    color: var(--dh-mint);
+}
+
+.dh-dashboard .dh-hero-description {
+    max-width: 680px;
+    margin: 22px auto 0;
+    color: rgba(255,255,255,.85);
+    font-size: clamp(.96rem, 2vw, 1.13rem);
+    line-height: 1.9;
+}
+
+.dh-dashboard .dh-hero-note {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    margin-top: 28px;
+    padding: 12px 19px;
+    border: 1px solid rgba(255,255,255,.16);
+    border-radius: 14px;
+    background: rgba(255,255,255,.09);
+    color: #fff;
+    font-size: .88rem;
+    font-weight: 600;
+}
+
+/* ================= MAIN CONTENT ================= */
+
+.dh-dashboard .dh-main {
+    width: 100%;
+    max-width: 1250px;
+    margin: 0 auto;
+    padding: 0 25px 75px;
+}
+
+.dh-dashboard .dh-intro {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 25px;
+    margin-top: -38px;
+    margin-bottom: 40px;
+    padding: 30px 34px;
+    border: 1px solid rgba(255,255,255,.9);
+    border-radius: 24px;
+    background: #fff;
+    box-shadow:
+        0 18px 45px rgba(7,59,76,.10),
+        0 4px 10px rgba(7,59,76,.04);
+}
+
+.dh-dashboard .dh-intro-label {
+    display: block;
+    margin-bottom: 7px;
+    color: var(--dh-primary);
+    font-size: .76rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1.4px;
+}
+
+.dh-dashboard .dh-intro h2 {
+    margin: 0;
+    color: var(--dh-navy);
+    font-family: "Manrope", "Segoe UI", sans-serif;
+    font-size: clamp(1.45rem, 3vw, 2rem);
+    font-weight: 800;
+    letter-spacing: -.8px;
+}
+
+.dh-dashboard .dh-intro p {
+    margin: 9px 0 0;
+    color: var(--dh-muted);
+    font-size: .93rem;
+    line-height: 1.7;
+}
+
+.dh-dashboard .dh-module-count {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 18px;
+    border: 1px solid #d8f0ec;
+    border-radius: 17px;
+    background: linear-gradient(145deg, #f0fffb, #e4f7f5);
+    box-shadow:
+        0 5px 0 #d6ece8,
+        0 10px 18px rgba(8,127,140,.06);
+}
+
+.dh-dashboard .dh-count-icon {
+    display: grid;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 13px;
+    color: #fff;
+    background: linear-gradient(145deg, #14b8a6, #087481);
+    box-shadow:
+        0 4px 0 #07515c,
+        0 7px 12px rgba(8,127,140,.2);
+    font-size: 1.15rem;
+}
+
+.dh-dashboard .dh-module-count strong {
+    display: block;
+    color: var(--dh-navy);
+    font-size: 1rem;
+    line-height: 1.4;
+}
+
+.dh-dashboard .dh-module-count small {
+    display: block;
+    color: var(--dh-muted);
+    font-size: .76rem;
+}
+
+/* ================= SECTION HEADING ================= */
+
+.dh-dashboard .dh-section-heading {
+    margin: 0 0 27px;
+}
+
+.dh-dashboard .dh-section-heading h3 {
+    margin: 0;
+    color: var(--dh-navy);
+    font-family: "Manrope", "Segoe UI", sans-serif;
+    font-size: 1.35rem;
+    font-weight: 800;
+}
+
+.dh-dashboard .dh-section-heading p {
+    margin: 7px 0 0;
+    color: var(--dh-muted);
+    font-size: .9rem;
+    line-height: 1.7;
+}
+
+/* ================= GRID ================= */
+
+.dh-dashboard .dh-card-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 26px;
+}
+
+/* ================= 3D CARDS ================= */
+
+.dh-dashboard .dh-card {
+    --card-accent: #087f8c;
+    --card-soft: #e6f8f5;
+    --card-shadow: #c9e6e3;
+
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    min-height: 275px;
+    overflow: hidden;
+    padding: 27px;
+    border: 1px solid var(--dh-border);
+    border-top: 4px solid var(--card-accent);
+    border-radius: 22px;
+    background: linear-gradient(150deg, #fff 0%, #fbfdfe 100%);
+    box-shadow:
+        0 7px 0 #e4edf1,
+        0 15px 28px rgba(7,59,76,.07),
+        inset 0 1px 0 #fff;
+    text-decoration: none;
+    color: inherit;
+    transform: translateY(0);
+    transition:
+        transform .28s ease,
+        box-shadow .28s ease,
+        border-color .28s ease;
+    isolation: isolate;
+}
+
+.dh-dashboard .dh-card::before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    width: 150px;
+    height: 150px;
+    right: -60px;
+    top: -65px;
+    border-radius: 50%;
+    background: var(--card-soft);
+    opacity: .75;
+    transition: transform .35s ease;
+}
+
+.dh-dashboard .dh-card::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    width: 80px;
+    height: 80px;
+    right: 18px;
+    bottom: 15px;
+    border-radius: 50%;
+    background: var(--card-soft);
+    opacity: .28;
+    pointer-events: none;
+}
+
+.dh-dashboard .dh-card:hover {
+    z-index: 1;
+    color: inherit;
+    border-color: var(--card-shadow);
+    transform: translateY(-9px);
+    box-shadow:
+        0 11px 0 var(--card-shadow),
+        0 28px 45px rgba(7,59,76,.14),
+        inset 0 1px 0 #fff;
+}
+
+.dh-dashboard .dh-card:hover::before {
+    transform: scale(1.35);
+}
+
+.dh-dashboard .dh-card:active {
+    transform: translateY(3px);
+    box-shadow:
+        0 3px 0 var(--card-shadow),
+        0 8px 15px rgba(7,59,76,.08);
+}
+
+.dh-dashboard .dh-card:focus-visible {
+    outline: 3px solid #ffbd59;
+    outline-offset: 5px;
+}
+
+.dh-dashboard .dh-card-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.dh-dashboard .dh-card-icon {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 61px;
+    height: 61px;
+    border: 1px solid rgba(255,255,255,.8);
+    border-radius: 18px;
+    color: var(--card-accent);
+    background: linear-gradient(145deg, #fff, var(--card-soft));
+    box-shadow:
+        0 6px 0 var(--card-shadow),
+        0 11px 18px rgba(7,59,76,.07),
+        inset 0 1px 0 #fff;
+    font-size: 1.65rem;
+    transition: transform .3s ease;
+}
+
+.dh-dashboard .dh-card:hover .dh-card-icon {
+    transform: translateY(-3px) rotate(-4deg);
+}
+
+.dh-dashboard .dh-card-index {
+    display: inline-grid;
+    place-items: center;
+    min-width: 34px;
+    height: 34px;
+    padding: 0 8px;
+    border-radius: 11px;
+    color: var(--card-accent);
+    background: var(--card-soft);
+    font-size: .76rem;
+    font-weight: 800;
+}
+
+.dh-dashboard .dh-card h4 {
+    margin: 0 0 12px;
+    color: var(--dh-navy);
+    font-family: "Manrope", "Segoe UI", sans-serif;
+    font-size: 1.18rem;
+    font-weight: 800;
+    line-height: 1.5;
+    letter-spacing: -.3px;
+}
+
+.dh-dashboard .dh-card-description {
+    flex: 1;
+    margin: 0 0 23px;
+    color: var(--dh-muted);
+    font-size: .9rem;
+    line-height: 1.85;
+}
+
+.dh-dashboard .dh-card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: auto;
+    padding-top: 18px;
+    border-top: 1px solid #edf2f5;
+}
+
+.dh-dashboard .dh-card-action {
+    color: var(--card-accent);
+    font-size: .87rem;
+    font-weight: 800;
+}
+
+.dh-dashboard .dh-card-arrow {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 39px;
+    height: 39px;
+    border-radius: 12px;
+    color: #fff;
+    background: linear-gradient(
+        145deg,
+        var(--card-accent),
+        var(--dh-primary-dark)
+    );
+    box-shadow:
+        0 4px 0 var(--card-shadow),
+        0 7px 12px rgba(7,59,76,.12);
+    font-size: 1.2rem;
+    transition: transform .25s ease;
+}
+
+.dh-dashboard .dh-card:hover .dh-card-arrow {
+    transform: translateX(4px);
+}
+
+/* ================= CARD COLOUR THEMES ================= */
+
+.dh-dashboard .dh-card-patients {
+    --card-accent: #087f8c;
+    --card-soft: #e3f8f5;
+    --card-shadow: #c2e6e1;
+}
+
+.dh-dashboard .dh-card-professionals {
+    --card-accent: #198754;
+    --card-soft: #e5f7ed;
+    --card-shadow: #c7e9d5;
+}
+
+.dh-dashboard .dh-card-careplans {
+    --card-accent: #087eaa;
+    --card-soft: #e4f4fc;
+    --card-shadow: #c5e4f2;
+}
+
+.dh-dashboard .dh-card-visits {
+    --card-accent: #a96a08;
+    --card-soft: #fff3d8;
+    --card-shadow: #f0dfb5;
+}
+
+.dh-dashboard .dh-card-nurse {
+    --card-accent: #7454a4;
+    --card-soft: #f0eafb;
+    --card-shadow: #ddd1f0;
+}
+
+.dh-dashboard .dh-card-doctor {
+    --card-accent: #334c67;
+    --card-soft: #e8eef5;
+    --card-shadow: #d0dce8;
+}
+
+.dh-dashboard .dh-card-treatment {
+    --card-accent: #c14f55;
+    --card-soft: #fff0f0;
+    --card-shadow: #f0d1d2;
+}
+
+.dh-dashboard .dh-card-medication {
+    --card-accent: #16836a;
+    --card-soft: #e3f7ef;
+    --card-shadow: #c2e8d8;
+}
+
+.dh-dashboard .dh-card-vitals {
+    --card-accent: #0b83a5;
+    --card-soft: #e2f6fc;
+    --card-shadow: #c4e8f1;
+}
+
+/* ================= BOTTOM BANNER ================= */
+
+.dh-dashboard .dh-bottom-banner {
+    position: relative;
+    isolation: isolate;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 25px;
+    margin-top: 45px;
+    padding: 32px;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,.12);
+    border-radius: 24px;
+    color: #fff;
+    background: linear-gradient(120deg, #073b4c, #087b83);
+    box-shadow:
+        0 7px 0 #d9e8eb,
+        0 17px 32px rgba(7,59,76,.12);
+}
+
+.dh-dashboard .dh-bottom-banner::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    width: 210px;
+    height: 210px;
+    top: -100px;
+    right: 10%;
+    border-radius: 50%;
+    background: rgba(54,214,195,.12);
+}
+
+.dh-dashboard .dh-bottom-banner h3 {
+    margin: 0 0 9px;
+    color: #fff;
+    font-family: "Manrope", "Segoe UI", sans-serif;
+    font-size: 1.35rem;
+    font-weight: 800;
+}
+
+.dh-dashboard .dh-bottom-banner p {
+    max-width: 670px;
+    margin: 0;
+    color: rgba(255,255,255,.78);
+    font-size: .9rem;
+    line-height: 1.8;
+}
+
+/* ================= 3D BUTTON ================= */
+
+.dh-dashboard .dh-btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    flex-shrink: 0;
+    min-height: 49px;
+    padding: 13px 21px;
+    border: 1px solid rgba(255,255,255,.3);
+    border-radius: 13px;
+    color: #fff;
+    background: linear-gradient(145deg, #16b6a5, #087481);
+    box-shadow:
+        0 5px 0 #044d58,
+        0 10px 20px rgba(0,0,0,.15),
+        inset 0 1px 0 rgba(255,255,255,.25);
+    font-size: .87rem;
+    font-weight: 800;
+    text-decoration: none;
+    text-align: center;
+    transition:
+        transform .2s ease,
+        box-shadow .2s ease,
+        background .2s ease;
+}
+
+.dh-dashboard .dh-btn:hover {
+    color: #fff;
+    background: linear-gradient(145deg, #20cbb8, #09818d);
+    transform: translateY(-4px);
+    box-shadow:
+        0 9px 0 #044d58,
+        0 17px 25px rgba(0,0,0,.19),
+        inset 0 1px 0 rgba(255,255,255,.3);
+}
+
+.dh-dashboard .dh-btn:active {
+    transform: translateY(3px);
+    box-shadow: 0 2px 0 #044d58;
+}
+
+.dh-dashboard .dh-btn:focus-visible {
+    outline: 3px solid #ffbd59;
+    outline-offset: 5px;
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media (max-width: 1000px) {
+    .dh-dashboard .dh-card-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 22px;
+    }
+
+    .dh-dashboard .dh-intro {
+        padding: 25px;
+    }
+
+    .dh-dashboard .dh-card {
+        min-height: 280px;
+    }
+}
+
+@media (max-width: 700px) {
+    .dh-dashboard .dh-hero {
+        padding: 75px 20px 90px;
+    }
+
+    .dh-dashboard .dh-hero h1 {
+        letter-spacing: -1.3px;
+    }
+
+    .dh-dashboard .dh-main {
+        padding: 0 17px 50px;
+    }
+
+    .dh-dashboard .dh-intro {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 20px;
+        margin-top: -28px;
+        margin-bottom: 35px;
+        padding: 24px 21px;
+        border-radius: 20px;
+    }
+
+    .dh-dashboard .dh-module-count {
+        width: 100%;
+    }
+
+    .dh-dashboard .dh-card-grid {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 21px;
+    }
+
+    .dh-dashboard .dh-card {
+        min-height: 0;
+        padding: 24px;
+        border-radius: 20px;
+    }
+
+    .dh-dashboard .dh-card-top {
+        margin-bottom: 20px;
+    }
+
+    .dh-dashboard .dh-card h4 {
+        font-size: 1.2rem;
+    }
+
+    .dh-dashboard .dh-card-description {
+        margin-bottom: 22px;
+    }
+
+    .dh-dashboard .dh-bottom-banner {
+        flex-direction: column;
+        align-items: stretch;
+        margin-top: 35px;
+        padding: 26px 22px;
+        border-radius: 20px;
+    }
+
+    .dh-dashboard .dh-bottom-banner .dh-btn {
+        width: 100%;
+    }
+}
+
+@media (max-width: 380px) {
+    .dh-dashboard .dh-main {
+        padding-right: 13px;
+        padding-left: 13px;
+    }
+
+    .dh-dashboard .dh-card {
+        padding: 20px;
+    }
+
+    .dh-dashboard .dh-hero h1 {
+        font-size: 2rem;
+    }
+
+    .dh-dashboard .dh-card-icon {
+        width: 54px;
+        height: 54px;
+    }
+}
+
+/* Reduced motion accessibility */
+
+@media (prefers-reduced-motion: reduce) {
+    .dh-dashboard *,
+    .dh-dashboard *::before,
+    .dh-dashboard *::after {
+        transition-duration: .01ms !important;
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+    }
+}
+</style>
+
+
+<div class="dh-dashboard">
+
+    <!-- ================= HERO SECTION ================= -->
+
+    <section class="dh-hero">
+        <div class="dh-hero-content">
+
+            <div class="dh-hero-badge">
+                <span class="dh-status-dot"></span>
+                DUXTHEALTH HOMECARE
+            </div>
+
+            <h1>
+                Healthcare, <span>Anywhere.</span><br>
+                Anytime.
+            </h1>
+
+            <p class="dh-hero-description">
+                Making healthcare accessible to everyone, everywhere.
+                Manage patients, coordinate care, organise clinical
+                records, and support better homecare services.
+            </p>
+
+            <div class="dh-hero-note">
+                <span aria-hidden="true">&#10010;</span>
+                Health to the future.
+            </div>
+
+        </div>
+    </section>
+
+
+    <!-- ================= DASHBOARD ================= -->
+
+    <main class="dh-main">
+
+        <!-- DASHBOARD INTRO -->
+
+        <section class="dh-intro">
+
+            <div>
+                <span class="dh-intro-label">
+                    Your workspace
+                </span>
+
+                <h2>HomeCare Management Dashboard</h2>
+
+                <p>
+                    Select a module below to access its management tools.
+                    Click anywhere on a card to open that section.
+                </p>
+            </div>
+
+            <div class="dh-module-count">
+                <div class="dh-count-icon" aria-hidden="true">
+                    &#10010;
+                </div>
+
+                <div>
+                    <strong>09 Modules</strong>
+                    <small>Healthcare management</small>
                 </div>
             </div>
-        </div>
 
-        <!-- Health Professionals -->
-        <div class="col-md-4">
-            <div class="card border-success h-100 shadow-sm">
-                <div class="card-body d-flex flex-column">
-                    <h5 class="card-title">Health Professionals</h5>
-                    <p class="card-text flex-grow-1">Manage doctors, nurses, caregivers, and admins.</p>
-                    <a href="{% url 'homecare:professional_list' %}" class="btn btn-success w-100 mt-auto">
-                        View Professionals
-                    </a>
-                </div>
+        </section>
+
+
+        <!-- MODULE HEADING -->
+
+        <section aria-labelledby="dh-modules-heading">
+
+            <div class="dh-section-heading">
+                <h3 id="dh-modules-heading">Management Modules</h3>
+                <p>
+                    Your essential clinical and administrative tools,
+                    organised in one place.
+                </p>
             </div>
-        </div>
 
-        <!-- Care Plans -->
-        <div class="col-md-4">
-            <div class="card border-info h-100 shadow-sm">
-                <div class="card-body d-flex flex-column">
-                    <h5 class="card-title">Care Plans</h5>
-                    <p class="card-text flex-grow-1">Create and manage personalized care plans.</p>
-                    <a href="{% url 'homecare:careplan_list' %}" class="btn btn-info w-100 mt-auto">
-                        View Care Plans
-                    </a>
-                </div>
+
+            <!-- ================= CLICKABLE CARDS ================= -->
+
+            <div class="dh-card-grid">
+
+                <!-- 01 PATIENTS -->
+
+                <a href="{% url 'homecare:patient_list' %}"
+                   class="dh-card dh-card-patients"
+                   aria-label="Open My Patients and Clinical AI Assistance">
+
+                    <div class="dh-card-top">
+                        <div class="dh-card-icon" aria-hidden="true">
+                            &#9829;
+                        </div>
+                        <span class="dh-card-index">01</span>
+                    </div>
+
+                    <h4>My Patients &amp; Clinical AI Assistance</h4>
+
+                    <p class="dh-card-description">
+                        View patients assigned to you and access
+                        DuxtHealth patient-based AI support for
+                        clinical decision-making.
+                    </p>
+
+                    <div class="dh-card-footer">
+                        <span class="dh-card-action">View Patients</span>
+                        <span class="dh-card-arrow" aria-hidden="true">
+                            &rarr;
+                        </span>
+                    </div>
+
+                </a>
+
+
+                <!-- 02 HEALTH PROFESSIONALS -->
+
+                <a href="{% url 'homecare:professional_list' %}"
+                   class="dh-card dh-card-professionals"
+                   aria-label="Open Health Professionals">
+
+                    <div class="dh-card-top">
+                        <div class="dh-card-icon" aria-hidden="true">
+                            &#9813;
+                        </div>
+                        <span class="dh-card-index">02</span>
+                    </div>
+
+                    <h4>Health Professionals</h4>
+
+                    <p class="dh-card-description">
+                        Manage doctors, nurses, caregivers, and
+                        administrators supporting your homecare services.
+                    </p>
+
+                    <div class="dh-card-footer">
+                        <span class="dh-card-action">View Professionals</span>
+                        <span class="dh-card-arrow" aria-hidden="true">
+                            &rarr;
+                        </span>
+                    </div>
+
+                </a>
+
+
+                <!-- 03 CARE PLANS -->
+
+                <a href="{% url 'homecare:careplan_list' %}"
+                   class="dh-card dh-card-careplans"
+                   aria-label="Open Care Plans">
+
+                    <div class="dh-card-top">
+                        <div class="dh-card-icon" aria-hidden="true">
+                            &#10003;
+                        </div>
+                        <span class="dh-card-index">03</span>
+                    </div>
+
+                    <h4>Care Plans</h4>
+
+                    <p class="dh-card-description">
+                        Create, review, and manage personalised
+                        care plans tailored to individual patient needs.
+                    </p>
+
+                    <div class="dh-card-footer">
+                        <span class="dh-card-action">View Care Plans</span>
+                        <span class="dh-card-arrow" aria-hidden="true">
+                            &rarr;
+                        </span>
+                    </div>
+
+                </a>
+
+
+                <!-- 04 VISIT SCHEDULES -->
+
+                <a href="{% url 'homecare:visitschedule_list' %}"
+                   class="dh-card dh-card-visits"
+                   aria-label="Open Visit Schedules">
+
+                    <div class="dh-card-top">
+                        <div class="dh-card-icon" aria-hidden="true">
+                            &#128197;
+                        </div>
+                        <span class="dh-card-index">04</span>
+                    </div>
+
+                    <h4>Visit Schedules</h4>
+
+                    <p class="dh-card-description">
+                        Organise scheduled homecare visits and
+                        coordinate planned care activities.
+                    </p>
+
+                    <div class="dh-card-footer">
+                        <span class="dh-card-action">View Visit Schedules</span>
+                        <span class="dh-card-arrow" aria-hidden="true">
+                            &rarr;
+                        </span>
+                    </div>
+
+                </a>
+
+
+                <!-- 05 NURSES NOTES -->
+
+                <a href="{% url 'homecare:nursesnote_list' %}"
+                   class="dh-card dh-card-nurse"
+                   aria-label="Open Nurses Notes">
+
+                    <div class="dh-card-top">
+                        <div class="dh-card-icon" aria-hidden="true">
+                            &#128221;
+                        </div>
+                        <span class="dh-card-index">05</span>
+                    </div>
+
+                    <h4>Nurses' Notes</h4>
+
+                    <p class="dh-card-description">
+                        Record, organise, and review nursing
+                        observations and patient care documentation.
+                    </p>
+
+                    <div class="dh-card-footer">
+                        <span class="dh-card-action">View Nurses' Notes</span>
+                        <span class="dh-card-arrow" aria-hidden="true">
+                            &rarr;
+                        </span>
+                    </div>
+
+                </a>
+
+
+                <!-- 06 DOCTOR NOTES -->
+
+                <a href="{% url 'homecare:doctornote_list' %}"
+                   class="dh-card dh-card-doctor"
+                   aria-label="Open Doctor Notes">
+
+                    <div class="dh-card-top">
+                        <div class="dh-card-icon" aria-hidden="true">
+                            &#9877;
+                        </div>
+                        <span class="dh-card-index">06</span>
+                    </div>
+
+                    <h4>Doctor Notes</h4>
+
+                    <p class="dh-card-description">
+                        Access clinical notes, medical assessments,
+                        and documented consultations.
+                    </p>
+
+                    <div class="dh-card-footer">
+                        <span class="dh-card-action">View Doctor Notes</span>
+                        <span class="dh-card-arrow" aria-hidden="true">
+                            &rarr;
+                        </span>
+                    </div>
+
+                </a>
+
+
+                <!-- 07 TREATMENT SHEETS -->
+
+                <a href="{% url 'homecare:treatmentsheet_list' %}"
+                   class="dh-card dh-card-treatment"
+                   aria-label="Open Treatment Sheets">
+
+                    <div class="dh-card-top">
+                        <div class="dh-card-icon" aria-hidden="true">
+                            &#10010;
+                        </div>
+                        <span class="dh-card-index">07</span>
+                    </div>
+
+                    <h4>Treatment Sheets</h4>
+
+                    <p class="dh-card-description">
+                        Track ongoing patient treatments and
+                        maintain organised treatment documentation.
+                    </p>
+
+                    <div class="dh-card-footer">
+                        <span class="dh-card-action">View Treatment Sheets</span>
+                        <span class="dh-card-arrow" aria-hidden="true">
+                            &rarr;
+                        </span>
+                    </div>
+
+                </a>
+
+
+                <!-- 08 MEDICATION SHEETS -->
+
+                <a href="{% url 'homecare:medicationsheet_list' %}"
+                   class="dh-card dh-card-medication"
+                   aria-label="Open Medication Sheets">
+
+                    <div class="dh-card-top">
+                        <div class="dh-card-icon" aria-hidden="true">
+                            &#9881;
+                        </div>
+                        <span class="dh-card-index">08</span>
+                    </div>
+
+                    <h4>Medication Sheets</h4>
+
+                    <p class="dh-card-description">
+                        Review prescriptions and maintain
+                        medication tracking records.
+                    </p>
+
+                    <div class="dh-card-footer">
+                        <span class="dh-card-action">View Medication Sheets</span>
+                        <span class="dh-card-arrow" aria-hidden="true">
+                            &rarr;
+                        </span>
+                    </div>
+
+                </a>
+
+
+                <!-- 09 VITAL SIGNS -->
+
+                <a href="{% url 'homecare:vitalsign_list' %}"
+                   class="dh-card dh-card-vitals"
+                   aria-label="Open Vital Sign Records">
+
+                    <div class="dh-card-top">
+                        <div class="dh-card-icon" aria-hidden="true">
+                            &#9829;
+                        </div>
+                        <span class="dh-card-index">09</span>
+                    </div>
+
+                    <h4>Vital Sign Records</h4>
+
+                    <p class="dh-card-description">
+                        Review and monitor recorded patient vital
+                        signs over time.
+                    </p>
+
+                    <div class="dh-card-footer">
+                        <span class="dh-card-action">View Vital Signs</span>
+                        <span class="dh-card-arrow" aria-hidden="true">
+                            &rarr;
+                        </span>
+                    </div>
+
+                </a>
+
             </div>
-        </div>
+        </section>
 
-    </div>
 
-    <!-- ROW 2 -->
-    <div class="row g-4 mt-0">
+        <!-- ================= BOTTOM BANNER ================= -->
 
-        <!-- Visit Schedules -->
-        <div class="col-md-4">
-            <div class="card border-warning h-100 shadow-sm">
-                <div class="card-body d-flex flex-column">
-                    <h5 class="card-title">Visit Schedules</h5>
-                    <p class="card-text flex-grow-1">Manage scheduled homecare visits.</p>
-                    <a href="{% url 'homecare:visitschedule_list' %}" class="btn btn-warning text-white w-100 mt-auto">
-                        View Visit Schedules
-                    </a>
-                </div>
+        <section class="dh-bottom-banner">
+
+            <div>
+                <h3>Better organisation. Connected care.</h3>
+
+                <p>
+                    Use your HomeCare dashboard to access patient
+                    records, coordinate healthcare professionals,
+                    and manage clinical documentation.
+                </p>
             </div>
-        </div>
 
-        <!-- Nurses Notes -->
-        <div class="col-md-4">
-            <div class="card border-secondary h-100 shadow-sm">
-                <div class="card-body d-flex flex-column">
-                    <h5 class="card-title">Nurses Notes</h5>
-                    <p class="card-text flex-grow-1">Record and manage nurses’ observations.</p>
-                    <a href="{% url 'homecare:nursesnote_list' %}" class="btn btn-secondary w-100 mt-auto">
-                        View Nurses Notes
-                    </a>
-                </div>
-            </div>
-        </div>
+            <a href="{% url 'homecare:patient_list' %}"
+               class="dh-btn">
+                Open Patient Records
+                <span aria-hidden="true">&rarr;</span>
+            </a>
 
-        <!-- Doctor Notes -->
-        <div class="col-md-4">
-            <div class="card border-dark h-100 shadow-sm">
-                <div class="card-body d-flex flex-column">
-                    <h5 class="card-title">Doctor Notes</h5>
-                    <p class="card-text flex-grow-1">Clinical notes and medical assessments.</p>
-                    <a href="{% url 'homecare:doctornote_list' %}" class="btn btn-dark w-100 mt-auto">
-                        View Doctor Notes
-                    </a>
-                </div>
-            </div>
-        </div>
+        </section>
 
-    </div>
+    </main>
 
-    <!-- ROW 3 -->
-    <div class="row g-4 mt-0">
-
-        <!-- Treatment Sheets -->
-        <div class="col-md-4">
-            <div class="card border-primary h-100 shadow-sm">
-                <div class="card-body d-flex flex-column">
-                    <h5 class="card-title">Treatment Sheets</h5>
-                    <p class="card-text flex-grow-1">Track ongoing patient treatments.</p>
-                    <a href="{% url 'homecare:treatmentsheet_list' %}" class="btn btn-primary w-100 mt-auto">
-                        View Treatment Sheets
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <!-- Medication Sheets -->
-        <div class="col-md-4">
-            <div class="card border-success h-100 shadow-sm">
-                <div class="card-body d-flex flex-column">
-                    <h5 class="card-title">Medication Sheets</h5>
-                    <p class="card-text flex-grow-1">Prescriptions and medication tracking.</p>
-                    <a href="{% url 'homecare:medicationsheet_list' %}" class="btn btn-success w-100 mt-auto">
-                        View Medication Sheets
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <!-- Vital Sign Records -->
-        <div class="col-md-4">
-            <div class="card border-info h-100 shadow-sm">
-                <div class="card-body d-flex flex-column">
-                    <h5 class="card-title">Vital Sign Records</h5>
-                    <p class="card-text flex-grow-1">Monitor patient vital signs over time.</p>
-                    <a href="{% url 'homecare:vitalsign_list' %}" class="btn btn-info w-100 mt-auto">
-                        View Vital Signs
-                    </a>
-                </div>
-            </div>
-        </div>
-
-    </div>
 </div>
 
 {% endblock %}
