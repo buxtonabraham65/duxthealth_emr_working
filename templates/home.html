@@ -1,122 +1,929 @@
 {% extends 'base.html' %}
 {% load static %}
+
+{% block title %}DuxtHealth | Healthcare Dashboard{% endblock %}
+
+{% block extra_head %}
+<style>
+    :root {
+        --dh-primary: #0E6F6C;
+        --dh-primary-dark: #084E4C;
+        --dh-secondary: #7ED6C2;
+        --dh-gold: #C9A24D;
+        --dh-text: #1F2937;
+        --dh-muted: #718096;
+        --dh-surface: #ffffff;
+        --dh-background: #f3f7f8;
+    }
+
+    /* ==============================
+       PAGE FOUNDATION
+    ============================== */
+
+    .dh-home {
+        color: var(--dh-text);
+        padding-bottom: 25px;
+    }
+
+    .dh-home * {
+        box-sizing: border-box;
+    }
+
+    .dh-home a {
+        text-decoration: none;
+    }
+
+    /* ==============================
+       HERO SECTION
+    ============================== */
+
+    .dh-hero {
+        position: relative;
+        min-height: 390px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        isolation: isolate;
+        margin: 0 0 32px;
+        border-radius: 24px;
+        background:
+            linear-gradient(
+                115deg,
+                rgba(5, 47, 48, .91),
+                rgba(14, 111, 108, .70),
+                rgba(8, 78, 76, .55)
+            ),
+            url("{% static 'duxthealth_frontend/images/hero-homecare.jpeg' %}")
+            center / cover no-repeat;
+        box-shadow:
+            0 22px 45px rgba(8, 78, 76, .20),
+            0 5px 12px rgba(0, 0, 0, .06);
+    }
+
+    .dh-hero::before {
+        content: "";
+        position: absolute;
+        width: 280px;
+        height: 280px;
+        top: -120px;
+        right: -65px;
+        border-radius: 50%;
+        border: 1px solid rgba(255, 255, 255, .20);
+        box-shadow:
+            0 0 0 25px rgba(255, 255, 255, .04),
+            0 0 0 55px rgba(255, 255, 255, .025);
+        z-index: -1;
+    }
+
+    .dh-hero::after {
+        content: "";
+        position: absolute;
+        width: 180px;
+        height: 180px;
+        left: -70px;
+        bottom: -100px;
+        border-radius: 50%;
+        background: rgba(126, 214, 194, .15);
+        filter: blur(3px);
+        z-index: -1;
+    }
+
+    .dh-hero-content {
+        position: relative;
+        z-index: 1;
+        width: 100%;
+        max-width: 850px;
+        padding: 55px 28px;
+        text-align: center;
+        color: #fff;
+    }
+
+    .dh-hero-label {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        margin-bottom: 19px;
+        padding: 8px 15px;
+        border: 1px solid rgba(255, 255, 255, .25);
+        border-radius: 999px;
+        background: rgba(255, 255, 255, .12);
+        color: #fff;
+        font-size: .76rem;
+        font-weight: 800;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        backdrop-filter: blur(10px);
+    }
+
+    .dh-hero-label-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--dh-secondary);
+        box-shadow: 0 0 12px rgba(126, 214, 194, .8);
+    }
+
+    .dh-hero h1 {
+        max-width: 780px;
+        margin: 0 auto;
+        font-size: clamp(2rem, 5vw, 3.6rem);
+        font-weight: 900;
+        line-height: 1.13;
+        letter-spacing: -1.5px;
+        text-shadow: 0 5px 18px rgba(0, 0, 0, .25);
+    }
+
+    .dh-hero h1 span {
+        color: var(--dh-secondary);
+    }
+
+    .dh-hero-description {
+        max-width: 610px;
+        margin: 20px auto 0;
+        color: rgba(255, 255, 255, .88);
+        font-size: 1.05rem;
+        line-height: 1.8;
+    }
+
+    .dh-hero-motto {
+        margin: 8px 0 0;
+        color: var(--dh-gold);
+        font-weight: 700;
+        letter-spacing: .4px;
+    }
+
+    .dh-hero-actions {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        margin-top: 28px;
+    }
+
+    .dh-hero-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 9px;
+        min-height: 47px;
+        padding: 12px 21px;
+        border: 1px solid transparent;
+        border-radius: 12px;
+        font-size: .91rem;
+        font-weight: 800;
+        transition: transform .25s ease, box-shadow .25s ease,
+                    background .25s ease;
+    }
+
+    .dh-hero-btn-primary {
+        background: var(--dh-secondary);
+        color: #073D3B;
+        box-shadow: 0 7px 0 rgba(4, 45, 44, .30),
+                    0 12px 25px rgba(0, 0, 0, .14);
+    }
+
+    .dh-hero-btn-primary:hover {
+        color: #073D3B;
+        background: #a2eadb;
+        transform: translateY(-3px);
+        box-shadow: 0 10px 0 rgba(4, 45, 44, .22),
+                    0 18px 30px rgba(0, 0, 0, .16);
+    }
+
+    .dh-hero-btn-outline {
+        color: #fff;
+        border-color: rgba(255, 255, 255, .45);
+        background: rgba(255, 255, 255, .08);
+        backdrop-filter: blur(8px);
+    }
+
+    .dh-hero-btn-outline:hover {
+        color: #fff;
+        background: rgba(255, 255, 255, .17);
+        transform: translateY(-3px);
+    }
+
+    /* ==============================
+       DASHBOARD SECTION HEADING
+    ============================== */
+
+    .dh-section {
+        margin-top: 35px;
+    }
+
+    .dh-section-heading {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 15px;
+        margin-bottom: 20px;
+    }
+
+    .dh-section-eyebrow {
+        display: block;
+        margin-bottom: 6px;
+        color: var(--dh-primary);
+        font-size: .72rem;
+        font-weight: 900;
+        letter-spacing: 1.7px;
+        text-transform: uppercase;
+    }
+
+    .dh-section-title {
+        margin: 0;
+        color: var(--dh-text);
+        font-size: clamp(1.4rem, 3vw, 1.9rem);
+        font-weight: 900;
+        letter-spacing: -.6px;
+    }
+
+    .dh-section-description {
+        margin: 7px 0 0;
+        color: var(--dh-muted);
+        font-size: .92rem;
+        line-height: 1.65;
+    }
+
+    .dh-section-badge {
+        flex-shrink: 0;
+        padding: 8px 12px;
+        border: 1px solid rgba(14, 111, 108, .12);
+        border-radius: 10px;
+        background: #fff;
+        color: var(--dh-primary);
+        font-size: .76rem;
+        font-weight: 800;
+    }
+
+    /* ==============================
+       3D DASHBOARD CARDS
+    ============================== */
+
+    .dh-card-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 23px;
+        perspective: 1200px;
+    }
+
+    .dh-card {
+        position: relative;
+        display: flex;
+        min-width: 0;
+        flex-direction: column;
+        overflow: hidden;
+        min-height: 255px;
+        padding: 23px;
+        border: 1px solid rgba(14, 111, 108, .10);
+        border-radius: 19px;
+        background: linear-gradient(145deg, #fff, #f9fcfc);
+        box-shadow:
+            0 5px 0 #e1ebea,
+            0 9px 22px rgba(31, 41, 55, .055);
+        color: var(--dh-text);
+        transform: translateY(0) rotateX(0);
+        transform-style: preserve-3d;
+        transition:
+            transform .28s ease,
+            box-shadow .28s ease,
+            border-color .28s ease;
+        isolation: isolate;
+    }
+
+    .dh-card::before {
+        content: "";
+        position: absolute;
+        width: 140px;
+        height: 140px;
+        top: -67px;
+        right: -57px;
+        border-radius: 50%;
+        background: var(--dh-card-tint, rgba(126, 214, 194, .17));
+        z-index: -1;
+        transition: transform .3s ease;
+    }
+
+    .dh-card::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 22px;
+        right: 22px;
+        height: 3px;
+        border-radius: 8px 8px 0 0;
+        background: var(--dh-card-accent, var(--dh-primary));
+        opacity: .75;
+        transform: scaleX(.22);
+        transform-origin: left;
+        transition: transform .28s ease;
+    }
+
+    .dh-card:hover {
+        color: var(--dh-text);
+        transform: translateY(-7px) rotateX(1deg);
+        border-color: rgba(14, 111, 108, .25);
+        box-shadow:
+            0 7px 0 #d5e6e3,
+            0 22px 38px rgba(14, 111, 108, .13);
+    }
+
+    .dh-card:hover::before {
+        transform: scale(1.2);
+    }
+
+    .dh-card:hover::after {
+        transform: scaleX(1);
+    }
+
+    .dh-card:focus-visible {
+        outline: 3px solid var(--dh-secondary);
+        outline-offset: 4px;
+    }
+
+    .dh-card-top {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 19px;
+    }
+
+    .dh-card-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 57px;
+        height: 57px;
+        flex-shrink: 0;
+        border: 1px solid rgba(255, 255, 255, .8);
+        border-radius: 16px;
+        background: var(--dh-card-icon-bg, #e2f5f0);
+        color: var(--dh-card-accent, var(--dh-primary));
+        font-size: 1.55rem;
+        box-shadow:
+            0 5px 0 var(--dh-card-shadow, #c9e7df),
+            0 9px 18px rgba(31, 41, 55, .07);
+        transition: transform .25s ease;
+    }
+
+    .dh-card:hover .dh-card-icon {
+        transform: translateY(-3px) rotate(-4deg);
+    }
+
+    .dh-card-tag {
+        display: inline-block;
+        max-width: 125px;
+        padding: 6px 9px;
+        border-radius: 8px;
+        background: var(--dh-card-icon-bg, #e2f5f0);
+        color: var(--dh-card-accent, var(--dh-primary));
+        font-size: .67rem;
+        font-weight: 900;
+        letter-spacing: .45px;
+        text-align: center;
+        text-transform: uppercase;
+    }
+
+    .dh-card-title {
+        margin: 0 0 9px;
+        color: var(--dh-text);
+        font-size: 1.12rem;
+        font-weight: 850;
+        line-height: 1.4;
+    }
+
+    .dh-card-description {
+        flex: 1;
+        margin: 0 0 22px;
+        color: var(--dh-muted);
+        font-size: .87rem;
+        line-height: 1.75;
+    }
+
+    .dh-card-action {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        margin-top: auto;
+        color: var(--dh-card-accent, var(--dh-primary));
+        font-size: .85rem;
+        font-weight: 850;
+    }
+
+    .dh-card-arrow {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        flex-shrink: 0;
+        border-radius: 10px;
+        background: var(--dh-card-icon-bg, #e2f5f0);
+        font-size: 1.1rem;
+        transition: transform .25s ease, background .25s ease;
+    }
+
+    .dh-card:hover .dh-card-arrow {
+        transform: translateX(4px);
+        background: var(--dh-card-accent, var(--dh-primary));
+        color: #fff;
+    }
+
+    /* Card colour variations */
+
+    .dh-card--teal {
+        --dh-card-accent: #0E6F6C;
+        --dh-card-icon-bg: #e0f5ef;
+        --dh-card-shadow: #c5e8dd;
+        --dh-card-tint: rgba(126, 214, 194, .19);
+    }
+
+    .dh-card--blue {
+        --dh-card-accent: #2865a8;
+        --dh-card-icon-bg: #e5efff;
+        --dh-card-shadow: #cddcf5;
+        --dh-card-tint: rgba(83, 142, 219, .14);
+    }
+
+    .dh-card--gold {
+        --dh-card-accent: #956b13;
+        --dh-card-icon-bg: #fff4d9;
+        --dh-card-shadow: #f1e0b8;
+        --dh-card-tint: rgba(201, 162, 77, .18);
+    }
+
+    .dh-card--purple {
+        --dh-card-accent: #7752a3;
+        --dh-card-icon-bg: #f0e9fc;
+        --dh-card-shadow: #dfd2f3;
+        --dh-card-tint: rgba(155, 115, 206, .15);
+    }
+
+    .dh-card--red {
+        --dh-card-accent: #b33b48;
+        --dh-card-icon-bg: #fde9ec;
+        --dh-card-shadow: #f2d0d4;
+        --dh-card-tint: rgba(210, 87, 103, .12);
+    }
+
+    .dh-card--cyan {
+        --dh-card-accent: #087f91;
+        --dh-card-icon-bg: #dff7fa;
+        --dh-card-shadow: #c2e9ed;
+        --dh-card-tint: rgba(50, 185, 204, .13);
+    }
+
+    .dh-card--green {
+        --dh-card-accent: #287848;
+        --dh-card-icon-bg: #e2f6e8;
+        --dh-card-shadow: #c9e9d2;
+        --dh-card-tint: rgba(73, 173, 104, .13);
+    }
+
+    .dh-card--orange {
+        --dh-card-accent: #b46121;
+        --dh-card-icon-bg: #fff0e1;
+        --dh-card-shadow: #f1ddc8;
+        --dh-card-tint: rgba(222, 144, 71, .13);
+    }
+
+    /* ==============================
+       STAFF REPORTS LABEL
+    ============================== */
+
+    .dh-staff-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        margin: 0 0 16px;
+        padding: 8px 12px;
+        border: 1px solid #cde8f3;
+        border-radius: 9px;
+        background: #effaff;
+        color: #176781;
+        font-size: .75rem;
+        font-weight: 850;
+        text-transform: uppercase;
+        letter-spacing: .8px;
+    }
+
+    /* ==============================
+       RESPONSIVE DESIGN
+    ============================== */
+
+    @media (max-width: 991.98px) {
+        .dh-hero {
+            min-height: 350px;
+            border-radius: 20px;
+        }
+
+        .dh-card-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 18px;
+        }
+
+        .dh-card {
+            min-height: 245px;
+            padding: 21px;
+        }
+    }
+
+    @media (max-width: 575.98px) {
+        .dh-hero {
+            min-height: 360px;
+            margin-bottom: 27px;
+            border-radius: 16px;
+        }
+
+        .dh-hero-content {
+            padding: 43px 19px;
+        }
+
+        .dh-hero h1 {
+            font-size: clamp(2rem, 9vw, 2.65rem);
+            letter-spacing: -.8px;
+        }
+
+        .dh-hero-description {
+            font-size: .93rem;
+            line-height: 1.7;
+        }
+
+        .dh-hero-motto {
+            font-size: .9rem;
+        }
+
+        .dh-hero-actions {
+            flex-direction: column;
+            align-items: stretch;
+            margin-top: 24px;
+        }
+
+        .dh-hero-btn {
+            width: 100%;
+            min-height: 46px;
+        }
+
+        .dh-section {
+            margin-top: 28px;
+        }
+
+        .dh-section-heading {
+            align-items: flex-start;
+            flex-direction: column;
+            margin-bottom: 17px;
+        }
+
+        .dh-section-badge {
+            font-size: .72rem;
+        }
+
+        .dh-card-grid {
+            grid-template-columns: minmax(0, 1fr);
+            gap: 17px;
+        }
+
+        .dh-card {
+            min-height: 0;
+            padding: 21px;
+            border-radius: 16px;
+        }
+
+        .dh-card-top {
+            margin-bottom: 16px;
+        }
+
+        .dh-card-description {
+            margin-bottom: 18px;
+        }
+
+        /* Avoid overly large hover movements on touch devices. */
+        .dh-card:hover {
+            transform: translateY(-3px);
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .dh-home *,
+        .dh-home *::before,
+        .dh-home *::after {
+            scroll-behavior: auto !important;
+            transition-duration: .01ms !important;
+        }
+    }
+</style>
+{% endblock %}
+
 {% block content %}
 
-<section class="hero-section text-center"
-    style="background:
-    linear-gradient(rgba(0,0,0,.45),rgba(0,0,0,.45)),
-    url('{% static 'duxthealth_frontend/images/hero-homecare.jpeg' %}')
-    center/cover no-repeat;">
-    <div class="container text-white">
-        <h1 class="fw-bold">Healthcare, Anywhere. Anytime.</h1>
-        <p class="lead mt-3">Making healthcare accessible to everyone, everywhere.</p>
-        <p class="lead mt-3">Health to the future.</p>
-        <div class="mt-4">
-           
+<div class="dh-home">
+
+    <!-- ==============================
+         HERO SECTION
+    ============================== -->
+
+    <section class="dh-hero">
+        <div class="dh-hero-content">
+
+            <div class="dh-hero-label">
+                <span class="dh-hero-label-dot"></span>
+                Connected Healthcare Workspace
+            </div>
+
+            <h1>
+                Healthcare,<br>
+                <span>Anywhere. Anytime.</span>
+            </h1>
+
+            <p class="dh-hero-description">
+                Making healthcare accessible to everyone, everywhere,
+                with connected clinical tools that support better
+                coordination and patient care.
+            </p>
+
+            <p class="dh-hero-motto">Health to the future.</p>
+
+            <div class="dh-hero-actions">
+                <a href="{% url 'patient_list' %}"
+                   class="dh-hero-btn dh-hero-btn-primary">
+                    <span aria-hidden="true">♙</span>
+                    Explore Patients
+                    <span aria-hidden="true">→</span>
+                </a>
+
+                <a href="{% url 'add_vitals' %}"
+                   class="dh-hero-btn dh-hero-btn-outline">
+                    <span aria-hidden="true">♡</span>
+                    Record Vital Signs
+                </a>
+            </div>
+
         </div>
-    </div>
-</section>
-    
-    <hr class="my-4">
+    </section>
 
-    <div class="container mt-5">
-        <div class="row">
 
-            <!-- Link to HomeCare app -->
-            
+    <!-- ==============================
+         CLINICAL WORKSPACE CARDS
+    ============================== -->
+
+    <section class="dh-section">
+
+        <div class="dh-section-heading">
+            <div>
+                <span class="dh-section-eyebrow">
+                    Your Clinical Workspace
+                </span>
+
+                <h2 class="dh-section-title">
+                    Quick Access
+                </h2>
+
+                <p class="dh-section-description">
+                    Select a card to open the clinical tool you need.
+                </p>
+            </div>
+
+            <span class="dh-section-badge">
+                ✦ Clinical Tools
+            </span>
+        </div>
+
+
+        <div class="dh-card-grid">
 
             <!-- Register Patient -->
-            <div class="col-md-4 mb-4">
-                <div class="card shadow-sm h-100">
-                    <div class="card-body">
-                        <h5 class="card-title">Register a Patient</h5>
-                        <p class="card-text">Add new patients and begin their healthcare journey.</p>
-                        <a href="{% url 'register_patient' %}" class="btn btn-primary">Register</a>
-                    </div>
-                </div>
-            </div>
+            <a href="{% url 'register_patient' %}"
+               class="dh-card dh-card--teal"
+               aria-label="Register a new patient">
 
-            <!-- View Patients -->
-            <div class="col-md-4 mb-4">
-                <div class="card shadow-sm h-100">
-                    <div class="card-body">
-                        <h5 class="card-title">Patient List</h5>
-                        <p class="card-text">View and manage all registered patients.</p>
-                        <a href="{% url 'patient_list' %}" class="btn btn-success">View List</a>
-                    </div>
+                <div class="dh-card-top">
+                    <span class="dh-card-icon" aria-hidden="true">♙</span>
+                    <span class="dh-card-tag">Registration</span>
                 </div>
-            </div>
 
-            {% if request.user.is_staff %}
-            <div class="col-md-4 mb-4">
-                <div class="card shadow-sm h-100 border-info">
-                    <div class="card-body">
-                        <h5 class="card-title">Outreach Reports</h5>
-                        <p class="card-text">View outreach data for admin and research purposes.</p>
-                        <a href="{% url 'outreach_detailed_report' %}" class="btn btn-info btn-sm mb-2 w-100">Detailed Report</a>
-                        <a href="{% url 'outreach_anonymous_report' %}" class="btn btn-outline-info btn-sm w-100">Anonymous Report</a>
-                    </div>
+                <h3 class="dh-card-title">Register a Patient</h3>
+
+                <p class="dh-card-description">
+                    Add new patients to the system and begin organising
+                    their healthcare journey.
+                </p>
+
+                <div class="dh-card-action">
+                    <span>Register Patient</span>
+                    <span class="dh-card-arrow" aria-hidden="true">→</span>
                 </div>
-            </div>
-            {% endif %}
+
+            </a>
+
+
+            <!-- Patient List -->
+            <a href="{% url 'patient_list' %}"
+               class="dh-card dh-card--blue"
+               aria-label="View and manage patients">
+
+                <div class="dh-card-top">
+                    <span class="dh-card-icon" aria-hidden="true">▤</span>
+                    <span class="dh-card-tag">Patient Records</span>
+                </div>
+
+                <h3 class="dh-card-title">Patient List</h3>
+
+                <p class="dh-card-description">
+                    Browse registered patients and access their records
+                    and available clinical information.
+                </p>
+
+                <div class="dh-card-action">
+                    <span>View Patient List</span>
+                    <span class="dh-card-arrow" aria-hidden="true">→</span>
+                </div>
+
+            </a>
+
 
             <!-- Record Vitals -->
-            <div class="col-md-4 mb-4">
-                <div class="card shadow-sm h-100">
-                    <div class="card-body">
-                        <h5 class="card-title">Record Vitals</h5>
-                        <p class="card-text">Enter new vital signs for a patient.</p>
-                        <a href="{% url 'add_vitals' %}" class="btn btn-warning">Add Vitals</a>
-                    </div>
+            <a href="{% url 'add_vitals' %}"
+               class="dh-card dh-card--gold"
+               aria-label="Record patient vital signs">
+
+                <div class="dh-card-top">
+                    <span class="dh-card-icon" aria-hidden="true">♡</span>
+                    <span class="dh-card-tag">Monitoring</span>
                 </div>
-            </div>
+
+                <h3 class="dh-card-title">Record Vitals</h3>
+
+                <p class="dh-card-description">
+                    Enter a patient's vital signs to support clinical
+                    monitoring and documentation.
+                </p>
+
+                <div class="dh-card-action">
+                    <span>Add Vital Signs</span>
+                    <span class="dh-card-arrow" aria-hidden="true">→</span>
+                </div>
+
+            </a>
+
 
             <!-- Vitals History -->
-            <div class="col-md-4 mb-4">
-                <div class="card shadow-sm h-100">
-                    <div class="card-body">
-                        <h5 class="card-title">Vitals History</h5>
-                        <p class="card-text">Browse previously recorded vitals.</p>
-                        <a href="{% url 'vitals_list' %}" class="btn btn-outline-warning">View Vitals</a>
-                    </div>
+            <a href="{% url 'vitals_list' %}"
+               class="dh-card dh-card--purple"
+               aria-label="View vital signs history">
+
+                <div class="dh-card-top">
+                    <span class="dh-card-icon" aria-hidden="true">⌁</span>
+                    <span class="dh-card-tag">History</span>
                 </div>
-            </div>
+
+                <h3 class="dh-card-title">Vitals History</h3>
+
+                <p class="dh-card-description">
+                    Review previously recorded vital signs and follow
+                    the available patient monitoring history.
+                </p>
+
+                <div class="dh-card-action">
+                    <span>View Vitals History</span>
+                    <span class="dh-card-arrow" aria-hidden="true">→</span>
+                </div>
+
+            </a>
+
 
             <!-- Nurses/Doctors Note -->
-            <div class="col-md-4 mb-4">
-                <div class="card shadow-sm h-100">
-                    <div class="card-body">
-                        <h5 class="card-title">Nurses/Doctors Note</h5>
-                        <p class="card-text">Record detailed patient treatment notes.</p>
-                        <a href="{% url 'note' %}" class="btn btn-success">Add Note</a>
-                    </div>
+            <a href="{% url 'note' %}"
+               class="dh-card dh-card--green"
+               aria-label="Open nurses and doctors notes">
+
+                <div class="dh-card-top">
+                    <span class="dh-card-icon" aria-hidden="true">✎</span>
+                    <span class="dh-card-tag">Documentation</span>
                 </div>
-            </div>
+
+                <h3 class="dh-card-title">Nurses / Doctors Notes</h3>
+
+                <p class="dh-card-description">
+                    Record clinical observations, treatment notes and
+                    other relevant patient care documentation.
+                </p>
+
+                <div class="dh-card-action">
+                    <span>Open Clinical Notes</span>
+                    <span class="dh-card-arrow" aria-hidden="true">→</span>
+                </div>
+
+            </a>
+
 
             <!-- Add Consultation -->
-            <div class="col-md-4 mb-4">
-                <div class="card shadow-sm h-100">
-                    <div class="card-body">
-                        <h5 class="card-title">Add Consultation</h5>
-                        <p class="card-text">Document a new consultation for a patient.</p>
-                        <a href="{% url 'add_consultation' %}" class="btn btn-danger">New Consultation</a>
-                    </div>
+            <a href="{% url 'add_consultation' %}"
+               class="dh-card dh-card--red"
+               aria-label="Create a consultation record">
+
+                <div class="dh-card-top">
+                    <span class="dh-card-icon" aria-hidden="true">✚</span>
+                    <span class="dh-card-tag">Consultation</span>
                 </div>
-            </div>
+
+                <h3 class="dh-card-title">Add Consultation</h3>
+
+                <p class="dh-card-description">
+                    Create a new consultation record and document the
+                    relevant details of a patient encounter.
+                </p>
+
+                <div class="dh-card-action">
+                    <span>New Consultation</span>
+                    <span class="dh-card-arrow" aria-hidden="true">→</span>
+                </div>
+
+            </a>
+
 
             <!-- Consultation History -->
-            <div class="col-md-4 mb-4">
-                <div class="card shadow-sm h-100">
-                    <div class="card-body">
-                        <h5 class="card-title">Consultation History</h5>
-                        <p class="card-text">Review consultation records for patients.</p>
-                        <a href="{% url 'consultation_list' %}" class="btn btn-outline-danger">View Consultations</a>
-                    </div>
+            <a href="{% url 'consultation_list' %}"
+               class="dh-card dh-card--cyan"
+               aria-label="Review consultation history">
+
+                <div class="dh-card-top">
+                    <span class="dh-card-icon" aria-hidden="true">▥</span>
+                    <span class="dh-card-tag">Records</span>
                 </div>
-            </div>
+
+                <h3 class="dh-card-title">Consultation History</h3>
+
+                <p class="dh-card-description">
+                    Browse existing consultation records and review
+                    documented patient encounters.
+                </p>
+
+                <div class="dh-card-action">
+                    <span>View Consultations</span>
+                    <span class="dh-card-arrow" aria-hidden="true">→</span>
+                </div>
+
+            </a>
+
+
+            <!-- Staff-Only Outreach Reports -->
+            {% if request.user.is_staff %}
+
+            <a href="{% url 'outreach_detailed_report' %}"
+               class="dh-card dh-card--orange"
+               aria-label="Open detailed outreach reports">
+
+                <div class="dh-card-top">
+                    <span class="dh-card-icon" aria-hidden="true">▧</span>
+                    <span class="dh-card-tag">Staff Access</span>
+                </div>
+
+                <h3 class="dh-card-title">Outreach Reports</h3>
+
+                <p class="dh-card-description">
+                    Access outreach reporting tools for authorised
+                    administrative and research purposes.
+                </p>
+
+                <div class="dh-card-action">
+                    <span>Open Detailed Report</span>
+                    <span class="dh-card-arrow" aria-hidden="true">→</span>
+                </div>
+
+            </a>
+
+            <a href="{% url 'outreach_anonymous_report' %}"
+               class="dh-card dh-card--purple"
+               aria-label="Open anonymous outreach reports">
+
+                <div class="dh-card-top">
+                    <span class="dh-card-icon" aria-hidden="true">◉</span>
+                    <span class="dh-card-tag">Staff Access</span>
+                </div>
+
+                <h3 class="dh-card-title">Anonymous Outreach Report</h3>
+
+                <p class="dh-card-description">
+                    View the anonymous outreach report using your
+                    existing authorised reporting route.
+                </p>
+
+                <div class="dh-card-action">
+                    <span>View Anonymous Report</span>
+                    <span class="dh-card-arrow" aria-hidden="true">→</span>
+                </div>
+
+            </a>
+
+            {% endif %}
 
         </div>
-    </div>
+    </section>
+
 </div>
 
 {% endblock %}
