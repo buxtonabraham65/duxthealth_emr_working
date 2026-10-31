@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,205 +13,656 @@
   <style>
     :root {
       --duxt-primary: #0E6F6C;
+      --duxt-primary-dark: #084E4C;
       --duxt-secondary: #7ED6C2;
       --duxt-gold: #C9A24D;
       --duxt-dark: #1F2937;
-      --duxt-bg: #f4f7f8;
-      --duxt-gradient: linear-gradient(135deg, #0E6F6C, #0b5c59);
+      --duxt-bg: #f3f7f8;
+      --duxt-gradient: linear-gradient(135deg, #0E6F6C, #084E4C);
+      --duxt-shadow: 0 10px 30px rgba(14, 111, 108, 0.10);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
     }
 
     body {
-      font-family: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-      background-color: var(--duxt-bg);
+      margin: 0;
+      font-family: "Segoe UI", system-ui, -apple-system,
+                   BlinkMacSystemFont, sans-serif;
+      background:
+        radial-gradient(circle at top right, rgba(126, 214, 194, 0.12), transparent 32%),
+        var(--duxt-bg);
       color: var(--duxt-dark);
       min-height: 100vh;
       display: flex;
       flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    a {
+      text-decoration: none;
     }
 
     /* =======================
        NAVBAR
     ======================= */
+
     .navbar {
       background: var(--duxt-gradient);
-      box-shadow: 0 8px 24px rgba(0,0,0,.08);
-      padding: 0.75rem 0;
+      box-shadow: 0 8px 28px rgba(0, 0, 0, 0.13);
+      padding: 0.8rem 0;
+      position: relative;
+      z-index: 1000;
+    }
+
+    .navbar > .container {
+      gap: 14px;
     }
 
     .navbar-brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: #ffffff !important;
       font-weight: 800;
       font-size: 1.35rem;
-      letter-spacing: 0.4px;
+      letter-spacing: 0.3px;
+      white-space: nowrap;
+      margin-right: 1.25rem;
     }
 
-    .navbar-brand span {
+    .duxt-brand-logo {
+      width: 43px;
+      height: 43px;
+      object-fit: contain;
+      border-radius: 11px;
+      background: #ffffff;
+      padding: 3px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
+      flex-shrink: 0;
+    }
+
+    .duxt-brand-name {
+      color: #ffffff;
+      line-height: 1.2;
+    }
+
+    .duxt-brand-name span {
       color: var(--duxt-gold);
     }
 
+    .navbar-toggler {
+      border: 1px solid rgba(255, 255, 255, 0.45);
+      border-radius: 10px;
+      padding: 7px 10px;
+      box-shadow: none !important;
+    }
+
+    .navbar-toggler:focus {
+      box-shadow: 0 0 0 3px rgba(126, 214, 194, 0.25) !important;
+    }
+
     .navbar-nav .nav-item {
-      margin-right: 6px;
+      margin-right: 4px;
     }
 
     .nav-link {
-      color: rgba(255,255,255,.92) !important;
+      color: rgba(255, 255, 255, 0.92) !important;
       font-weight: 500;
-      padding: 8px 14px;
+      font-size: 0.91rem;
+      padding: 9px 12px !important;
       position: relative;
-      transition: all .25s ease;
-    }
-
-    /* Hover underline animation */
-    .nav-link::after {
-      content: "";
-      position: absolute;
-      left: 50%;
-      bottom: 4px;
-      width: 0;
-      height: 2px;
-      background: var(--duxt-secondary);
-      transition: all .25s ease;
-      transform: translateX(-50%);
-    }
-
-    .nav-link:hover::after {
-      width: 60%;
+      transition: color 0.25s ease, background 0.25s ease;
+      border-radius: 9px;
     }
 
     .nav-link:hover {
       color: var(--duxt-secondary) !important;
+      background: rgba(255, 255, 255, 0.07);
     }
 
-    /* Active link (optional for later use) */
+    .nav-link::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      bottom: 3px;
+      width: 0;
+      height: 2px;
+      background: var(--duxt-secondary);
+      transition: width 0.25s ease;
+      transform: translateX(-50%);
+    }
+
+    .nav-link:hover::after {
+      width: 55%;
+    }
+
     .nav-link.active {
       color: #ffffff !important;
-      font-weight: 600;
+      font-weight: 700;
     }
 
     .nav-link.active::after {
-      width: 70%;
+      width: 65%;
       background: var(--duxt-gold);
     }
 
-    /* User badge */
     .user-badge {
-      background: rgba(255,255,255,.18);
-      padding: 6px 14px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 255, 255, 0.13);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      padding: 7px 13px !important;
       border-radius: 999px;
-      font-size: 0.9rem;
+      font-size: 0.87rem;
       white-space: nowrap;
     }
 
-    /* Main content */
-    main.container {
-      max-width: 1200px;
-      flex: 1;
+    .user-badge::after {
+      display: none;
     }
 
     /* =======================
-       FOOTER (MATCHES NAVBAR)
+       QUICK CLINICAL ACCESS
     ======================= */
+
+    .quick-access-section {
+      padding: 22px 0 8px;
+    }
+
+    .quick-access-panel {
+      position: relative;
+      overflow: hidden;
+      padding: 22px;
+      background: rgba(255, 255, 255, 0.94);
+      border: 1px solid rgba(14, 111, 108, 0.10);
+      border-radius: 20px;
+      box-shadow: var(--duxt-shadow);
+    }
+
+    .quick-access-panel::before {
+      content: "";
+      position: absolute;
+      top: -55px;
+      right: -35px;
+      width: 155px;
+      height: 155px;
+      border-radius: 50%;
+      background: rgba(126, 214, 194, 0.14);
+      pointer-events: none;
+    }
+
+    .quick-access-heading {
+      position: relative;
+      z-index: 1;
+      margin-bottom: 17px;
+    }
+
+    .quick-access-eyebrow {
+      display: inline-block;
+      margin-bottom: 6px;
+      color: var(--duxt-primary);
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      font-size: 0.7rem;
+      font-weight: 800;
+    }
+
+    .quick-access-title {
+      margin: 0;
+      font-size: 1.18rem;
+      font-weight: 800;
+      color: var(--duxt-dark);
+    }
+
+    .quick-access-subtitle {
+      color: #718096;
+      font-size: 0.88rem;
+      margin: 5px 0 0;
+    }
+
+    .quick-access-grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 12px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .quick-access-btn {
+      min-height: 88px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      padding: 13px 8px;
+      text-align: center;
+      border-radius: 14px;
+      border: 1px solid rgba(14, 111, 108, 0.12);
+      background: #ffffff;
+      color: var(--duxt-dark);
+      font-size: 0.82rem;
+      font-weight: 700;
+      line-height: 1.35;
+      transition: transform 0.22s ease, box-shadow 0.22s ease,
+                  background 0.22s ease, border-color 0.22s ease;
+    }
+
+    .quick-access-btn:hover {
+      color: var(--duxt-primary);
+      background: #f0fbf8;
+      border-color: var(--duxt-secondary);
+      transform: translateY(-4px);
+      box-shadow: 0 10px 22px rgba(14, 111, 108, 0.12);
+    }
+
+    .quick-access-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 37px;
+      height: 37px;
+      border-radius: 12px;
+      background: rgba(14, 111, 108, 0.09);
+      color: var(--duxt-primary);
+      font-size: 1.15rem;
+    }
+
+    .quick-access-btn:hover .quick-access-icon {
+      background: var(--duxt-primary);
+      color: #ffffff;
+    }
+
+    /* =======================
+       MAIN CONTENT
+    ======================= */
+
+    main.container {
+      width: 100%;
+      max-width: 1200px;
+      flex: 1;
+      padding-top: 12px;
+      padding-bottom: 38px;
+    }
+
+    /* Improve the appearance of common content panels */
+    main .card {
+      border: 1px solid rgba(14, 111, 108, 0.09);
+      border-radius: 16px;
+      box-shadow: 0 7px 24px rgba(31, 41, 55, 0.045);
+    }
+
+    main .card-header {
+      border-radius: 16px 16px 0 0;
+    }
+
+    /* =======================
+       FOOTER
+    ======================= */
+
     footer.footer {
+      margin-top: auto;
       background: var(--duxt-gradient);
-      color: rgba(255,255,255,.9);
-      padding: 1.8rem 0;
-      box-shadow: 0 -8px 24px rgba(0,0,0,.08);
+      color: rgba(255, 255, 255, 0.91);
+      padding: 30px 0 22px;
+      box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.07);
+    }
+
+    .footer-inner {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
     .footer-brand {
-      font-weight: 700;
-      font-size: 1.05rem;
-      letter-spacing: 0.4px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 12px;
+      color: #ffffff;
+      font-weight: 800;
+      font-size: 1.2rem;
+      letter-spacing: 0.3px;
     }
 
-    .footer-brand span {
+    .duxt-footer-logo {
+      width: 42px;
+      height: 42px;
+      object-fit: contain;
+      border-radius: 10px;
+      background: #ffffff;
+      padding: 3px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
+      flex-shrink: 0;
+    }
+
+    .footer-brand-name {
+      color: #ffffff;
+    }
+
+    .footer-brand-name span {
       color: var(--duxt-gold);
     }
 
     .footer-tagline {
-      font-size: 0.85rem;
-      opacity: 0.85;
+      max-width: 500px;
+      margin: 0 auto 15px;
+      font-size: 0.88rem;
+      line-height: 1.7;
+      color: rgba(255, 255, 255, 0.78);
+    }
+
+    .footer-divider {
+      width: 70px;
+      height: 3px;
+      border-radius: 10px;
+      background: var(--duxt-gold);
+      margin: 0 auto 15px;
+    }
+
+    .footer-copy {
+      margin: 0;
+      font-size: 0.8rem;
+      color: rgba(255, 255, 255, 0.72);
+    }
+
+    /* =======================
+       TABLET RESPONSIVENESS
+    ======================= */
+
+    @media (max-width: 991.98px) {
+      .navbar-collapse {
+        padding-top: 14px;
+      }
+
+      .navbar-nav {
+        align-items: stretch !important;
+      }
+
+      .navbar-nav .nav-item {
+        margin-right: 0;
+      }
+
+      .navbar-nav .nav-link {
+        padding: 10px 12px !important;
+      }
+
+      .navbar-nav .nav-link::after {
+        display: none;
+      }
+
+      .user-badge {
+        justify-content: flex-start;
+        width: fit-content;
+        max-width: 100%;
+        margin-top: 5px;
+      }
+
+      .quick-access-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    /* =======================
+       MOBILE RESPONSIVENESS
+    ======================= */
+
+    @media (max-width: 575.98px) {
+      .navbar {
+        padding: 0.65rem 0;
+      }
+
+      .navbar > .container {
+        padding-left: 15px;
+        padding-right: 15px;
+      }
+
+      .navbar-brand {
+        gap: 8px;
+        font-size: 1.15rem;
+        margin-right: 0;
+      }
+
+      .duxt-brand-logo {
+        width: 37px;
+        height: 37px;
+        border-radius: 9px;
+      }
+
+      .navbar-toggler {
+        padding: 5px 8px;
+      }
+
+      .quick-access-section {
+        padding: 15px 0 4px;
+      }
+
+      .quick-access-panel {
+        padding: 17px 13px;
+        border-radius: 16px;
+      }
+
+      .quick-access-title {
+        font-size: 1.05rem;
+      }
+
+      .quick-access-subtitle {
+        font-size: 0.81rem;
+      }
+
+      .quick-access-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 9px;
+      }
+
+      .quick-access-btn {
+        min-height: 78px;
+        gap: 7px;
+        padding: 10px 6px;
+        font-size: 0.77rem;
+        border-radius: 12px;
+      }
+
+      .quick-access-icon {
+        width: 33px;
+        height: 33px;
+        border-radius: 10px;
+        font-size: 1.05rem;
+      }
+
+      main.container {
+        padding-top: 10px;
+        padding-bottom: 26px;
+      }
+
+      footer.footer {
+        padding: 25px 15px 20px;
+      }
+
+      .footer-brand {
+        font-size: 1.1rem;
+        gap: 9px;
+      }
+
+      .duxt-footer-logo {
+        width: 37px;
+        height: 37px;
+      }
+
+      .footer-tagline {
+        font-size: 0.82rem;
+        max-width: 330px;
+      }
+
+      .footer-copy {
+        font-size: 0.75rem;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+      }
     }
   </style>
 
   {% block extra_head %}{% endblock %}
 </head>
+
 <body>
 
-<!-- NAVBAR -->
+<!-- =======================
+     NAVBAR
+======================= -->
+
 <nav class="navbar navbar-expand-lg navbar-dark">
   <div class="container">
 
     <a class="navbar-brand" href="{% url 'homecare:home' %}">
-      Duxt<span>Health</span>
+      <img
+        src="{% static 'duxthealth_frontend/images/logo1.jpeg' %}"
+        class="duxt-brand-logo"
+        alt="DuxtHealth logo"
+      >
+      <span class="duxt-brand-name">Duxt<span>Health</span></span>
     </a>
 
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarNav"
+      aria-controls="navbarNav"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
       <span class="navbar-toggler-icon"></span>
     </button>
 
     <div class="collapse navbar-collapse" id="navbarNav">
 
       <ul class="navbar-nav">
+
         <li class="nav-item">
           <a class="nav-link" href="{% url 'home' %}">Dashboard</a>
         </li>
+
         <li class="nav-item">
           <a class="nav-link" href="{% url 'patient_list' %}">Patients</a>
         </li>
-        
+
         <li class="nav-item">
           <a class="nav-link" href="{% url 'add_vitals' %}">Vital Signs</a>
         </li>
+
         <li class="nav-item">
           <a class="nav-link" href="{% url 'add_consultation' %}">Consultate</a>
         </li>
+
         <li class="nav-item">
           <a class="nav-link" href="{% url 'note' %}">Outreach Notes</a>
         </li>
-        
+
       </ul>
 
       <ul class="navbar-nav ms-auto align-items-lg-center">
+
         {% if user.is_authenticated %}
-          <li class="nav-item me-2">
-            <span class="nav-link user-badge">👤 {{ user.first_name|capfirst }}</span>
+
+          <li class="nav-item me-lg-2">
+            <span class="nav-link user-badge">
+              👤 {{ user.first_name|capfirst }}
+            </span>
           </li>
-          
+
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'password_change' %}">Security</a>
+            <a class="nav-link" href="{% url 'password_change' %}">
+              Security
+            </a>
           </li>
+
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+            <a class="nav-link" href="{% url 'logout' %}">
+              Logout
+            </a>
           </li>
+
         {% else %}
+
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'login' %}">Login</a>
+            <a class="nav-link" href="{% url 'login' %}">
+              Login
+            </a>
           </li>
+
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'signup' %}">Request Access</a>
+            <a class="nav-link" href="{% url 'signup' %}">
+              Request Access
+            </a>
           </li>
+
         {% endif %}
+
       </ul>
 
     </div>
   </div>
 </nav>
 
-<!-- MAIN CONTENT -->
+<!-- =======================
+     QUICK CLINICAL ACCESS
+     BELOW NAVBAR
+======================= -->
+
+
+<!-- =======================
+     MAIN CONTENT
+======================= -->
+
 <main class="container my-4">
   {% block content %}
   {% endblock %}
 </main>
 
-<!-- FOOTER -->
+<!-- =======================
+     FOOTER
+======================= -->
+
 <footer class="footer text-center">
-  <div class="container">
-    <p class="mb-1 footer-brand">
-      Duxt<span>Health</span>
+  <div class="container footer-inner">
+
+    <div class="footer-brand">
+      <img
+        src="{% static 'duxthealth_frontend/images/logo1.jpeg' %}"
+        class="duxt-footer-logo"
+        alt="DuxtHealth logo"
+      >
+
+      <span class="footer-brand-name">Duxt<span>Health</span></span>
+    </div>
+
+    <p class="footer-tagline">
+      Connected care. Better coordination. Health without boundaries.
     </p>
-    <p class="footer-tagline mb-0">
-      © 2026 · Care without boundaries
+
+    <div class="footer-divider"></div>
+
+    <p class="footer-copy">
+      &copy; 2026 DuxtHealth. All rights reserved.
     </p>
+
   </div>
 </footer>
 
@@ -218,5 +670,6 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 {% block extra_scripts %}{% endblock %}
+
 </body>
 </html>
