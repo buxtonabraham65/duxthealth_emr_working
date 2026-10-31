@@ -1,141 +1,460 @@
+
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+
   <title>{% block title %}DuxtHealth | Care Without Boundaries{% endblock %}</title>
 
   <!-- Bootstrap 5 -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  />
 
   <!-- Global UI Styling -->
   <style>
     :root {
       --duxt-primary: #0E6F6C;
+      --duxt-primary-dark: #084E4C;
       --duxt-secondary: #7ED6C2;
       --duxt-gold: #C9A24D;
       --duxt-dark: #1F2937;
+      --duxt-white: #FFFFFF;
+    }
+
+    * {
+      box-sizing: border-box;
     }
 
     body {
-      font-family: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      margin: 0;
+      font-family: "Segoe UI", system-ui, -apple-system,
+                   BlinkMacSystemFont, sans-serif;
       background-color: #f9fafb;
       color: var(--duxt-dark);
     }
 
-    /* Navbar */
-    .navbar {
-      background: linear-gradient(135deg, var(--duxt-primary), #0b5c59);
-      box-shadow: 0 6px 20px rgba(0,0,0,.08);
+    /* =========================
+       NAVBAR
+    ========================= */
+
+    .duxt-navbar {
+      position: relative;
+      z-index: 1000;
+      background: linear-gradient(
+        120deg,
+        var(--duxt-primary-dark),
+        var(--duxt-primary)
+      );
+      box-shadow: 0 5px 22px rgba(10, 50, 48, 0.16);
+      border-bottom: 3px solid rgba(201, 162, 77, 0.85);
+      padding: 10px 0;
     }
 
-    .navbar-brand {
-      font-weight: 700;
-      letter-spacing: 0.4px;
-      font-size: 1.3rem;
+    .duxt-navbar .container {
+      gap: 20px;
     }
 
-    .navbar-brand span {
+    /* =========================
+       BRAND / LOGO
+    ========================= */
+
+    .duxt-brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 11px;
+      flex-shrink: 0;
+      margin: 0;
+      padding: 5px 10px 5px 5px;
+      border-radius: 14px;
+      text-decoration: none;
+      transition:
+        background-color 0.25s ease,
+        transform 0.25s ease;
+    }
+
+    .duxt-brand:hover {
+      background-color: rgba(255, 255, 255, 0.08);
+      transform: translateY(-1px);
+    }
+
+    .duxt-brand:focus-visible {
+      outline: 2px solid var(--duxt-gold);
+      outline-offset: 3px;
+    }
+
+    .duxt-brand-logo {
+      display: block;
+      width: 49px;
+      height: 49px;
+      flex: 0 0 49px;
+      object-fit: contain;
+      object-position: center;
+      background-color: #ffffff;
+      padding: 4px;
+      border: 2px solid rgba(201, 162, 77, 0.95);
+      border-radius: 13px;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.18);
+    }
+
+    .duxt-brand-text {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      line-height: 1.1;
+      min-width: 0;
+    }
+
+    .duxt-brand-name {
+      display: block;
+      color: #ffffff;
+      font-size: 1.35rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      white-space: nowrap;
+    }
+
+    .duxt-brand-name span {
       color: var(--duxt-gold);
     }
 
-    .nav-link {
-      color: rgba(255,255,255,.9) !important;
+    .duxt-brand-tagline {
+      display: block;
+      margin-top: 5px;
+      color: rgba(255, 255, 255, 0.78);
+      font-size: 0.64rem;
       font-weight: 500;
-      margin-right: 10px;
-      transition: all .25s ease;
+      letter-spacing: 1.15px;
+      text-transform: uppercase;
+      white-space: nowrap;
     }
 
-    .nav-link:hover {
-      color: var(--duxt-secondary) !important;
+    /* =========================
+       NAVIGATION LINKS
+    ========================= */
+
+    .duxt-navbar .navbar-nav {
+      gap: 5px;
     }
 
-    .nav-link.active {
-      border-bottom: 2px solid var(--duxt-gold);
+    .duxt-navbar .nav-link {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      min-height: 40px;
+      padding: 9px 13px !important;
+      color: rgba(255, 255, 255, 0.92) !important;
+      font-size: 0.93rem;
+      font-weight: 600;
+      border-radius: 9px;
+      transition:
+        background-color 0.2s ease,
+        color 0.2s ease;
     }
 
-    /* Auth badge */
-    .user-badge {
-      background: rgba(255,255,255,.15);
-      padding: 6px 14px;
-      border-radius: 20px;
-      font-size: 0.9rem;
+    .duxt-navbar .nav-link:hover {
+      color: #ffffff !important;
+      background-color: rgba(255, 255, 255, 0.12);
     }
+
+    .duxt-navbar .nav-link:focus-visible {
+      outline: 2px solid var(--duxt-gold);
+      outline-offset: 2px;
+    }
+
+    .duxt-navbar .nav-link.active {
+      color: #ffffff !important;
+      background-color: rgba(255, 255, 255, 0.12);
+    }
+
+    .duxt-navbar .nav-link.active::after {
+      content: "";
+      position: absolute;
+      left: 13px;
+      right: 13px;
+      bottom: 3px;
+      height: 2px;
+      background-color: var(--duxt-gold);
+      border-radius: 10px;
+    }
+
+    /* =========================
+       USER BADGE
+    ========================= */
+
+    .duxt-navbar .user-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 8px 13px !important;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      border-radius: 30px;
+      background-color: rgba(255, 255, 255, 0.10);
+      font-size: 0.88rem;
+      white-space: nowrap;
+    }
+
+    /* =========================
+       MOBILE TOGGLE
+    ========================= */
+
+    .duxt-navbar .navbar-toggler {
+      padding: 7px 10px;
+      border: 1px solid rgba(255, 255, 255, 0.45);
+      border-radius: 9px;
+      box-shadow: none;
+    }
+
+    .duxt-navbar .navbar-toggler:focus {
+      box-shadow: 0 0 0 3px rgba(126, 214, 194, 0.25);
+    }
+
+    .duxt-navbar .navbar-toggler-icon {
+      width: 1.35em;
+      height: 1.35em;
+    }
+
+    /* =========================
+       MAIN CONTENT
+    ========================= */
 
     main.container {
+      width: 100%;
       max-width: 1200px;
+    }
+
+    /* =========================
+       TABLET
+    ========================= */
+
+    @media (max-width: 991.98px) {
+      .duxt-navbar {
+        padding: 9px 0;
+      }
+
+      .duxt-navbar .container {
+        gap: 10px;
+      }
+
+      .duxt-navbar .navbar-collapse {
+        padding-top: 14px;
+        margin-top: 10px;
+        border-top: 1px solid rgba(255, 255, 255, 0.17);
+      }
+
+      .duxt-navbar .navbar-nav {
+        gap: 4px;
+      }
+
+      .duxt-navbar .nav-link {
+        display: flex;
+        width: 100%;
+        padding: 11px 13px !important;
+      }
+
+      .duxt-navbar .nav-link.active::after {
+        display: none;
+      }
+
+      .duxt-navbar .navbar-nav.ms-auto {
+        margin-top: 8px;
+        padding-top: 8px;
+        border-top: 1px solid rgba(255, 255, 255, 0.12);
+      }
+
+      .duxt-navbar .user-badge {
+        width: fit-content;
+      }
+    }
+
+    /* =========================
+       SMALL MOBILE
+    ========================= */
+
+    @media (max-width: 575.98px) {
+      .duxt-navbar {
+        padding: 8px 0;
+      }
+
+      .duxt-navbar > .container {
+        padding-left: 12px;
+        padding-right: 12px;
+      }
+
+      .duxt-brand {
+        gap: 8px;
+        padding: 3px 4px;
+      }
+
+      .duxt-brand-logo {
+        width: 42px;
+        height: 42px;
+        flex-basis: 42px;
+        padding: 3px;
+        border-radius: 11px;
+      }
+
+      .duxt-brand-name {
+        font-size: 1.12rem;
+        letter-spacing: -0.4px;
+      }
+
+      .duxt-brand-tagline {
+        margin-top: 4px;
+        font-size: 0.52rem;
+        letter-spacing: 0.8px;
+      }
+
+      .duxt-navbar .navbar-toggler {
+        padding: 6px 8px;
+      }
+
+      main.container {
+        padding-left: 14px;
+        padding-right: 14px;
+      }
+    }
+
+    @media (max-width: 350px) {
+      .duxt-brand {
+        gap: 6px;
+      }
+
+      .duxt-brand-logo {
+        width: 36px;
+        height: 36px;
+        flex-basis: 36px;
+      }
+
+      .duxt-brand-name {
+        font-size: 1rem;
+      }
+
+      .duxt-brand-tagline {
+        font-size: 0.46rem;
+        letter-spacing: 0.5px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+      }
     }
   </style>
 
   {% block extra_head %}{% endblock %}
 </head>
+
 <body>
 
 <!-- NAVBAR -->
-<nav class="navbar navbar-expand-lg navbar-dark">
+<nav class="navbar navbar-expand-lg navbar-dark duxt-navbar">
   <div class="container">
 
-    <!-- Brand -->
-    <a class="navbar-brand duxt-brand"
-   href="{% url 'homecare:home' %}"
-   aria-label="DuxtHealth Homepage">
-
-    <img
+    <!-- DuxtHealth Brand -->
+    <a
+      class="navbar-brand duxt-brand"
+      href="{% url 'homecare:home' %}"
+      aria-label="DuxtHealth Homepage"
+    >
+      <img
         src="{% static 'duxthealth_frontend/images/logo1.jpeg' %}"
         class="duxt-brand-logo"
         alt="DuxtHealth logo"
-    >
+        width="49"
+        height="49"
+      >
 
-    <span class="duxt-brand-name">Duxt<span>Health</span></span>
-
-</a>
+      <span class="duxt-brand-text">
+        <span class="duxt-brand-name">Duxt<span>Health</span></span>
+        <span class="duxt-brand-tagline">Care Without Boundaries</span>
+      </span>
+    </a>
 
     <!-- Mobile Toggle -->
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarNav"
+      aria-controls="navbarNav"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
       <span class="navbar-toggler-icon"></span>
     </button>
 
-    <!-- Links -->
+    <!-- Navigation Links -->
     <div class="collapse navbar-collapse" id="navbarNav">
 
-      <!-- Main Navigation -->
       <ul class="navbar-nav">
         <li class="nav-item">
-          <a class="nav-link" href="{% url 'patient_dashboard:dashboard' %}">Patient Portal</a>
+          <a
+            class="nav-link"
+            href="{% url 'patient_dashboard:dashboard' %}"
+          >
+            Patient Portal
+          </a>
         </li>
 
         <li class="nav-item">
-          <a class="nav-link" href="{% url 'homecare:homecare_home' %}">Clinicians Portal</a>
+          <a
+            class="nav-link"
+            href="{% url 'homecare:homecare_home' %}"
+          >
+            Clinicians Portal
+          </a>
         </li>
       </ul>
 
-      <!-- Auth / User Menu -->
+      <!-- Authentication / User Menu -->
       <ul class="navbar-nav ms-auto align-items-lg-center">
 
         {% if user.is_authenticated %}
-          <li class="nav-item me-2">
+
+          <li class="nav-item me-lg-2">
             <span class="nav-link user-badge">
-              👤 {{ user.first_name|capfirst }}
+              <span aria-hidden="true">👤</span>
+              <span>
+                {{ user.first_name|default:user.username|capfirst }}
+              </span>
             </span>
           </li>
 
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'password_change' %}">Security</a>
+            <a class="nav-link" href="{% url 'password_change' %}">
+              Security
+            </a>
           </li>
 
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+            <a class="nav-link" href="{% url 'logout' %}">
+              Logout
+            </a>
           </li>
 
         {% else %}
+
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'login' %}">Login</a>
+            <a class="nav-link" href="{% url 'login' %}">
+              Login
+            </a>
           </li>
 
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'signup' %}">Request Access</a>
+            <a class="nav-link" href="{% url 'signup' %}">
+              Request Access
+            </a>
           </li>
+
         {% endif %}
 
       </ul>
@@ -153,5 +472,6 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 {% block extra_scripts %}{% endblock %}
+
 </body>
 </html>
