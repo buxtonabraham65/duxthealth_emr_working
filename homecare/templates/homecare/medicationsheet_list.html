@@ -1,56 +1,375 @@
+
 {% extends "bases.html" %}
 
 {% block content %}
-<div class="container py-4">
-    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
-        <div>
-            <h1>Patient Medication Management</h1>
-            <p class="text-muted">
-                Select a patient to view prescriptions, schedules,
-                administration history and reported reactions.
-            </p>
+
+<style>
+    .medication-page {
+        padding-top: 25px;
+        padding-bottom: 40px;
+    }
+
+    .medication-header {
+        background: linear-gradient(135deg, #087f8c, #075b68);
+        color: #fff;
+        border-radius: 16px;
+        padding: 28px;
+        margin-bottom: 25px;
+        box-shadow: 0 5px 18px rgba(0, 0, 0, 0.10);
+    }
+
+    .medication-header h1 {
+        font-size: 1.7rem;
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+
+    .medication-header p {
+        margin-bottom: 0;
+        color: rgba(255,255,255,0.85);
+        line-height: 1.6;
+    }
+
+    .medication-header .btn {
+        background: #fff;
+        color: #087f8c;
+        border: none;
+        font-weight: 600;
+        padding: 11px 18px;
+        border-radius: 9px;
+        white-space: nowrap;
+    }
+
+    .medication-header .btn:hover {
+        background: #eaf7f8;
+        color: #075b68;
+    }
+
+    .medication-summary {
+        background: #fff;
+        border: 1px solid #e5eeee;
+        border-radius: 13px;
+        padding: 18px 20px;
+        margin-bottom: 22px;
+        box-shadow: 0 3px 12px rgba(0,0,0,0.04);
+    }
+
+    .medication-summary .summary-label {
+        color: #718096;
+        font-size: 0.85rem;
+        margin-bottom: 5px;
+    }
+
+    .medication-summary .summary-number {
+        color: #087f8c;
+        font-size: 1.7rem;
+        font-weight: 700;
+    }
+
+    .medication-table-card {
+        background: #fff;
+        border: 1px solid #e5eeee;
+        border-radius: 14px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.04);
+    }
+
+    .medication-table {
+        margin-bottom: 0;
+    }
+
+    .medication-table thead th {
+        background: #edf7f7;
+        color: #24545a;
+        font-size: 0.85rem;
+        font-weight: 700;
+        padding: 15px;
+        border-bottom: 1px solid #dceaea;
+        white-space: nowrap;
+    }
+
+    .medication-table tbody td {
+        padding: 15px;
+        vertical-align: middle;
+        color: #425466;
+    }
+
+    .patient-name {
+        font-weight: 650;
+        color: #263f46;
+    }
+
+    .patient-code {
+        display: inline-block;
+        background: #edf7f7;
+        color: #087f8c;
+        padding: 5px 9px;
+        border-radius: 6px;
+        font-size: 0.82rem;
+        font-weight: 600;
+    }
+
+    .medication-count {
+        display: inline-block;
+        min-width: 32px;
+        text-align: center;
+        background: #e8f5ed;
+        color: #198754;
+        padding: 5px 10px;
+        border-radius: 20px;
+        font-weight: 700;
+    }
+
+    .view-medications-btn {
+        background: #087f8c;
+        color: #fff;
+        border: none;
+        border-radius: 7px;
+        padding: 8px 13px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .view-medications-btn:hover {
+        background: #075b68;
+        color: #fff;
+    }
+
+    .mobile-patient-card {
+        display: none;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 55px 20px;
+        color: #718096;
+    }
+
+    .empty-state i {
+        font-size: 45px;
+        color: #9bbfc3;
+        margin-bottom: 15px;
+    }
+
+    .empty-state h5 {
+        color: #344b50;
+        font-weight: 700;
+    }
+
+    @media (max-width: 767.98px) {
+        .medication-page {
+            padding-top: 15px;
+        }
+
+        .medication-header {
+            padding: 22px 18px;
+            border-radius: 12px;
+        }
+
+        .medication-header h1 {
+            font-size: 1.35rem;
+        }
+
+        .medication-header .btn {
+            width: 100%;
+            margin-top: 15px;
+            text-align: center;
+        }
+
+        .medication-summary {
+            padding: 15px;
+        }
+
+        .desktop-patient-table {
+            display: none;
+        }
+
+        .mobile-patient-card {
+            display: block;
+            background: #fff;
+            border: 1px solid #e2ecec;
+            border-radius: 12px;
+            padding: 17px;
+            margin-bottom: 13px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.035);
+        }
+
+        .mobile-patient-card .patient-card-name {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #263f46;
+            margin-bottom: 12px;
+        }
+
+        .mobile-patient-card .detail-label {
+            font-size: 0.78rem;
+            color: #718096;
+            margin-bottom: 4px;
+        }
+
+        .mobile-patient-card .detail-value {
+            font-size: 0.9rem;
+            color: #425466;
+            font-weight: 600;
+            margin-bottom: 12px;
+            overflow-wrap: anywhere;
+        }
+
+        .mobile-patient-card .view-medications-btn {
+            display: block;
+            text-align: center;
+            width: 100%;
+            padding: 10px;
+        }
+    }
+</style>
+
+<div class="container medication-page">
+
+    <!-- Page Header -->
+    <div class="medication-header">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div>
+                <h1>
+                    <i class="bi bi-capsule me-2"></i>
+                    Patient Medication Management
+                </h1>
+                <p>
+                    Select a patient to view prescriptions, medication schedules,
+                    administration history and reported reactions.
+                </p>
+            </div>
+
+            <a href="{% url 'homecare:medicationsheet_create' %}"
+               class="btn">
+                <i class="bi bi-plus-circle me-1"></i>
+                Prescribe Medication
+            </a>
+        </div>
+    </div>
+
+    <!-- Summary -->
+    <div class="medication-summary">
+        <div class="summary-label">
+            Total Patients Listed
+        </div>
+        <div class="summary-number">
+            {{ patients|length }}
+        </div>
+    </div>
+
+    <!-- Desktop Table -->
+    <div class="medication-table-card desktop-patient-table">
+        <div class="table-responsive">
+            <table class="table table-hover medication-table">
+                <thead>
+                    <tr>
+                        <th>Patient</th>
+                        <th>Patient Code</th>
+                        <th>Medication Count</th>
+                        <th class="text-center">Action</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for patient in patients %}
+                    <tr>
+                        <td>
+                            <span class="patient-name">
+                                {{ patient.first_name }} {{ patient.last_name }}
+                            </span>
+                        </td>
+
+                        <td>
+                            <span class="patient-code">
+                                {{ patient.patient_code|default:"—" }}
+                            </span>
+                        </td>
+
+                        <td>
+                            <span class="medication-count">
+                                {{ patient.medications.count }}
+                            </span>
+                        </td>
+
+                        <td class="text-center">
+                            <a href="{% url 'homecare:patient_medications' patient.id %}"
+                               class="view-medications-btn">
+                                <i class="bi bi-eye me-1"></i>
+                                View Medications
+                            </a>
+                        </td>
+                    </tr>
+
+                    {% empty %}
+                    <tr>
+                        <td colspan="4">
+                            <div class="empty-state">
+                                <i class="bi bi-capsule"></i>
+                                <h5>No Medication Records Found</h5>
+                                <p class="mb-0">
+                                    No patients with medication records were found.
+                                </p>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Mobile Patient Cards -->
+    <div class="mobile-patient-list">
+        {% for patient in patients %}
+        <div class="mobile-patient-card">
+
+            <div class="patient-card-name">
+                <i class="bi bi-person-circle me-2 text-secondary"></i>
+                {{ patient.first_name }} {{ patient.last_name }}
+            </div>
+
+            <div class="row">
+                <div class="col-7">
+                    <div class="detail-label">Patient Code</div>
+                    <div class="detail-value">
+                        {{ patient.patient_code|default:"—" }}
+                    </div>
+                </div>
+
+                <div class="col-5">
+                    <div class="detail-label">Medications</div>
+                    <div class="detail-value">
+                        <span class="medication-count">
+                            {{ patient.medications.count }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <a href="{% url 'homecare:patient_medications' patient.id %}"
+               class="view-medications-btn">
+                <i class="bi bi-eye me-1"></i>
+                View Patient Medications
+            </a>
+
         </div>
 
-        <a href="{% url 'homecare:medicationsheet_create' %}"
-           class="btn btn-primary">
-            Prescribe Medication
-        </a>
+        {% empty %}
+        <div class="medication-table-card">
+            <div class="empty-state">
+                <i class="bi bi-capsule"></i>
+                <h5>No Medication Records Found</h5>
+                <p class="mb-0">
+                    No patients with medication records were found.
+                </p>
+            </div>
+        </div>
+        {% endfor %}
     </div>
 
-    <div class="table-responsive">
-        <table class="table table-striped table-hover align-middle">
-            <thead>
-                <tr>
-                    <th>Patient</th>
-                    <th>Patient Code</th>
-                    <th>Medication Count</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for patient in patients %}
-                <tr>
-                    <td>
-                        {{ patient.first_name }} {{ patient.last_name }}
-                    </td>
-                    <td>{{ patient.patient_code|default:"—" }}</td>
-                    <td>{{ patient.medications.count }}</td>
-                    <td>
-                        <a href="{% url 'homecare:patient_medications' patient.id %}"
-                           class="btn btn-sm btn-outline-primary">
-                            View Medications
-                        </a>
-                    </td>
-                </tr>
-                {% empty %}
-                <tr>
-                    <td colspan="4" class="text-center py-4">
-                        No patients with medication records were found.
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
 </div>
+
 {% endblock %}
