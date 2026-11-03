@@ -1,83 +1,808 @@
+
 {% extends 'bases.html' %}
 
 {% block content %}
-<div class="container mt-5">
 
-    <!-- Header -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="fw-bold">My Assigned Patients</h2>
-        <a href="{% url 'homecare:patient_create' %}" class="btn btn-primary">
-            + Add New Patient
+<style>
+    :root {
+        --duxt-primary: #0E6F6C;
+        --duxt-primary-dark: #084E4C;
+        --duxt-secondary: #7ED6C2;
+        --duxt-gold: #C9A24D;
+        --duxt-dark: #1F2937;
+        --duxt-muted: #6B7280;
+        --duxt-light: #F4F8F8;
+        --duxt-border: #E5EDED;
+        --duxt-white: #FFFFFF;
+    }
+
+    /* General Page Styling */
+    .patients-page {
+        width: 100%;
+        max-width: 1250px;
+        margin: 0 auto;
+        padding: 20px 15px 45px;
+        color: var(--duxt-dark);
+    }
+
+    /* Page Header */
+    .patients-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+        flex-wrap: wrap;
+        margin-bottom: 28px;
+    }
+
+    .patients-heading {
+        margin: 0;
+        color: var(--duxt-primary-dark);
+        font-size: clamp(1.5rem, 3vw, 2rem);
+        font-weight: 800;
+        letter-spacing: -0.7px;
+    }
+
+    .patients-subtitle {
+        margin: 7px 0 0;
+        color: var(--duxt-muted);
+        font-size: 0.95rem;
+    }
+
+    /* Add Patient Button */
+    .add-patient-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 9px;
+        padding: 12px 19px;
+        border: none;
+        border-radius: 10px;
+        background: linear-gradient(
+            135deg,
+            var(--duxt-primary),
+            var(--duxt-primary-dark)
+        );
+        color: white !important;
+        font-size: 0.92rem;
+        font-weight: 700;
+        text-decoration: none;
+        box-shadow: 0 5px 13px rgba(14, 111, 108, 0.17);
+        transition: all 0.25s ease;
+    }
+
+    .add-patient-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 18px rgba(14, 111, 108, 0.25);
+        background: var(--duxt-primary-dark);
+    }
+
+    .add-patient-btn:focus-visible {
+        outline: 3px solid var(--duxt-gold);
+        outline-offset: 3px;
+    }
+
+    .add-patient-btn .plus-icon {
+        font-size: 1.3rem;
+        line-height: 1;
+    }
+
+    /* Summary and Search Section */
+    .patients-toolbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 15px;
+        margin-bottom: 22px;
+        padding: 17px 20px;
+        background: var(--duxt-white);
+        border: 1px solid var(--duxt-border);
+        border-radius: 13px;
+        box-shadow: 0 3px 12px rgba(0, 0, 0, 0.025);
+    }
+
+    .patient-count {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+    }
+
+    .count-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 43px;
+        height: 43px;
+        flex-shrink: 0;
+        border-radius: 12px;
+        background: #E5F5F1;
+        color: var(--duxt-primary);
+        font-size: 1.3rem;
+    }
+
+    .count-label {
+        display: block;
+        color: var(--duxt-muted);
+        font-size: 0.78rem;
+        font-weight: 600;
+        margin-bottom: 2px;
+    }
+
+    .count-number {
+        display: block;
+        color: var(--duxt-primary-dark);
+        font-size: 1.15rem;
+        font-weight: 800;
+    }
+
+    .patient-search {
+        position: relative;
+        width: 100%;
+        max-width: 330px;
+    }
+
+    .patient-search input {
+        width: 100%;
+        height: 44px;
+        padding: 10px 14px 10px 40px;
+        border: 1px solid var(--duxt-border);
+        border-radius: 9px;
+        outline: none;
+        background: #FAFCFC;
+        color: var(--duxt-dark);
+        font-size: 0.9rem;
+        transition: all 0.2s ease;
+    }
+
+    .patient-search input:focus {
+        border-color: var(--duxt-primary);
+        background: white;
+        box-shadow: 0 0 0 3px rgba(14, 111, 108, 0.09);
+    }
+
+    .search-icon {
+        position: absolute;
+        left: 13px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #8A9A99;
+        font-size: 1rem;
+        pointer-events: none;
+    }
+
+    /* Patient Grid */
+    .patients-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 22px;
+    }
+
+    /* Patient Card */
+    .patient-card {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+        height: 100%;
+        overflow: hidden;
+        background: var(--duxt-white);
+        border: 1px solid var(--duxt-border);
+        border-radius: 15px;
+        box-shadow: 0 4px 14px rgba(15, 45, 45, 0.045);
+        transition: transform 0.25s ease, box-shadow 0.25s ease,
+                    border-color 0.25s ease;
+    }
+
+    .patient-card:hover {
+        transform: translateY(-5px);
+        border-color: rgba(14, 111, 108, 0.35);
+        box-shadow: 0 12px 27px rgba(15, 45, 45, 0.10);
+    }
+
+    .patient-card-top {
+        height: 5px;
+        width: 100%;
+        background: linear-gradient(
+            90deg,
+            var(--duxt-primary),
+            var(--duxt-secondary)
+        );
+    }
+
+    .patient-card-body {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        padding: 21px;
+    }
+
+    .patient-card-heading {
+        display: flex;
+        align-items: flex-start;
+        gap: 13px;
+        margin-bottom: 18px;
+    }
+
+    .patient-avatar {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 49px;
+        height: 49px;
+        flex-shrink: 0;
+        border-radius: 13px;
+        background: #E5F5F1;
+        color: var(--duxt-primary);
+        font-size: 1.2rem;
+        font-weight: 800;
+        text-transform: uppercase;
+    }
+
+    .patient-heading-info {
+        min-width: 0;
+        padding-top: 2px;
+    }
+
+    .patient-name {
+        margin: 0;
+        color: var(--duxt-dark);
+        font-size: 1.04rem;
+        font-weight: 800;
+        line-height: 1.4;
+        overflow-wrap: anywhere;
+    }
+
+    .patient-label {
+        display: inline-block;
+        margin-top: 5px;
+        padding: 3px 9px;
+        border-radius: 20px;
+        background: #EDF7F5;
+        color: var(--duxt-primary);
+        font-size: 0.68rem;
+        font-weight: 700;
+    }
+
+    /* Patient Information */
+    .patient-details {
+        display: grid;
+        gap: 11px;
+        padding: 15px 0;
+        border-top: 1px solid #EDF1F1;
+        border-bottom: 1px solid #EDF1F1;
+    }
+
+    .patient-detail-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 12px;
+        font-size: 0.86rem;
+    }
+
+    .patient-detail-label {
+        color: var(--duxt-muted);
+        font-weight: 600;
+        flex-shrink: 0;
+    }
+
+    .patient-detail-value {
+        color: var(--duxt-dark);
+        font-weight: 700;
+        text-align: right;
+        overflow-wrap: anywhere;
+    }
+
+    .outreach-row {
+        display: block;
+    }
+
+    .outreach-row .patient-detail-value {
+        display: block;
+        margin-top: 5px;
+        color: var(--duxt-primary);
+        text-align: left;
+    }
+
+    /* Card Actions */
+    .patient-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: auto;
+        padding-top: 18px;
+    }
+
+    .patient-action-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        flex: 1;
+        min-height: 39px;
+        padding: 8px 12px;
+        border-radius: 8px;
+        font-size: 0.82rem;
+        font-weight: 700;
+        text-decoration: none;
+        transition: all 0.2s ease;
+    }
+
+    .edit-btn {
+        border: 1px solid rgba(14, 111, 108, 0.35);
+        background: #F0F8F6;
+        color: var(--duxt-primary) !important;
+    }
+
+    .edit-btn:hover {
+        background: var(--duxt-primary);
+        color: white !important;
+        border-color: var(--duxt-primary);
+    }
+
+    .delete-btn {
+        border: 1px solid #F1CACA;
+        background: #FFF7F7;
+        color: #C0392B !important;
+    }
+
+    .delete-btn:hover {
+        background: #C0392B;
+        color: white !important;
+        border-color: #C0392B;
+    }
+
+    .patient-action-btn:focus-visible {
+        outline: 3px solid var(--duxt-gold);
+        outline-offset: 2px;
+    }
+
+    /* View Patient Link */
+    .view-patient-link {
+        position: absolute;
+        inset: 5px 0 0;
+        z-index: 1;
+        border-radius: 0 0 15px 15px;
+        text-decoration: none;
+        outline: none;
+    }
+
+    .view-patient-link:focus-visible {
+        box-shadow: inset 0 0 0 3px var(--duxt-gold);
+    }
+
+    .patient-actions {
+        position: relative;
+        z-index: 2;
+    }
+
+    .patient-action-btn {
+        position: relative;
+        z-index: 3;
+    }
+
+    /* Empty State */
+    .empty-state {
+        padding: 55px 20px;
+        text-align: center;
+        background: white;
+        border: 1px dashed #C8DAD7;
+        border-radius: 15px;
+    }
+
+    .empty-state-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 72px;
+        height: 72px;
+        margin: 0 auto 17px;
+        border-radius: 20px;
+        background: #EAF6F3;
+        color: var(--duxt-primary);
+        font-size: 2rem;
+    }
+
+    .empty-state h4 {
+        margin-bottom: 9px;
+        color: var(--duxt-primary-dark);
+        font-size: 1.15rem;
+        font-weight: 800;
+    }
+
+    .empty-state p {
+        max-width: 430px;
+        margin: 0 auto 20px;
+        color: var(--duxt-muted);
+        font-size: 0.92rem;
+        line-height: 1.6;
+    }
+
+    /* Search Empty Message */
+    .search-empty {
+        display: none;
+        padding: 35px 20px;
+        text-align: center;
+        color: var(--duxt-muted);
+        background: white;
+        border: 1px solid var(--duxt-border);
+        border-radius: 13px;
+    }
+
+    /* Responsive Tablet */
+    @media (max-width: 991.98px) {
+        .patients-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 18px;
+        }
+
+        .patients-page {
+            padding-top: 15px;
+        }
+    }
+
+    /* Responsive Mobile */
+    @media (max-width: 575.98px) {
+        .patients-page {
+            padding: 12px 10px 35px;
+        }
+
+        .patients-header {
+            align-items: stretch;
+            flex-direction: column;
+            gap: 16px;
+            margin-bottom: 22px;
+        }
+
+        .patients-heading {
+            font-size: 1.55rem;
+        }
+
+        .patients-subtitle {
+            font-size: 0.87rem;
+            line-height: 1.5;
+        }
+
+        .add-patient-btn {
+            width: 100%;
+            min-height: 46px;
+        }
+
+        .patients-toolbar {
+            align-items: stretch;
+            flex-direction: column;
+            padding: 15px;
+            gap: 14px;
+        }
+
+        .patient-search {
+            max-width: none;
+        }
+
+        .patients-grid {
+            grid-template-columns: 1fr;
+            gap: 16px;
+        }
+
+        .patient-card-body {
+            padding: 18px;
+        }
+
+        .patient-name {
+            font-size: 1rem;
+        }
+
+        .patient-actions {
+            gap: 9px;
+        }
+
+        .patient-action-btn {
+            min-height: 42px;
+        }
+
+        .empty-state {
+            padding: 40px 17px;
+        }
+    }
+
+    /* Accessibility */
+    @media (prefers-reduced-motion: reduce) {
+        .patient-card,
+        .patient-action-btn,
+        .add-patient-btn {
+            transition: none;
+        }
+
+        .patient-card:hover,
+        .add-patient-btn:hover {
+            transform: none;
+        }
+    }
+</style>
+
+
+<div class="patients-page">
+
+    <!-- PAGE HEADER -->
+    <div class="patients-header">
+
+        <div>
+            <h2 class="patients-heading">
+                My Assigned Patients
+            </h2>
+
+            <p class="patients-subtitle">
+                View, manage and keep track of patients assigned to you.
+            </p>
+        </div>
+
+        <a href="{% url 'homecare:patient_create' %}"
+           class="add-patient-btn">
+
+            <span class="plus-icon">+</span>
+            Add New Patient
+
         </a>
+
     </div>
 
-    <!-- Patients List -->
-    <div class="row">
-        {% for patient in patients %}
-        <div class="col-md-4 mb-4">
 
-            <!-- Clickable Card -->
-            <div class="card shadow-sm h-100 patient-card"
-                 onclick="window.location.href='{% url 'homecare:patient_detail' patient.id %}'"
-                 style="cursor:pointer; transition:0.3s;">
+    <!-- PATIENT SUMMARY AND SEARCH -->
+    <div class="patients-toolbar">
 
-                <div class="card-body">
+        <div class="patient-count">
 
-                    <h5 class="card-title fw-bold">
-                        {{ patient.first_name }} {{ patient.last_name }}
-                    </h5>
+            <div class="count-icon">
+                <span aria-hidden="true">♧</span>
+            </div>
 
-                    {% if patient.outreach %}
-                        <p class="card-text text-muted mb-2">
-                            Outreach: <strong>{{ patient.outreach.name }}</strong>
-                        </p>
-                    {% endif %}
+            <div>
+                <span class="count-label">
+                    Total Assigned Patients
+                </span>
 
-                    <p class="text-muted mb-1">
-                        <strong>Age:</strong> {{ patient.age }}
-                    </p>
+                <span class="count-number">
+                    {{ patients|length }}
+                </span>
+            </div>
 
-                    <p class="text-muted mb-1">
-                        <strong>Gender:</strong> {{ patient.gender }}
-                    </p>
+        </div>
 
-                    <hr>
 
-                    <!-- Action Buttons -->
-                    <div class="d-flex justify-content-between">
-                        <a href="{% url 'homecare:patient_update' patient.pk %}"
-                           class="btn btn-outline-primary btn-sm"
-                           onclick="event.stopPropagation();">
-                            Edit
-                        </a>
+        {% if patients %}
+        <div class="patient-search">
 
-                        <a href="{% url 'homecare:patient_delete' patient.pk %}"
-                           class="btn btn-outline-danger btn-sm"
-                           onclick="event.stopPropagation();">
-                            Delete
-                        </a>
+            <span class="search-icon" aria-hidden="true">
+                &#128269;
+            </span>
+
+            <input
+                type="search"
+                id="patientSearch"
+                placeholder="Search patients..."
+                aria-label="Search assigned patients"
+                autocomplete="off"
+            >
+
+        </div>
+        {% endif %}
+
+    </div>
+
+
+    <!-- PATIENTS LIST -->
+    {% if patients %}
+
+        <div class="patients-grid" id="patientsGrid">
+
+            {% for patient in patients %}
+
+                <div class="patient-card patient-item"
+                     data-search="{{ patient.first_name|default:''|lower }} {{ patient.last_name|default:''|lower }} {{ patient.gender|default:''|lower }} {% if patient.outreach %}{{ patient.outreach.name|lower }}{% endif %} {{ patient.age|default:'' }}">
+
+                    <div class="patient-card-top"></div>
+
+                    <div class="patient-card-body">
+
+                        <!-- PATIENT NAME -->
+                        <div class="patient-card-heading">
+
+                            <div class="patient-avatar">
+                                {{ patient.first_name|default:"P"|slice:":1" }}{{ patient.last_name|default:""|slice:":1" }}
+                            </div>
+
+                            <div class="patient-heading-info">
+
+                                <h5 class="patient-name">
+                                    {{ patient.first_name }}
+                                    {{ patient.last_name }}
+                                </h5>
+
+                                <span class="patient-label">
+                                    Assigned Patient
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- PATIENT DETAILS -->
+                        <div class="patient-details">
+
+                            {% if patient.outreach %}
+                            <div class="patient-detail-row outreach-row">
+
+                                <span class="patient-detail-label">
+                                    Outreach / Programme
+                                </span>
+
+                                <span class="patient-detail-value">
+                                    {{ patient.outreach.name }}
+                                </span>
+
+                            </div>
+                            {% endif %}
+
+
+                            <div class="patient-detail-row">
+
+                                <span class="patient-detail-label">
+                                    Age
+                                </span>
+
+                                <span class="patient-detail-value">
+                                    {% if patient.age != None %}
+                                        {{ patient.age }} years
+                                    {% else %}
+                                        Not provided
+                                    {% endif %}
+                                </span>
+
+                            </div>
+
+
+                            <div class="patient-detail-row">
+
+                                <span class="patient-detail-label">
+                                    Gender
+                                </span>
+
+                                <span class="patient-detail-value">
+                                    {{ patient.gender|default:"Not provided" }}
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- ACTION BUTTONS -->
+                        <div class="patient-actions">
+
+                            <a href="{% url 'homecare:patient_update' patient.pk %}"
+                               class="patient-action-btn edit-btn"
+                               aria-label="Edit {{ patient.first_name }} {{ patient.last_name }}">
+
+                                <span aria-hidden="true">&#9998;</span>
+                                Edit
+
+                            </a>
+
+
+                            <a href="{% url 'homecare:patient_delete' patient.pk %}"
+                               class="patient-action-btn delete-btn"
+                               aria-label="Delete {{ patient.first_name }} {{ patient.last_name }}">
+
+                                <span aria-hidden="true">&#128465;</span>
+                                Delete
+
+                            </a>
+
+                        </div>
+
                     </div>
 
+
+                    <!-- CLICKABLE CARD LINK -->
+                    <a href="{% url 'homecare:patient_detail' patient.id %}"
+                       class="view-patient-link"
+                       aria-label="View details for {{ patient.first_name }} {{ patient.last_name }}"
+                       tabindex="0">
+                    </a>
+
                 </div>
-            </div>
+
+            {% endfor %}
+
         </div>
 
-        {% empty %}
-        <div class="col-12">
-            <div class="alert alert-info text-center">
-                No patients assigned yet.
-            </div>
+
+        <!-- NO SEARCH RESULTS -->
+        <div class="search-empty" id="searchEmpty">
+            <h5 class="fw-bold mb-2">
+                No matching patients found
+            </h5>
+
+            <p class="mb-0">
+                Try searching with another patient name, gender or outreach.
+            </p>
         </div>
-        {% endfor %}
-    </div>
+
+
+    {% else %}
+
+        <!-- NO ASSIGNED PATIENTS -->
+        <div class="empty-state">
+
+            <div class="empty-state-icon">
+                <span aria-hidden="true">&#9825;</span>
+            </div>
+
+            <h4>No Patients Assigned Yet</h4>
+
+            <p>
+                You currently have no patients assigned to your account.
+                Once patients are registered and assigned to you, they
+                will appear here.
+            </p>
+
+            <a href="{% url 'homecare:patient_create' %}"
+               class="add-patient-btn">
+
+                <span class="plus-icon">+</span>
+                Register New Patient
+
+            </a>
+
+        </div>
+
+    {% endif %}
 
 </div>
 
-<style>
-.patient-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-}
-</style>
+
+<!-- PATIENT SEARCH FUNCTIONALITY -->
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const searchInput = document.getElementById("patientSearch");
+    const patientCards = document.querySelectorAll(".patient-item");
+    const searchEmpty = document.getElementById("searchEmpty");
+
+    if (!searchInput) {
+        return;
+    }
+
+    searchInput.addEventListener("input", function () {
+
+        const searchTerm = this.value.trim().toLowerCase();
+
+        let visibleCount = 0;
+
+        patientCards.forEach(function (card) {
+
+            const patientInformation =
+                card.getAttribute("data-search") || "";
+
+            const matches = patientInformation.includes(searchTerm);
+
+            card.style.display = matches ? "flex" : "none";
+
+            if (matches) {
+                visibleCount++;
+            }
+
+        });
+
+        if (searchEmpty) {
+            searchEmpty.style.display =
+                visibleCount === 0 ? "block" : "none";
+        }
+
+    });
+
+});
+</script>
 
 {% endblock %}
