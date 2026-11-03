@@ -153,3 +153,7 @@ GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 #import os
 
 #OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+
+print("=== DUxtHEALTH PASSWORD VALIDATORS ===")
+print(AUTH_PASSWORD_VALIDATORS)
+print("=== END PASSWORD VALIDATORS ===")
