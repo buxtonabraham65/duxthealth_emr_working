@@ -1,146 +1,692 @@
 {% extends "bases.html" %}
 {% block content %}
 
-<div class="container mt-5">
+<style>
+    .vitals-page {
+        padding-top: 25px;
+        padding-bottom: 40px;
+    }
 
-  <!-- HEADER -->
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2 class="fw-bold">🩺 Vital Sign Records</h2>
+    .vitals-header {
+        background: linear-gradient(135deg, #087f8c, #075b68);
+        color: #fff;
+        border-radius: 16px;
+        padding: 27px;
+        margin-bottom: 24px;
+        box-shadow: 0 5px 18px rgba(0,0,0,0.10);
+    }
 
-    <a href="{% url 'homecare:vitalsign_create' %}" class="btn-duxt">
-      ➕ Add Vital Signs
-    </a>
-  </div>
+    .vitals-header h2 {
+        font-size: 1.65rem;
+        font-weight: 700;
+        margin-bottom: 7px;
+    }
 
-  <!-- TABLE CARD -->
-  <div class="card shadow-sm border-0">
-    <div class="table-responsive">
+    .vitals-header p {
+        color: rgba(255,255,255,0.85);
+        margin-bottom: 0;
+        line-height: 1.6;
+    }
 
-      <table class="table table-bordered table-hover align-middle mb-0 small">
-        <thead class="table-light text-center">
+    .vitals-header .btn {
+        background: #fff;
+        color: #087f8c;
+        border: none;
+        border-radius: 9px;
+        padding: 11px 17px;
+        font-weight: 700;
+        white-space: nowrap;
+    }
 
-          <!-- GROUPED HEADER -->
-          <tr>
-            <th rowspan="2">Patient</th>
-            <th rowspan="2">Recorded By</th>
-            <th rowspan="2">Date</th>
+    .vitals-header .btn:hover {
+        background: #eaf7f8;
+        color: #075b68;
+    }
 
-            <th colspan="6">Core Vitals</th>
-            <th colspan="2">Blood Sugar</th>
-            <th rowspan="2">Pain</th>
+    .vitals-summary {
+        background: #fff;
+        border: 1px solid #e3eeee;
+        border-radius: 12px;
+        padding: 17px 20px;
+        margin-bottom: 22px;
+        box-shadow: 0 3px 12px rgba(0,0,0,0.04);
+    }
 
-            <th colspan="3">Fluid Intake (ml)</th>
-            <th colspan="4">Fluid Output (ml)</th>
+    .vitals-summary-label {
+        color: #718096;
+        font-size: 0.85rem;
+        margin-bottom: 4px;
+    }
 
-            <th colspan="2">Body</th>
-            <th colspan="4">Neurology</th>
+    .vitals-summary-number {
+        color: #087f8c;
+        font-size: 1.7rem;
+        font-weight: 700;
+    }
 
-            <th rowspan="2">Actions</th>
-          </tr>
+    .vitals-table-card {
+        background: #fff;
+        border: 1px solid #e3eeee;
+        border-radius: 14px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.04);
+    }
 
-          <!-- SUB HEADERS -->
-          <tr>
-            <th>Temp</th>
-            <th>Pulse</th>
-            <th>Resp</th>
-            <th>Sys BP</th>
-            <th>Dia BP</th>
-            <th>O₂</th>
+    .vitals-table {
+        min-width: 1900px;
+        margin-bottom: 0;
+        font-size: 0.82rem;
+    }
 
-            <th>FBS</th>
-            <th>RBS</th>
+    .vitals-table thead th {
+        background: #edf7f7;
+        color: #24545a;
+        font-weight: 700;
+        padding: 12px 10px;
+        text-align: center;
+        vertical-align: middle;
+        border: 1px solid #dceaea;
+        white-space: nowrap;
+    }
 
-            <th>Oral</th>
-            <th>IV</th>
-            <th>Tube</th>
+    .vitals-table thead tr:first-child th {
+        background: #dff0f0;
+        color: #075b68;
+        font-size: 0.85rem;
+    }
 
-            <th>Urine</th>
-            <th>Stool</th>
-            <th>Vomit</th>
-            <th>Drain</th>
+    .vitals-table tbody td {
+        padding: 11px 9px;
+        vertical-align: middle;
+        border-color: #e7eeee;
+        text-align: center;
+        white-space: nowrap;
+        color: #425466;
+    }
 
-            <th>Wt</th>
-            <th>Ht</th>
+    .vitals-table tbody tr:hover {
+        background: #f5fbfb;
+    }
 
-            <th>E</th>
-            <th>V</th>
-            <th>M</th>
-            <th>AVPU</th>
-          </tr>
-        </thead>
+    .vitals-patient {
+        font-weight: 700;
+        color: #263f46 !important;
+    }
 
-        <tbody>
-          {% for vital in vitals %}
-          <tr class="text-center">
+    .vitals-action {
+        display: inline-block;
+        padding: 6px 10px;
+        border-radius: 6px;
+        text-decoration: none;
+        font-size: 0.78rem;
+        font-weight: 600;
+        margin: 2px;
+    }
 
-            <!-- BASIC INFO -->
-            <td class="fw-semibold">{{ vital.patient }}</td>
-            <td>{{ vital.recorded_by }}</td>
-            <td>{{ vital.recorded_at|date:"Y-m-d H:i" }}</td>
+    .vitals-edit {
+        color: #087f8c;
+        border: 1px solid #087f8c;
+    }
+
+    .vitals-edit:hover {
+        background: #087f8c;
+        color: #fff;
+    }
+
+    .vitals-delete {
+        color: #dc3545;
+        border: 1px solid #dc3545;
+    }
+
+    .vitals-delete:hover {
+        background: #dc3545;
+        color: #fff;
+    }
+
+    .vitals-mobile-list {
+        display: none;
+    }
+
+    .vitals-mobile-card {
+        background: #fff;
+        border: 1px solid #e3eeee;
+        border-radius: 13px;
+        padding: 17px;
+        margin-bottom: 14px;
+        box-shadow: 0 3px 12px rgba(0,0,0,0.04);
+    }
+
+    .vitals-mobile-patient {
+        font-size: 1rem;
+        font-weight: 700;
+        color: #263f46;
+        margin-bottom: 5px;
+        overflow-wrap: anywhere;
+    }
+
+    .vitals-mobile-meta {
+        font-size: 0.8rem;
+        color: #718096;
+        line-height: 1.6;
+        margin-bottom: 13px;
+    }
+
+    .vitals-section {
+        border: 1px solid #e5eeee;
+        border-radius: 9px;
+        overflow: hidden;
+        margin-top: 13px;
+    }
+
+    .vitals-section-title {
+        background: #edf7f7;
+        color: #075b68;
+        font-weight: 700;
+        font-size: 0.84rem;
+        padding: 9px 11px;
+        border-bottom: 1px solid #e0ebeb;
+    }
+
+    .vitals-section-body {
+        padding: 10px 11px;
+    }
+
+    .vitals-detail {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 7px 0;
+        border-bottom: 1px solid #f0f3f3;
+        font-size: 0.85rem;
+    }
+
+    .vitals-detail:last-child {
+        border-bottom: none;
+    }
+
+    .vitals-detail-label {
+        color: #718096;
+    }
+
+    .vitals-detail-value {
+        color: #263f46;
+        font-weight: 650;
+        text-align: right;
+        overflow-wrap: anywhere;
+    }
+
+    .vitals-mobile-actions {
+        display: flex;
+        gap: 9px;
+        margin-top: 15px;
+    }
+
+    .vitals-mobile-actions a {
+        flex: 1;
+        text-align: center;
+        padding: 9px;
+        border-radius: 7px;
+        text-decoration: none;
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+
+    .vitals-mobile-actions .edit {
+        background: #e8f5f6;
+        color: #087f8c;
+    }
+
+    .vitals-mobile-actions .delete {
+        background: #fff0f0;
+        color: #dc3545;
+    }
+
+    .vitals-empty {
+        text-align: center;
+        padding: 55px 20px;
+        color: #718096;
+    }
+
+    .vitals-empty i {
+        font-size: 45px;
+        color: #9bbfc3;
+        margin-bottom: 14px;
+    }
+
+    .vitals-empty h5 {
+        color: #344b50;
+        font-weight: 700;
+    }
+
+    @media (max-width: 767.98px) {
+        .vitals-page {
+            padding-top: 15px;
+        }
+
+        .vitals-header {
+            padding: 21px 17px;
+            border-radius: 12px;
+        }
+
+        .vitals-header h2 {
+            font-size: 1.3rem;
+        }
+
+        .vitals-header .btn {
+            display: block;
+            width: 100%;
+            text-align: center;
+            margin-top: 14px;
+        }
+
+        .vitals-summary {
+            padding: 14px 16px;
+        }
+
+        .desktop-vitals-table {
+            display: none;
+        }
+
+        .vitals-mobile-list {
+            display: block;
+        }
+    }
+</style>
+
+<div class="container vitals-page">
+
+    <!-- HEADER -->
+    <div class="vitals-header">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div>
+                <h2>
+                    <i class="bi bi-heart-pulse me-2"></i>
+                    Vital Sign Records
+                </h2>
+                <p>
+                    View and manage patient observations, physiological
+                    measurements, fluid balance and neurological assessments.
+                </p>
+            </div>
+
+            <a href="{% url 'homecare:vitalsign_create' %}" class="btn">
+                <i class="bi bi-plus-circle me-1"></i>
+                Add Vital Signs
+            </a>
+        </div>
+    </div>
+
+    <!-- SUMMARY -->
+    <div class="vitals-summary">
+        <div class="vitals-summary-label">Total Vital Sign Records</div>
+        <div class="vitals-summary-number">{{ vitals|length }}</div>
+    </div>
+
+    <!-- DESKTOP TABLE -->
+    <div class="vitals-table-card desktop-vitals-table">
+        <div class="table-responsive">
+            <table class="table table-hover vitals-table">
+
+                <thead>
+                    <tr>
+                        <th rowspan="2">Patient</th>
+                        <th rowspan="2">Recorded By</th>
+                        <th rowspan="2">Date</th>
+
+                        <th colspan="6">Core Vitals</th>
+                        <th colspan="2">Blood Sugar</th>
+                        <th rowspan="2">Pain</th>
+
+                        <th colspan="3">Fluid Intake (ml)</th>
+                        <th colspan="4">Fluid Output (ml)</th>
+
+                        <th colspan="2">Body</th>
+                        <th colspan="4">Neurology</th>
+
+                        <th rowspan="2">Actions</th>
+                    </tr>
+
+                    <tr>
+                        <th>Temp</th>
+                        <th>Pulse</th>
+                        <th>Resp</th>
+                        <th>Sys BP</th>
+                        <th>Dia BP</th>
+                        <th>O₂</th>
+
+                        <th>FBS</th>
+                        <th>RBS</th>
+
+                        <th>Oral</th>
+                        <th>IV</th>
+                        <th>Tube</th>
+
+                        <th>Urine</th>
+                        <th>Stool</th>
+                        <th>Vomit</th>
+                        <th>Drain</th>
+
+                        <th>Wt</th>
+                        <th>Ht</th>
+
+                        <th>E</th>
+                        <th>V</th>
+                        <th>M</th>
+                        <th>AVPU</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for vital in vitals %}
+                    <tr>
+                        <td class="vitals-patient">{{ vital.patient }}</td>
+                        <td>{{ vital.recorded_by|default:"—" }}</td>
+                        <td>{{ vital.recorded_at|date:"Y-m-d H:i" }}</td>
+
+                        <td>{{ vital.temperature|default:"—" }}</td>
+                        <td>{{ vital.pulse|default:"—" }}</td>
+                        <td>{{ vital.respiratory_rate|default:"—" }}</td>
+                        <td>{{ vital.blood_pressure_systolic|default:"—" }}</td>
+                        <td>{{ vital.blood_pressure_diastolic|default:"—" }}</td>
+                        <td>
+                            {% if vital.oxygen_saturation != None %}
+                                {{ vital.oxygen_saturation }}%
+                            {% else %}
+                                —
+                            {% endif %}
+                        </td>
+
+                        <td>{{ vital.blood_sugar_fbs|default:"—" }}</td>
+                        <td>{{ vital.blood_sugar_rbs|default:"—" }}</td>
+
+                        <td>{{ vital.pain_score|default:"—" }}</td>
+
+                        <td>{{ vital.fluid_intake_oral|default:"—" }}</td>
+                        <td>{{ vital.fluid_intake_iv|default:"—" }}</td>
+                        <td>{{ vital.fluid_intake_tube|default:"—" }}</td>
+
+                        <td>{{ vital.fluid_output_urine|default:"—" }}</td>
+                        <td>{{ vital.fluid_output_stool|default:"—" }}</td>
+                        <td>{{ vital.fluid_output_vomit|default:"—" }}</td>
+                        <td>{{ vital.fluid_output_drains|default:"—" }}</td>
+
+                        <td>{{ vital.weight|default:"—" }}</td>
+                        <td>{{ vital.height|default:"—" }}</td>
+
+                        <td>{{ vital.neuro_gcs_eye|default:"—" }}</td>
+                        <td>{{ vital.neuro_gcs_verbal|default:"—" }}</td>
+                        <td>{{ vital.neuro_gcs_motor|default:"—" }}</td>
+                        <td>{{ vital.neuro_avpu|default:"—" }}</td>
+
+                        <td>
+                            <a href="{% url 'homecare:vitalsign_update' vital.pk %}"
+                               class="vitals-action vitals-edit">
+                                <i class="bi bi-pencil-square"></i> Edit
+                            </a>
+
+                            <a href="{% url 'homecare:vitalsign_delete' vital.pk %}"
+                               class="vitals-action vitals-delete">
+                                <i class="bi bi-trash"></i> Delete
+                            </a>
+                        </td>
+                    </tr>
+
+                    {% empty %}
+                    <tr>
+                        <td colspan="25">
+                            <div class="vitals-empty">
+                                <i class="bi bi-heart-pulse"></i>
+                                <h5>No Vital Sign Records Found</h5>
+                                <p class="mb-0">
+                                    There are currently no vital sign records available.
+                                </p>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+
+            </table>
+        </div>
+    </div>
+
+    <!-- MOBILE CARDS -->
+    <div class="vitals-mobile-list">
+
+        {% for vital in vitals %}
+        <div class="vitals-mobile-card">
+
+            <!-- PATIENT INFORMATION -->
+            <div class="vitals-mobile-patient">
+                <i class="bi bi-person-circle me-1 text-secondary"></i>
+                {{ vital.patient }}
+            </div>
+
+            <div class="vitals-mobile-meta">
+                <div>
+                    <i class="bi bi-person-badge me-1"></i>
+                    Recorded by: {{ vital.recorded_by|default:"—" }}
+                </div>
+                <div>
+                    <i class="bi bi-calendar3 me-1"></i>
+                    {{ vital.recorded_at|date:"Y-m-d H:i" }}
+                </div>
+            </div>
 
             <!-- CORE VITALS -->
-            <td>{{ vital.temperature|default:"—" }}</td>
-            <td>{{ vital.pulse|default:"—" }}</td>
-            <td>{{ vital.respiratory_rate|default:"—" }}</td>
-            <td>{{ vital.blood_pressure_systolic|default:"—" }}</td>
-            <td>{{ vital.blood_pressure_diastolic|default:"—" }}</td>
-            <td>{{ vital.oxygen_saturation|default:"—" }}%</td>
+            <div class="vitals-section">
+                <div class="vitals-section-title">
+                    <i class="bi bi-heart-pulse me-1"></i>
+                    Core Vital Signs
+                </div>
+                <div class="vitals-section-body">
+
+                    <div class="vitals-detail">
+                        <span class="vitals-detail-label">Temperature</span>
+                        <span class="vitals-detail-value">{{ vital.temperature|default:"—" }}</span>
+                    </div>
+
+                    <div class="vitals-detail">
+                        <span class="vitals-detail-label">Pulse</span>
+                        <span class="vitals-detail-value">{{ vital.pulse|default:"—" }}</span>
+                    </div>
+
+                    <div class="vitals-detail">
+                        <span class="vitals-detail-label">Respiratory Rate</span>
+                        <span class="vitals-detail-value">{{ vital.respiratory_rate|default:"—" }}</span>
+                    </div>
+
+                    <div class="vitals-detail">
+                        <span class="vitals-detail-label">Systolic BP</span>
+                        <span class="vitals-detail-value">{{ vital.blood_pressure_systolic|default:"—" }}</span>
+                    </div>
+
+                    <div class="vitals-detail">
+                        <span class="vitals-detail-label">Diastolic BP</span>
+                        <span class="vitals-detail-value">{{ vital.blood_pressure_diastolic|default:"—" }}</span>
+                    </div>
+
+                    <div class="vitals-detail">
+                        <span class="vitals-detail-label">Oxygen Saturation</span>
+                        <span class="vitals-detail-value">
+                            {% if vital.oxygen_saturation != None %}
+                                {{ vital.oxygen_saturation }}%
+                            {% else %}
+                                —
+                            {% endif %}
+                        </span>
+                    </div>
+
+                    <div class="vitals-detail">
+                        <span class="vitals-detail-label">Pain Score</span>
+                        <span class="vitals-detail-value">{{ vital.pain_score|default:"—" }}</span>
+                    </div>
+
+                </div>
+            </div>
 
             <!-- BLOOD SUGAR -->
-            <td>{{ vital.blood_sugar_fbs|default:"—" }}</td>
-            <td>{{ vital.blood_sugar_rbs|default:"—" }}</td>
+            <div class="vitals-section">
+                <div class="vitals-section-title">
+                    <i class="bi bi-droplet me-1"></i>
+                    Blood Sugar
+                </div>
+                <div class="vitals-section-body">
 
-            <!-- PAIN -->
-            <td>{{ vital.pain_score|default:"—" }}</td>
+                    <div class="vitals-detail">
+                        <span class="vitals-detail-label">Fasting Blood Sugar (FBS)</span>
+                        <span class="vitals-detail-value">{{ vital.blood_sugar_fbs|default:"—" }}</span>
+                    </div>
+
+                    <div class="vitals-detail">
+                        <span class="vitals-detail-label">Random Blood Sugar (RBS)</span>
+                        <span class="vitals-detail-value">{{ vital.blood_sugar_rbs|default:"—" }}</span>
+                    </div>
+
+                </div>
+            </div>
 
             <!-- FLUID INTAKE -->
-            <td>{{ vital.fluid_intake_oral|default:"—" }}</td>
-            <td>{{ vital.fluid_intake_iv|default:"—" }}</td>
-            <td>{{ vital.fluid_intake_tube|default:"—" }}</td>
+            <div class="vitals-section">
+                <div class="vitals-section-title">
+                    <i class="bi bi-cup-straw me-1"></i>
+                    Fluid Intake (ml)
+                </div>
+                <div class="vitals-section-body">
+
+                    <div class="vitals-detail">
+                        <span class="vitals-detail-label">Oral</span>
+                        <span class="vitals-detail-value">{{ vital.fluid_intake_oral|default:"—" }}</span>
+                    </div>
+
+                    <div class="vitals-detail">
+                        <span class="vitals-detail-label">IV</span>
+                        <span class="vitals-detail-value">{{ vital.fluid_intake_iv|default:"—" }}</span>
+                    </div>
+
+                    <div class="vitals-detail">
+                        <span class="vitals-detail-label">Tube</span>
+                        <span class="vitals-detail-value">{{ vital.fluid_intake_tube|default:"—" }}</span>
+                    </div>
+
+                </div>
+            </div>
 
             <!-- FLUID OUTPUT -->
-            <td>{{ vital.fluid_output_urine|default:"—" }}</td>
-            <td>{{ vital.fluid_output_stool|default:"—" }}</td>
-            <td>{{ vital.fluid_output_vomit|default:"—" }}</td>
-            <td>{{ vital.fluid_output_drains|default:"—" }}</td>
+            <div class="vitals-section">
+                <div class="vitals-section-title">
+                    <i class="bi bi-droplet-half me-1"></i>
+                    Fluid Output (ml)
+                </div>
+                <div class="vitals-section-body">
 
-            <!-- BODY -->
-            <td>{{ vital.weight|default:"—" }}</td>
-            <td>{{ vital.height|default:"—" }}</td>
+                    <div class="vitals-detail">
+                        <span class="vitals-detail-label">Urine</span>
+                        <span class="vitals-detail-value">{{ vital.fluid_output_urine|default:"—" }}</span>
+                    </div>
 
-            <!-- NEURO -->
-            <td>{{ vital.neuro_gcs_eye|default:"—" }}</td>
-            <td>{{ vital.neuro_gcs_verbal|default:"—" }}</td>
-            <td>{{ vital.neuro_gcs_motor|default:"—" }}</td>
-            <td>{{ vital.neuro_avpu|default:"—" }}</td>
+                    <div class="vitals-detail">
+                        <span class="vitals-detail-label">Stool</span>
+                        <span class="vitals-detail-value">{{ vital.fluid_output_stool|default:"—" }}</span>
+                    </div>
+
+                    <div class="vitals-detail">
+                        <span class="vitals-detail-label">Vomit</span>
+                        <span class="vitals-detail-value">{{ vital.fluid_output_vomit|default:"—" }}</span>
+                    </div>
+
+                    <div class="vitals-detail">
+                        <span class="vitals-detail-label">Drains</span>
+                        <span class="vitals-detail-value">{{ vital.fluid_output_drains|default:"—" }}</span>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- BODY MEASUREMENTS -->
+            <div class="vitals-section">
+                <div class="vitals-section-title">
+                    <i class="bi bi-person-lines-fill me-1"></i>
+                    Body Measurements
+                </div>
+                <div class="vitals-section-body">
+
+                    <div class="vitals-detail">
+                        <span class="vitals-detail-label">Weight</span>
+                        <span class="vitals-detail-value">{{ vital.weight|default:"—" }}</span>
+                    </div>
+
+                    <div class="vitals-detail">
+                        <span class="vitals-detail-label">Height</span>
+                        <span class="vitals-detail-value">{{ vital.height|default:"—" }}</span>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- NEUROLOGY -->
+            <div class="vitals-section">
+                <div class="vitals-section-title">
+                    <i class="bi bi-activity me-1"></i>
+                    Neurological Assessment
+                </div>
+                <div class="vitals-section-body">
+
+                    <div class="vitals-detail">
+                        <span class="vitals-detail-label">GCS Eye (E)</span>
+                        <span class="vitals-detail-value">{{ vital.neuro_gcs_eye|default:"—" }}</span>
+                    </div>
+
+                    <div class="vitals-detail">
+                        <span class="vitals-detail-label">GCS Verbal (V)</span>
+                        <span class="vitals-detail-value">{{ vital.neuro_gcs_verbal|default:"—" }}</span>
+                    </div>
+
+                    <div class="vitals-detail">
+                        <span class="vitals-detail-label">GCS Motor (M)</span>
+                        <span class="vitals-detail-value">{{ vital.neuro_gcs_motor|default:"—" }}</span>
+                    </div>
+
+                    <div class="vitals-detail">
+                        <span class="vitals-detail-label">AVPU</span>
+                        <span class="vitals-detail-value">{{ vital.neuro_avpu|default:"—" }}</span>
+                    </div>
+
+                </div>
+            </div>
 
             <!-- ACTIONS -->
-            <td class="text-nowrap">
-              <a href="{% url 'homecare:vitalsign_update' vital.pk %}"
-                 class="btn btn-outline-primary btn-sm">
-                Edit
-              </a>
-              <a href="{% url 'homecare:vitalsign_delete' vital.pk %}"
-                 class="btn btn-outline-danger btn-sm">
-                Delete
-              </a>
-            </td>
+            <div class="vitals-mobile-actions">
 
-          </tr>
+                <a href="{% url 'homecare:vitalsign_update' vital.pk %}"
+                   class="edit">
+                    <i class="bi bi-pencil-square me-1"></i>
+                    Edit
+                </a>
 
-          {% empty %}
-          <tr>
-            <td colspan="25" class="text-center text-muted py-4">
-              No vital sign records found.
-            </td>
-          </tr>
-          {% endfor %}
-        </tbody>
+                <a href="{% url 'homecare:vitalsign_delete' vital.pk %}"
+                   class="delete">
+                    <i class="bi bi-trash me-1"></i>
+                    Delete
+                </a>
 
-      </table>
+            </div>
+
+        </div>
+
+        {% empty %}
+        <div class="vitals-table-card">
+            <div class="vitals-empty">
+                <i class="bi bi-heart-pulse"></i>
+                <h5>No Vital Sign Records Found</h5>
+                <p class="mb-0">
+                    There are currently no vital sign records available.
+                </p>
+            </div>
+        </div>
+        {% endfor %}
 
     </div>
-  </div>
 
 </div>
 
