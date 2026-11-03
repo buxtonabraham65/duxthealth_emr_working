@@ -1,60 +1,579 @@
+
 {% extends 'bases.html' %}
 
 {% block content %}
 
-<div class="patient-card">
+<style>
+/* ==========================================
+   PROFESSIONAL LIST PAGE
+========================================== */
 
-  <!-- HEADER -->
-  <div class="patient-card-header">
-    👩‍⚕️ Health <span>Professionals</span>
-  </div>
+.professional-page {
+    width: 100%;
+    max-width: 1450px;
+    margin: 0 auto;
+    padding: 15px 5px 35px;
+}
 
-  <!-- BODY -->
-  <div class="patient-card-body">
+.professional-container {
+    background: #ffffff;
+    border-radius: 18px;
+    border: 1px solid #e8eeee;
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.045);
+    overflow: hidden;
+}
 
-    <!-- Actions -->
-    <div class="d-flex justify-content-end mb-4">
-      <a href="{% url 'homecare:professional_create' %}" class="btn-duxt">
-        ➕ Add New Professional
-      </a>
+.professional-header {
+    background: linear-gradient(135deg, #073f43, #087d78);
+    color: white;
+    padding: 27px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.professional-header h3 {
+    font-size: 23px;
+    font-weight: 750;
+    margin: 0;
+}
+
+.professional-header p {
+    margin: 6px 0 0;
+    font-size: 13px;
+    color: rgba(255,255,255,.8);
+}
+
+.professional-count {
+    background: rgba(255,255,255,.15);
+    border: 1px solid rgba(255,255,255,.25);
+    padding: 9px 15px;
+    border-radius: 30px;
+    font-size: 13px;
+    font-weight: 650;
+}
+
+.professional-body {
+    padding: 25px 30px;
+}
+
+.professional-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 25px;
+    flex-wrap: wrap;
+}
+
+.professional-toolbar p {
+    color: #64748b;
+    font-size: 13px;
+    margin: 0;
+}
+
+.professional-add-btn {
+    background: #07847e;
+    color: white !important;
+    border: none;
+    padding: 11px 19px;
+    border-radius: 9px;
+    font-size: 13px;
+    font-weight: 650;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: .25s ease;
+}
+
+.professional-add-btn:hover {
+    background: #05645f;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 14px rgba(7,132,126,.2);
+}
+
+/* PROFESSIONAL GRID */
+
+.professional-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.professional-item {
+    background: #ffffff;
+    border: 1px solid #e5eded;
+    border-radius: 13px;
+    padding: 20px;
+    transition: .25s ease;
+    min-width: 0;
+}
+
+.professional-item:hover {
+    border-color: #9bd4cf;
+    box-shadow: 0 7px 20px rgba(0,0,0,.055);
+    transform: translateY(-2px);
+}
+
+.professional-top {
+    display: flex;
+    align-items: flex-start;
+    gap: 13px;
+    margin-bottom: 18px;
+}
+
+.professional-avatar {
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+    border-radius: 13px;
+    background: #e2f4f1;
+    color: #087d78;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 19px;
+    font-weight: 800;
+}
+
+.professional-identity {
+    min-width: 0;
+    flex: 1;
+}
+
+.professional-name {
+    font-size: 16px;
+    font-weight: 750;
+    color: #173b3d;
+    margin: 2px 0 7px;
+    overflow-wrap: anywhere;
+}
+
+.professional-role {
+    display: inline-flex;
+    align-items: center;
+    padding: 5px 10px;
+    background: #e8f5f3;
+    color: #08756f;
+    border-radius: 30px;
+    font-size: 11px;
+    font-weight: 750;
+}
+
+.professional-info {
+    border-top: 1px solid #edf1f1;
+    padding-top: 15px;
+    display: grid;
+    gap: 13px;
+}
+
+.professional-info-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 11px;
+    min-width: 0;
+}
+
+.professional-info-icon {
+    width: 30px;
+    height: 30px;
+    min-width: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f1f7f7;
+    border-radius: 8px;
+    color: #087d78;
+    font-size: 14px;
+}
+
+.professional-info-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.professional-info-label {
+    display: block;
+    color: #89949b;
+    font-size: 10px;
+    font-weight: 750;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    margin-bottom: 3px;
+}
+
+.professional-info-value {
+    color: #334155;
+    font-size: 13px;
+    font-weight: 550;
+    line-height: 1.6;
+    overflow-wrap: anywhere;
+}
+
+.professional-info-value a {
+    color: #087d78;
+    text-decoration: none;
+}
+
+.professional-info-value a:hover {
+    text-decoration: underline;
+}
+
+/* ACTION BUTTONS */
+
+.professional-actions {
+    display: flex;
+    gap: 9px;
+    margin-top: 19px;
+    padding-top: 15px;
+    border-top: 1px solid #edf1f1;
+}
+
+.professional-edit-btn,
+.professional-delete-btn {
+    flex: 1;
+    text-align: center;
+    padding: 9px 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: .2s ease;
+}
+
+.professional-edit-btn {
+    color: #087d78;
+    background: #e8f5f3;
+    border: 1px solid #c8e7e2;
+}
+
+.professional-edit-btn:hover {
+    background: #087d78;
+    color: white;
+}
+
+.professional-delete-btn {
+    color: #dc3545;
+    background: #fff1f2;
+    border: 1px solid #ffd6da;
+}
+
+.professional-delete-btn:hover {
+    color: white;
+    background: #dc3545;
+}
+
+/* EMPTY STATE */
+
+.professional-empty {
+    text-align: center;
+    padding: 65px 20px;
+    background: #f8fbfb;
+    border: 1px dashed #cbdcda;
+    border-radius: 13px;
+}
+
+.professional-empty-icon {
+    width: 65px;
+    height: 65px;
+    margin: 0 auto 15px;
+    background: #e5f4f1;
+    color: #087d78;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 27px;
+}
+
+.professional-empty h5 {
+    font-size: 17px;
+    color: #244447;
+    font-weight: 750;
+}
+
+.professional-empty p {
+    color: #849198;
+    font-size: 13px;
+    margin-bottom: 20px;
+}
+
+/* RESPONSIVE DESIGN */
+
+@media (max-width: 768px) {
+    .professional-page {
+        padding: 8px 0 25px;
+    }
+
+    .professional-header {
+        padding: 21px 18px;
+    }
+
+    .professional-header h3 {
+        font-size: 19px;
+    }
+
+    .professional-body {
+        padding: 20px 15px;
+    }
+
+    .professional-grid {
+        grid-template-columns: 1fr;
+        gap: 13px;
+    }
+
+    .professional-toolbar {
+        align-items: stretch;
+    }
+
+    .professional-add-btn {
+        justify-content: center;
+    }
+}
+
+@media (max-width: 420px) {
+    .professional-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .professional-count {
+        font-size: 12px;
+    }
+
+    .professional-item {
+        padding: 16px;
+    }
+
+    .professional-name {
+        font-size: 15px;
+    }
+
+    .professional-actions {
+        gap: 7px;
+    }
+
+    .professional-edit-btn,
+    .professional-delete-btn {
+        font-size: 11px;
+        padding: 9px 7px;
+    }
+}
+</style>
+
+
+<div class="professional-page">
+
+    <div class="professional-container">
+
+        <!-- HEADER -->
+        <div class="professional-header">
+
+            <div>
+                <h3>👩‍⚕️ Health Professionals</h3>
+                <p>Manage your healthcare team and professional information.</p>
+            </div>
+
+            <div class="professional-count">
+                <i class="fas fa-users"></i>
+                {{ professionals|length }} Professional{{ professionals|length|pluralize }}
+            </div>
+
+        </div>
+
+
+        <!-- BODY -->
+        <div class="professional-body">
+
+            <!-- TOOLBAR -->
+            <div class="professional-toolbar">
+
+                <p>
+                    View and manage registered healthcare professionals.
+                </p>
+
+                <a href="{% url 'homecare:professional_create' %}"
+                   class="professional-add-btn">
+
+                    <i class="fas fa-user-plus"></i>
+                    Add New Professional
+
+                </a>
+
+            </div>
+
+
+            <!-- PROFESSIONAL LIST -->
+            {% if professionals %}
+
+                <div class="professional-grid">
+
+                    {% for prof in professionals %}
+
+                        <div class="professional-item">
+
+                            <!-- NAME AND ROLE -->
+                            <div class="professional-top">
+
+                                <div class="professional-avatar">
+
+                                    {{ prof.user.first_name|first|upper|default:prof.user.username|first|upper }}
+
+                                </div>
+
+                                <div class="professional-identity">
+
+                                    <h5 class="professional-name">
+
+                                        {{ prof.user.get_full_name|default:prof.user.username }}
+
+                                    </h5>
+
+                                    <span class="professional-role">
+
+                                        <i class="fas fa-user-md me-1"></i>
+                                        {{ prof.get_role_display }}
+
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- PROFESSIONAL INFORMATION -->
+                            <div class="professional-info">
+
+                                <!-- PHONE -->
+                                <div class="professional-info-row">
+
+                                    <div class="professional-info-icon">
+                                        <i class="fas fa-phone-alt"></i>
+                                    </div>
+
+                                    <div class="professional-info-content">
+
+                                        <span class="professional-info-label">
+                                            Phone Number
+                                        </span>
+
+                                        <div class="professional-info-value">
+
+                                            {% if prof.phone %}
+
+                                                <a href="tel:{{ prof.phone }}">
+                                                    {{ prof.phone }}
+                                                </a>
+
+                                            {% else %}
+
+                                                Not provided
+
+                                            {% endif %}
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+
+                                <!-- ADDRESS -->
+                                <div class="professional-info-row">
+
+                                    <div class="professional-info-icon">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                    </div>
+
+                                    <div class="professional-info-content">
+
+                                        <span class="professional-info-label">
+                                            Address
+                                        </span>
+
+                                        <div class="professional-info-value">
+
+                                            {% if prof.address %}
+
+                                                {{ prof.address|linebreaksbr }}
+
+                                            {% else %}
+
+                                                Address not provided
+
+                                            {% endif %}
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- ACTION BUTTONS -->
+                            <div class="professional-actions">
+
+                                <a href="{% url 'homecare:professional_update' prof.pk %}"
+                                   class="professional-edit-btn">
+
+                                    <i class="fas fa-edit me-1"></i>
+                                    Edit Details
+
+                                </a>
+
+                                <a href="{% url 'homecare:professional_delete' prof.pk %}"
+                                   class="professional-delete-btn">
+
+                                    <i class="fas fa-trash-alt me-1"></i>
+                                    Delete
+
+                                </a>
+
+                            </div>
+
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+            {% else %}
+
+                <!-- EMPTY STATE -->
+                <div class="professional-empty">
+
+                    <div class="professional-empty-icon">
+                        <i class="fas fa-user-md"></i>
+                    </div>
+
+                    <h5>No Health Professionals Found</h5>
+
+                    <p>
+                        There are currently no registered healthcare professionals.
+                        Add a professional to start managing your healthcare team.
+                    </p>
+
+                    <a href="{% url 'homecare:professional_create' %}"
+                       class="professional-add-btn">
+
+                        <i class="fas fa-user-plus"></i>
+                        Register First Professional
+
+                    </a>
+
+                </div>
+
+            {% endif %}
+
+        </div>
+
     </div>
 
-    {% if professionals %}
-      <div class="list-group list-group-flush">
-
-        {% for prof in professionals %}
-          <div class="list-group-item d-flex justify-content-between align-items-center py-3">
-            <div>
-              <h6 class="mb-1 fw-semibold">
-                {{ prof.user.get_full_name }}
-              </h6>
-              <small class="text-muted">
-                {{ prof.get_role_display }}
-              </small>
-            </div>
-
-            <div class="d-flex gap-2">
-              <a href="{% url 'homecare:professional_update' prof.pk %}"
-                 class="btn-outline-duxt btn-sm">
-                ✏️ Edit
-              </a>
-
-              <a href="{% url 'homecare:professional_delete' prof.pk %}"
-                 class="btn btn-sm btn-outline-danger rounded-3">
-                🗑 Delete
-              </a>
-            </div>
-          </div>
-        {% endfor %}
-
-      </div>
-    {% else %}
-      <div class="alert alert-info text-center mt-4">
-        No health professionals found.
-      </div>
-    {% endif %}
-
-  </div>
 </div>
 
 {% endblock %}
