@@ -1,212 +1,1318 @@
+
 {% extends 'bases.html' %}
 
 {% block content %}
 
 <style>
-  /* =======================
-     PATIENT FORM – DUXTHEALTH
-  ======================= */
+  /* =========================================
+     DUXTHEALTH - ADD / EDIT PATIENT FORM
+  ========================================= */
 
-  .form-card {
-    max-width: 800px;
-    margin: 40px auto;
-    padding: 28px;
-    background: #ffffff;
-    border-radius: 14px;
-    box-shadow: 0 12px 30px rgba(0,0,0,.08);
+  :root {
+    --patient-primary: var(--duxt-primary, #0e6f6c);
+    --patient-dark: var(--duxt-dark, #183b3a);
+    --patient-gold: #d5a441;
+    --patient-bg: #f4f8f8;
+    --patient-border: #e2e8e8;
+    --patient-muted: #64748b;
+    --patient-shadow: 0 12px 35px rgba(15, 45, 44, 0.08);
   }
 
-  .form-card h2 {
-    text-align: center;
-    margin-bottom: 24px;
-    font-weight: 700;
-    color: var(--duxt-primary);
-  }
-
-  .form-card label {
-    font-weight: 600;
-    margin-bottom: 6px;
-    display: block;
-    color: var(--duxt-dark);
-    font-size: 0.95rem;
-  }
-
-  .form-card input,
-  .form-card textarea,
-  .form-card select {
+  .patient-form-page {
     width: 100%;
-    padding: 10px 12px;
-    border: 1px solid #d1d5db;
-    border-radius: 8px;
-    font-size: 0.95rem;
-    transition: border-color .2s ease, box-shadow .2s ease;
+    min-height: 80vh;
+    padding: 35px 16px 55px;
+    background: var(--patient-bg);
   }
 
-  .form-card textarea {
+  .patient-form-container {
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  /* Top navigation */
+
+  .patient-form-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+
+  .patient-breadcrumb {
+    color: var(--patient-muted);
+    font-size: 0.88rem;
+  }
+
+  .patient-breadcrumb a {
+    color: var(--patient-primary);
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  .patient-breadcrumb a:hover {
+    text-decoration: underline;
+  }
+
+  .patient-form-card {
+    background: #ffffff;
+    border: 1px solid var(--patient-border);
+    border-radius: 18px;
+    box-shadow: var(--patient-shadow);
+    overflow: hidden;
+  }
+
+  /* Header */
+
+  .patient-form-header {
+    position: relative;
+    padding: 30px 35px;
+    background: linear-gradient(135deg, #0e6f6c, #084f4d);
+    color: #ffffff;
+  }
+
+  .patient-form-header::after {
+    content: "";
+    position: absolute;
+    width: 180px;
+    height: 180px;
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 50%;
+    right: -45px;
+    top: -75px;
+    pointer-events: none;
+  }
+
+  .patient-header-content {
+    position: relative;
+    z-index: 1;
+  }
+
+  .patient-header-icon {
+    width: 48px;
+    height: 48px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 13px;
+    background: rgba(255,255,255,0.15);
+    font-size: 1.4rem;
+    margin-bottom: 14px;
+  }
+
+  .patient-form-header h2 {
+    margin: 0 0 8px;
+    font-size: clamp(1.4rem, 3vw, 1.85rem);
+    font-weight: 750;
+    color: #ffffff;
+  }
+
+  .patient-form-header p {
+    margin: 0;
+    font-size: 0.94rem;
+    color: rgba(255,255,255,0.85);
+    line-height: 1.6;
+  }
+
+  .patient-header-tag {
+    display: inline-block;
+    margin-top: 15px;
+    padding: 6px 12px;
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 30px;
+    background: rgba(255,255,255,0.1);
+    font-size: 0.76rem;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+  }
+
+  /* Form body */
+
+  .patient-form-body {
+    padding: 32px 35px 35px;
+  }
+
+  .patient-form-intro {
+    margin-bottom: 25px;
+  }
+
+  .patient-form-intro h3 {
+    color: var(--patient-dark);
+    font-size: 1.12rem;
+    font-weight: 700;
+    margin: 0 0 6px;
+  }
+
+  .patient-form-intro p {
+    color: var(--patient-muted);
+    font-size: 0.88rem;
+    margin: 0;
+    line-height: 1.6;
+  }
+
+  /* Section headings */
+
+  .patient-section {
+    margin-bottom: 28px;
+  }
+
+  .patient-section-heading {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 19px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--patient-border);
+  }
+
+  .patient-section-icon {
+    width: 35px;
+    height: 35px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9px;
+    background: rgba(14,111,108,0.09);
+    color: var(--patient-primary);
+    font-size: 1rem;
+    flex-shrink: 0;
+  }
+
+  .patient-section-heading h4 {
+    margin: 0;
+    font-size: 0.98rem;
+    font-weight: 700;
+    color: var(--patient-dark);
+  }
+
+  .patient-section-heading p {
+    margin: 3px 0 0;
+    color: var(--patient-muted);
+    font-size: 0.79rem;
+  }
+
+  /* Labels and controls */
+
+  .patient-field {
+    margin-bottom: 19px;
+    min-width: 0;
+  }
+
+  .patient-field label {
+    display: block;
+    margin-bottom: 7px;
+    color: #334155;
+    font-size: 0.88rem;
+    font-weight: 650;
+  }
+
+  .patient-field input,
+  .patient-field textarea,
+  .patient-field select {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    min-height: 45px;
+    padding: 10px 13px;
+    border: 1px solid #d5dfdf;
+    border-radius: 9px;
+    background: #ffffff;
+    color: #263b3b;
+    font-family: inherit;
+    font-size: 0.92rem;
+    line-height: 1.5;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .patient-field textarea {
+    min-height: 105px;
     resize: vertical;
   }
 
-  .form-card input:focus,
-  .form-card textarea:focus,
-  .form-card select:focus {
+  .patient-field input:hover,
+  .patient-field textarea:hover,
+  .patient-field select:hover {
+    border-color: #9ab9b7;
+  }
+
+  .patient-field input:focus,
+  .patient-field textarea:focus,
+  .patient-field select:focus {
     outline: none;
-    border-color: var(--duxt-primary);
-    box-shadow: 0 0 0 3px rgba(14,111,108,.15);
+    border-color: var(--patient-primary);
+    box-shadow: 0 0 0 3px rgba(14,111,108,0.12);
   }
 
-  /* Buttons */
-  .btn-duxt {
-    display: inline-block;
-    padding: 12px 20px;
-    background: linear-gradient(135deg, var(--duxt-primary), #0b5c59);
-    color: #ffffff;
-    font-weight: 600;
-    border: none;
-    border-radius: 10px;
+  .patient-field input::placeholder,
+  .patient-field textarea::placeholder {
+    color: #a0aaaa;
+  }
+
+  .patient-field select {
     cursor: pointer;
-    transition: transform .15s ease, box-shadow .15s ease;
-    text-decoration: none;
   }
 
-  .btn-duxt:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 8px 20px rgba(0,0,0,.12);
+  /* Django error messages */
+
+  .patient-field .errorlist {
+    list-style: none;
+    padding: 0;
+    margin: 6px 0 0;
+    color: #b42318;
+    font-size: 0.82rem;
   }
 
-  .btn-outline-duxt {
-    display: inline-block;
-    padding: 12px 20px;
-    border: 2px solid var(--duxt-primary);
-    color: var(--duxt-primary);
-    background: transparent;
+  .patient-field .helptext {
+    display: block;
+    margin-top: 5px;
+    color: var(--patient-muted);
+    font-size: 0.78rem;
+  }
+
+  .patient-form-errors {
+    margin-bottom: 22px;
+    padding: 14px 16px;
+    border: 1px solid #fecaca;
     border-radius: 10px;
-    font-weight: 600;
-    text-decoration: none;
-    transition: all .2s ease;
+    background: #fff5f5;
+    color: #991b1b;
+    font-size: 0.88rem;
   }
 
-  .btn-outline-duxt:hover {
-    background: var(--duxt-primary);
-    color: #ffffff;
+  .patient-form-errors ul {
+    margin: 7px 0 0;
+    padding-left: 20px;
   }
 
-  .patient-card-header {
-    text-align: center;
-    font-size: 1.4rem;
-    font-weight: 700;
-    margin-bottom: 24px;
-    color: var(--duxt-primary);
-  }
-
-  .patient-card-body {
-    padding: 10px 0;
-  }
+  /* Form actions */
 
   .patient-actions {
-    margin-top: 25px;
     display: flex;
-    gap: 12px;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
     flex-wrap: wrap;
+    padding-top: 23px;
+    margin-top: 8px;
+    border-top: 1px solid var(--patient-border);
+  }
+
+  .patient-action-left {
+    color: var(--patient-muted);
+    font-size: 0.8rem;
+    line-height: 1.5;
+  }
+
+  .patient-action-buttons {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    flex-wrap: wrap;
+  }
+
+  .btn-patient-save,
+  .btn-patient-back {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 45px;
+    padding: 11px 19px;
+    border-radius: 9px;
+    font-family: inherit;
+    font-size: 0.9rem;
+    font-weight: 650;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .btn-patient-save {
+    border: 1px solid var(--patient-primary);
+    background: linear-gradient(135deg, #0e7773, #095653);
+    color: #ffffff;
+    box-shadow: 0 5px 13px rgba(14,111,108,0.16);
+  }
+
+  .btn-patient-save:hover {
+    color: #ffffff;
+    background: #084e4b;
+    transform: translateY(-1px);
+    box-shadow: 0 7px 17px rgba(14,111,108,0.22);
+  }
+
+  .btn-patient-back {
+    border: 1px solid #cbd5d5;
+    background: #ffffff;
+    color: #475569;
+  }
+
+  .btn-patient-back:hover {
+    border-color: var(--patient-primary);
+    background: #f0f9f8;
+    color: var(--patient-primary);
+  }
+
+  /* Privacy note */
+
+  .patient-privacy-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-top: 22px;
+    padding: 13px 15px;
+    border-radius: 9px;
+    background: #f5f9f9;
+    color: #64748b;
+    font-size: 0.79rem;
+    line-height: 1.6;
+  }
+
+  .patient-privacy-note span {
+    color: var(--patient-primary);
+    font-size: 1rem;
+    flex-shrink: 0;
+  }
+
+
+  /* =====================================
+     DATE OF BIRTH - MANUAL + CALENDAR
+  ===================================== */
+
+  .dob-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+  }
+
+  .patient-field .dob-text-input {
+    width: 100%;
+    min-height: 45px;
+    padding: 10px 52px 10px 13px;
+    border: 1px solid #d5dfdf;
+    border-radius: 9px;
+    background: #ffffff;
+    color: #263b3b;
+    font-family: inherit;
+    font-size: 16px;
+  }
+
+  .patient-field .dob-text-input:focus {
+    outline: none;
+    border-color: var(--patient-primary);
+    box-shadow: 0 0 0 3px rgba(14,111,108,0.12);
+  }
+
+  .dob-calendar-button {
+    position: absolute;
+    right: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 37px;
+    height: 36px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 0;
+    border-radius: 7px;
+    background: #eaf5f4;
+    color: var(--patient-primary);
+    font-size: 17px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+  }
+
+  .dob-calendar-button:hover {
+    background: #d7eeec;
+  }
+
+  .dob-calendar-button:focus-visible {
+    outline: 3px solid rgba(14,111,108,0.25);
+    outline-offset: 2px;
+  }
+
+  .patient-field input.dob-calendar-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    min-height: 0;
+    padding: 0;
+    border: 0;
+    opacity: 0;
+    pointer-events: none;
+    left: 0;
+    bottom: 0;
+  }
+
+  .dob-help-text {
+    display: block;
+    margin-top: 7px;
+    color: var(--patient-muted);
+    font-size: 0.77rem;
+    line-height: 1.5;
+  }
+
+  .dob-error-message {
+    display: none;
+    margin-top: 6px;
+    color: #b42318;
+    font-size: 0.82rem;
+  }
+
+  .dob-error-message.show {
+    display: block;
+  }
+
+  .dob-input-wrapper.has-error .dob-text-input {
+    border-color: #dc2626;
+    box-shadow: 0 0 0 3px rgba(220,38,38,0.08);
+  }
+
+
+  /* Tablet */
+
+  @media (max-width: 768px) {
+    .patient-form-page {
+      padding: 25px 13px 40px;
+    }
+
+    .patient-form-header {
+      padding: 26px 25px;
+    }
+
+    .patient-form-body {
+      padding: 27px 25px;
+    }
+
+    .patient-actions {
+      align-items: flex-start;
+    }
+  }
+
+  /* Mobile */
+
+  @media (max-width: 576px) {
+    .patient-form-page {
+      padding: 15px 9px 30px;
+    }
+
+    .patient-form-top {
+      margin-bottom: 13px;
+    }
+
+    .patient-breadcrumb {
+      font-size: 0.8rem;
+    }
+
+    .patient-form-card {
+      border-radius: 13px;
+    }
+
+    .patient-form-header {
+      padding: 23px 19px;
+    }
+
+    .patient-header-icon {
+      width: 42px;
+      height: 42px;
+      font-size: 1.2rem;
+      margin-bottom: 11px;
+    }
+
+    .patient-form-header h2 {
+      font-size: 1.4rem;
+    }
+
+    .patient-form-header p {
+      font-size: 0.84rem;
+    }
+
+    .patient-form-body {
+      padding: 23px 17px;
+    }
+
+    .patient-form-intro h3 {
+      font-size: 1.03rem;
+    }
+
+    .patient-section-heading {
+      margin-bottom: 15px;
+    }
+
+    .patient-field {
+      margin-bottom: 16px;
+    }
+
+    .patient-field input,
+    .patient-field textarea,
+    .patient-field select {
+      min-height: 44px;
+      font-size: 16px;
+    }
+
+    .patient-actions {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .patient-action-left {
+      margin-bottom: 3px;
+    }
+
+    .patient-action-buttons {
+      width: 100%;
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .btn-patient-save,
+    .btn-patient-back {
+      width: 100%;
+      min-height: 47px;
+    }
+
+    .patient-privacy-note {
+      font-size: 0.76rem;
+    }
+  }
+
+  /* Extra small devices */
+
+  @media (max-width: 360px) {
+    .patient-form-body {
+      padding: 20px 13px;
+    }
+
+    .patient-form-header {
+      padding: 21px 15px;
+    }
+
+    .patient-form-header h2 {
+      font-size: 1.25rem;
+    }
   }
 </style>
 
-<div class="form-card">
 
-  <!-- HEADER -->
-  <div class="patient-card-header">
-    {% if form.instance.pk %}
-      ✏️ Edit <span>Patient</span>
-    {% else %}
-      ➕ Add <span>Patient</span>
-    {% endif %}
-  </div>
+<div class="patient-form-page">
+  <div class="patient-form-container">
 
-  <!-- BODY -->
-  <div class="patient-card-body">
-    <form method="post" novalidate>
-      {% csrf_token %}
-
-      <div class="row">
-
-        <!-- First Name -->
-        <div class="col-md-6 mb-3">
-          <label for="{{ form.first_name.id_for_label }}">
-            {{ form.first_name.label }}
-          </label>
-          {{ form.first_name }}
-        </div>
-
-        <!-- Last Name -->
-        <div class="col-md-6 mb-3">
-          <label for="{{ form.last_name.id_for_label }}">
-            {{ form.last_name.label }}
-          </label>
-          {{ form.last_name }}
-        </div>
-
-        <!-- Date of Birth -->
-        <div class="col-md-6 mb-3">
-          <label for="{{ form.date_of_birth.id_for_label }}">
-            {{ form.date_of_birth.label }}
-          </label>
-          {{ form.date_of_birth }}
-        </div>
-
-        <!-- Gender -->
-        <div class="col-md-6 mb-3">
-          <label for="{{ form.gender.id_for_label }}">
-            {{ form.gender.label }}
-          </label>
-          {{ form.gender }}
-        </div>
-
-        <!-- Address -->
-        <div class="col-md-12 mb-3">
-          <label for="{{ form.address.id_for_label }}">
-            {{ form.address.label }}
-          </label>
-          {{ form.address }}
-        </div>
-
-        <!-- Phone -->
-        <div class="col-md-6 mb-3">
-          <label for="{{ form.phone.id_for_label }}">
-            {{ form.phone.label }}
-          </label>
-          {{ form.phone }}
-        </div>
-
-        <!-- Email -->
-        <div class="col-md-6 mb-3">
-          <label for="{{ form.email.id_for_label }}">
-            {{ form.email.label }}
-          </label>
-          {{ form.email }}
-        </div>
-
-        <!-- Outreach -->
-        <div class="col-md-12 mb-3">
-          <label for="{{ form.outreach.id_for_label }}">
-            {{ form.outreach.label }}
-          </label>
-          {{ form.outreach }}
-        </div>
-
-      </div>
-
-      <!-- ACTIONS -->
-      <div class="patient-actions">
-        <button type="submit" class="btn-duxt">
-          💾 Save Patient
-        </button>
-
-        <a href="{% url 'homecare:patient_list' %}" class="btn-outline-duxt">
-          ← Back to Patient List
+    <!-- TOP NAVIGATION -->
+    <div class="patient-form-top">
+      <div class="patient-breadcrumb">
+        <a href="{% url 'homecare:patient_list' %}">
+          Patients
         </a>
+        <span> / </span>
+        <span>
+          {% if form.instance.pk %}
+            Edit Patient
+          {% else %}
+            Add New Patient
+          {% endif %}
+        </span>
+      </div>
+    </div>
+
+
+    <!-- MAIN FORM CARD -->
+    <div class="patient-form-card">
+
+      <!-- HEADER -->
+      <div class="patient-form-header">
+        <div class="patient-header-content">
+
+          <div class="patient-header-icon">
+            {% if form.instance.pk %}
+              ✏️
+            {% else %}
+              👤
+            {% endif %}
+          </div>
+
+          <h2>
+            {% if form.instance.pk %}
+              Edit Patient Information
+            {% else %}
+              Register New Patient
+            {% endif %}
+          </h2>
+
+          <p>
+            {% if form.instance.pk %}
+              Update the patient's personal and contact information below.
+            {% else %}
+              Enter the patient's details to create a new patient record in DuxtHealth.
+            {% endif %}
+          </p>
+
+          <span class="patient-header-tag">
+            DUXTHEALTH · PATIENT MANAGEMENT
+          </span>
+
+        </div>
       </div>
 
-    </form>
+
+      <!-- FORM BODY -->
+      <div class="patient-form-body">
+
+        <div class="patient-form-intro">
+          <h3>Patient Details</h3>
+          <p>
+            Please provide accurate information in the fields below.
+            Fields marked as required by the form will be validated when submitted.
+          </p>
+        </div>
+
+
+        <form method="post" novalidate>
+          {% csrf_token %}
+
+
+          <!-- NON-FIELD ERRORS -->
+          {% if form.non_field_errors %}
+            <div class="patient-form-errors">
+              <strong>Please review the following information:</strong>
+              {{ form.non_field_errors }}
+            </div>
+          {% endif %}
+
+
+          <!-- PERSONAL INFORMATION -->
+          <div class="patient-section">
+
+            <div class="patient-section-heading">
+              <div class="patient-section-icon">👤</div>
+              <div>
+                <h4>Personal Information</h4>
+                <p>Basic information about the patient</p>
+              </div>
+            </div>
+
+            <div class="row">
+
+              <!-- FIRST NAME -->
+              <div class="col-md-6">
+                <div class="patient-field">
+                  <label for="{{ form.first_name.id_for_label }}">
+                    {{ form.first_name.label }}
+                  </label>
+                  {{ form.first_name }}
+                  {{ form.first_name.errors }}
+                  {% if form.first_name.help_text %}
+                    <small class="helptext">{{ form.first_name.help_text }}</small>
+                  {% endif %}
+                </div>
+              </div>
+
+
+              <!-- LAST NAME -->
+              <div class="col-md-6">
+                <div class="patient-field">
+                  <label for="{{ form.last_name.id_for_label }}">
+                    {{ form.last_name.label }}
+                  </label>
+                  {{ form.last_name }}
+                  {{ form.last_name.errors }}
+                  {% if form.last_name.help_text %}
+                    <small class="helptext">{{ form.last_name.help_text }}</small>
+                  {% endif %}
+                </div>
+              </div>
+
+
+              <!-- DATE OF BIRTH: MANUAL ENTRY + CALENDAR PICKER -->
+              <div class="col-md-6">
+                <div class="patient-field">
+
+                  <label for="patient-dob">
+                    {{ form.date_of_birth.label }}
+                  </label>
+
+                  <div class="dob-input-wrapper">
+
+                    <!-- Manual date entry -->
+                    <input
+                      type="text"
+                      name="{{ form.date_of_birth.html_name }}"
+                      id="patient-dob"
+                      class="dob-text-input"
+                      placeholder="DD/MM/YYYY"
+                      inputmode="numeric"
+                      autocomplete="bday"
+                      value="{% if form.is_bound %}{{ form.date_of_birth.value|default_if_none:'' }}{% elif form.instance.date_of_birth %}{{ form.instance.date_of_birth|date:'Y-m-d' }}{% endif %}"
+                      {% if form.date_of_birth.field.required %}required{% endif %}
+                      aria-describedby="dob-help dob-error"
+                    >
+
+                    <!-- Calendar button -->
+                    <button
+                      type="button"
+                      class="dob-calendar-button"
+                      id="dob-calendar-button"
+                      aria-label="Choose date of birth from calendar"
+                      title="Choose date from calendar"
+                    >
+                      <span aria-hidden="true">&#128197;</span>
+                    </button>
+
+                    <!-- Native date picker -->
+                    <input
+                      type="date"
+                      id="dob-calendar"
+                      class="dob-calendar-hidden"
+                      tabindex="-1"
+                      aria-hidden="true"
+                    >
+
+                  </div>
+
+                  <small class="dob-help-text" id="dob-help">
+                    Type DD/MM/YYYY, DD-MM-YYYY or YYYY-MM-DD, or use the calendar button to select a date.
+                  </small>
+
+                  <div
+                    id="dob-error"
+                    class="dob-error-message"
+                    role="alert"
+                    aria-live="polite">
+                  </div>
+
+                  {{ form.date_of_birth.errors }}
+
+                </div>
+              </div>
+
+
+              <!-- GENDER -->
+              <div class="col-md-6">
+                <div class="patient-field">
+                  <label for="{{ form.gender.id_for_label }}">
+                    {{ form.gender.label }}
+                  </label>
+                  {{ form.gender }}
+                  {{ form.gender.errors }}
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+
+          <!-- CONTACT INFORMATION -->
+          <div class="patient-section">
+
+            <div class="patient-section-heading">
+              <div class="patient-section-icon">📞</div>
+              <div>
+                <h4>Contact Information</h4>
+                <p>How to reach the patient</p>
+              </div>
+            </div>
+
+            <div class="row">
+
+              <!-- ADDRESS -->
+              <div class="col-12">
+                <div class="patient-field">
+                  <label for="{{ form.address.id_for_label }}">
+                    {{ form.address.label }}
+                  </label>
+                  {{ form.address }}
+                  {{ form.address.errors }}
+                </div>
+              </div>
+
+
+              <!-- PHONE -->
+              <div class="col-md-6">
+                <div class="patient-field">
+                  <label for="{{ form.phone.id_for_label }}">
+                    {{ form.phone.label }}
+                  </label>
+                  {{ form.phone }}
+                  {{ form.phone.errors }}
+                </div>
+              </div>
+
+
+              <!-- EMAIL -->
+              <div class="col-md-6">
+                <div class="patient-field">
+                  <label for="{{ form.email.id_for_label }}">
+                    {{ form.email.label }}
+                  </label>
+                  {{ form.email }}
+                  {{ form.email.errors }}
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+
+          <!-- ADDITIONAL INFORMATION -->
+          <div class="patient-section">
+
+            <div class="patient-section-heading">
+              <div class="patient-section-icon">📋</div>
+              <div>
+                <h4>Additional Information</h4>
+                <p>Other details associated with this patient</p>
+              </div>
+            </div>
+
+            <div class="row">
+
+              <!-- OUTREACH -->
+              <div class="col-12">
+                <div class="patient-field">
+                  <label for="{{ form.outreach.id_for_label }}">
+                    {{ form.outreach.label }}
+                  </label>
+                  {{ form.outreach }}
+                  {{ form.outreach.errors }}
+
+                  {% if form.outreach.help_text %}
+                    <small class="helptext">
+                      {{ form.outreach.help_text }}
+                    </small>
+                  {% endif %}
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+
+          <!-- ACTION BUTTONS -->
+          <div class="patient-actions">
+
+            <div class="patient-action-left">
+              <strong>DuxtHealth Patient Management</strong><br>
+              Please review the details before saving.
+            </div>
+
+            <div class="patient-action-buttons">
+
+              <a
+                href="{% url 'homecare:patient_list' %}"
+                class="btn-patient-back">
+                ← Back to Patients
+              </a>
+
+              <button type="submit" class="btn-patient-save">
+                💾
+                {% if form.instance.pk %}
+                  Update Patient
+                {% else %}
+                  Save Patient
+                {% endif %}
+              </button>
+
+            </div>
+
+          </div>
+
+
+          <!-- PRIVACY NOTE -->
+          <div class="patient-privacy-note">
+            <span>🔒</span>
+            <div>
+              Patient information should be handled confidentially.
+              Ensure that the details entered are accurate and are only
+              accessed by authorised personnel.
+            </div>
+          </div>
+
+        </form>
+
+      </div>
+    </div>
+
   </div>
 </div>
+
+
+<!-- =========================================
+     DATE OF BIRTH JAVASCRIPT
+========================================= -->
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+  const dobInput = document.getElementById("patient-dob");
+  const calendarInput = document.getElementById("dob-calendar");
+  const calendarButton = document.getElementById("dob-calendar-button");
+  const errorMessage = document.getElementById("dob-error");
+  const dobWrapper = document.querySelector(".dob-input-wrapper");
+
+  if (
+    !dobInput ||
+    !calendarInput ||
+    !calendarButton ||
+    !errorMessage ||
+    !dobWrapper
+  ) {
+    return;
+  }
+
+
+  // Today's date in YYYY-MM-DD format.
+  const today = new Date();
+
+  const todayISO = [
+    today.getFullYear(),
+    String(today.getMonth() + 1).padStart(2, "0"),
+    String(today.getDate()).padStart(2, "0")
+  ].join("-");
+
+  // A date of birth cannot be in the future.
+  calendarInput.max = todayISO;
+
+
+  /*
+    SUPPORTED DATE FORMATS:
+
+    DD/MM/YYYY
+    DD-MM-YYYY
+    DD.MM.YYYY
+
+    YYYY-MM-DD
+    YYYY/MM/DD
+    YYYY.MM.DD
+
+    Dates with the year at the end are
+    interpreted using day/month/year order.
+  */
+
+  function normalizeDate(rawValue) {
+
+    const value = rawValue.trim();
+
+    if (!value) {
+      return "";
+    }
+
+    const separator = value.includes("/") ? "/" :
+                      value.includes("-") ? "-" :
+                      value.includes(".") ? "." : null;
+
+    if (!separator) {
+      return null;
+    }
+
+    const parts = value.split(separator);
+
+    if (
+      parts.length !== 3 ||
+      parts.some(part => part.trim() === "")
+    ) {
+      return null;
+    }
+
+    let day;
+    let month;
+    let year;
+
+
+    // YYYY-MM-DD
+    if (/^\d{4}$/.test(parts[0])) {
+
+      year = Number(parts[0]);
+      month = Number(parts[1]);
+      day = Number(parts[2]);
+
+    }
+
+    // DD/MM/YYYY
+    else if (/^\d{4}$/.test(parts[2])) {
+
+      day = Number(parts[0]);
+      month = Number(parts[1]);
+      year = Number(parts[2]);
+
+    }
+
+    else {
+      return null;
+    }
+
+
+    if (
+      !Number.isInteger(day) ||
+      !Number.isInteger(month) ||
+      !Number.isInteger(year)
+    ) {
+      return null;
+    }
+
+
+    if (
+      year < 1000 ||
+      year > 9999 ||
+      month < 1 ||
+      month > 12 ||
+      day < 1 ||
+      day > 31
+    ) {
+      return null;
+    }
+
+
+    // Validate the exact calendar date.
+    const check = new Date(Date.UTC(year, month - 1, day));
+
+    if (
+      check.getUTCFullYear() !== year ||
+      check.getUTCMonth() !== month - 1 ||
+      check.getUTCDate() !== day
+    ) {
+      return null;
+    }
+
+
+    // Convert to Django's expected YYYY-MM-DD format.
+    const normalized =
+      String(year).padStart(4, "0") + "-" +
+      String(month).padStart(2, "0") + "-" +
+      String(day).padStart(2, "0");
+
+
+    if (normalized > todayISO) {
+      return "future";
+    }
+
+    return normalized;
+  }
+
+
+  // Clear validation error.
+  function clearDobError() {
+
+    errorMessage.textContent = "";
+
+    errorMessage.classList.remove("show");
+
+    dobWrapper.classList.remove("has-error");
+
+    dobInput.removeAttribute("aria-invalid");
+
+  }
+
+
+  // Display validation error.
+  function showDobError(message) {
+
+    errorMessage.textContent = message;
+
+    errorMessage.classList.add("show");
+
+    dobWrapper.classList.add("has-error");
+
+    dobInput.setAttribute("aria-invalid", "true");
+
+  }
+
+
+  // Validate and convert manually entered dates.
+  function applyTypedDate(showMessage) {
+
+    const rawValue = dobInput.value.trim();
+
+    if (!rawValue) {
+      return "";
+    }
+
+    const normalized = normalizeDate(rawValue);
+
+
+    if (normalized === "future") {
+
+      if (showMessage) {
+        showDobError("Date of birth cannot be in the future.");
+      }
+
+      return null;
+    }
+
+
+    if (!normalized) {
+
+      if (showMessage) {
+        showDobError(
+          "Please enter a valid date, for example 25/12/2000, or select one from the calendar."
+        );
+      }
+
+      return null;
+    }
+
+
+    dobInput.value = normalized;
+
+    calendarInput.value = normalized;
+
+    clearDobError();
+
+    return normalized;
+
+  }
+
+
+  // Open the calendar when the calendar button is clicked.
+  calendarButton.addEventListener("click", function () {
+
+    if (typeof calendarInput.showPicker === "function") {
+
+      try {
+
+        calendarInput.showPicker();
+
+      } catch (error) {
+
+        calendarInput.focus();
+
+        calendarInput.click();
+
+      }
+
+    } else {
+
+      calendarInput.focus();
+
+      calendarInput.click();
+
+    }
+
+  });
+
+
+  // Copy selected calendar date into the visible text field.
+  calendarInput.addEventListener("change", function () {
+
+    if (!calendarInput.value) {
+      return;
+    }
+
+    if (calendarInput.value > todayISO) {
+
+      showDobError("Date of birth cannot be in the future.");
+
+      calendarInput.value = "";
+
+      return;
+    }
+
+    dobInput.value = calendarInput.value;
+
+    clearDobError();
+
+  });
+
+
+  // Validate while typing and synchronize the calendar.
+  dobInput.addEventListener("input", function () {
+
+    clearDobError();
+
+    const normalized = normalizeDate(dobInput.value);
+
+    if (normalized && normalized !== "future") {
+
+      calendarInput.value = normalized;
+
+    }
+
+  });
+
+
+  // Validate when the user leaves the date field.
+  dobInput.addEventListener("blur", function () {
+
+    if (dobInput.value.trim()) {
+
+      applyTypedDate(true);
+
+    } else {
+
+      clearDobError();
+
+    }
+
+  });
+
+
+  // Convert the date before submitting the Django form.
+  const patientForm = dobInput.closest("form");
+
+  if (patientForm) {
+
+    patientForm.addEventListener("submit", function (event) {
+
+      clearDobError();
+
+
+      if (!dobInput.value.trim()) {
+
+        if (dobInput.required) {
+
+          event.preventDefault();
+
+          showDobError(
+            "Please enter or select the patient's date of birth."
+          );
+
+          dobInput.focus();
+
+        }
+
+        return;
+      }
+
+
+      const normalized = applyTypedDate(true);
+
+
+      if (!normalized) {
+
+        event.preventDefault();
+
+        dobInput.focus();
+
+        return;
+      }
+
+
+      // Django receives YYYY-MM-DD.
+      dobInput.value = normalized;
+
+    });
+
+  }
+
+
+  // Load and normalize existing DOB when editing a patient.
+  if (dobInput.value.trim()) {
+
+    const normalized = normalizeDate(dobInput.value);
+
+    if (normalized && normalized !== "future") {
+
+      dobInput.value = normalized;
+
+      calendarInput.value = normalized;
+
+    }
+
+  }
+
+});
+</script>
 
 {% endblock %}
